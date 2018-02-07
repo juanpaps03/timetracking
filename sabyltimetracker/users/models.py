@@ -36,4 +36,3 @@ class Worker(models.Model):
 class Overseer(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
     dummy = models.CharField(blank=True, max_length=255)
-
