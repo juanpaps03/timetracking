@@ -1,3 +1,4 @@
+from django.core.exceptions import PermissionDenied
 from django.core.urlresolvers import reverse
 from django.views.generic import DetailView, ListView, RedirectView, UpdateView
 
@@ -17,8 +18,14 @@ class UserRedirectView(LoginRequiredMixin, RedirectView):
     permanent = False
 
     def get_redirect_url(self):
-        return reverse('users:detail',
-                       kwargs={'username': self.request.user.username})
+        user = self.request.user
+        if user.user_type is User.OVERSEER:
+            return reverse('users:detail',
+                           kwargs={'username': self.request.user.username})
+        elif user.is_superuser or user.is_staff:
+            return reverse('admin:index')
+
+        raise PermissionDenied
 
 
 class UserUpdateView(LoginRequiredMixin, UpdateView):
