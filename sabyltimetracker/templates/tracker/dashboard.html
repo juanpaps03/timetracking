@@ -4,8 +4,28 @@
   {{ block.super }}
 
   <style>
+  @import url('https://fonts.googleapis.com/css?family=Share+Tech+Mono');
+{##}
+{#  body {#}
+{#  background: url('http://www.360dis.com/wp-content/uploads/2018/01/house-plans-with-lookout-tower-beautiful-house-plans-with-lookout-tower-webbkyrkan-webbkyrkan-of-house-plans-with-lookout-tower.jpg') no-repeat center center fixed;#}
+{#  -webkit-background-size: cover;#}
+{#  -moz-background-size: cover;#}
+{#  background-size: cover;#}
+{#  -o-background-size: cover;#}
+.bgImageContainer{
+    background-image:url('http://www.sisinsure.com/wp-content/uploads/2016/04/Blue-print.jpg');
+      -webkit-background-size: cover;
+  -moz-background-size: cover;
+  background-size: cover;
+  -o-background-size: cover;
+    width:100%;
+    height:100%;
+    -webkit-filter: blur(5px);
+    z-index:0;
+    position:absolute;
+}
       .big-clock {
-          padding: 5rem 1.5rem;
+          padding: 7rem 1.5rem;
           text-align: center;
       }
 
@@ -14,7 +34,7 @@
   height: 180px;
   margin: 0 auto;
   position: relative;
-  border: 8px solid black;
+  border: 8px solid rgba(0, 0, 0, 0.7);
   border-radius: 50%;
 /*   background: url(../img/bg.png) 0 50%; */
 }
@@ -31,7 +51,7 @@
   width: 12px;
   height: 12px;
   margin: -6px 0 0 -6px;
-  background: black;
+  background: red;
   border-radius: 6px;
   content: "";
   display: block;
@@ -46,6 +66,7 @@
   margin: -4px 0 -4px -25%;
   padding: 4px 0 4px 25%;
   background: black;
+  opacity: 0.9;
   -webkit-transform-origin: 100% 50%;
   -ms-transform-origin: 100% 50%;
   transform-origin: 100% 50%;
@@ -61,6 +82,7 @@
   margin: -40% -3px 0;
   padding: 40% 3px 0;
   background: black;
+  opacity: 0.9;
   -webkit-transform-origin: 50% 100%;
   -ms-transform-origin: 50% 100%;
   transform-origin: 50% 100%;
@@ -75,25 +97,40 @@
   left: 50%;
   margin: -40% -1px 0 0;
   padding: 40% 1px 0;
-  background: black;
+  background: red;
   -webkit-transform-origin: 50% 100%;
   -ms-transform-origin: 50% 100%;
   transform-origin: 50% 100%;
 }
 
+.date {
+        letter-spacing: 0.1em;
+        font-size: 18px;
+    }
+.time {
+    letter-spacing: 0.05em;
+    font-size: 30px;
+    padding: 5px 0;
+}
+
 
 .clock-time {
-  height: 75px;
-  width: 100%;
-  line-height: 80px;
-  margin: 30px auto 0;
-  padding: 0 50px;
-  background: #292b2c;
-  color: #eee;
-  text-align: center;
-  border-radius: 15px;
-  box-shadow: 0 0 7px #222;
-  text-shadow: 0 0 3px #fff;
+    height: 100%;
+    width: 100%;
+    line-height: 15px;
+    margin: 20px 0 0 0;
+    padding: 20px 20px 20px 20px;
+    font-family: 'Share Tech Mono';
+    text-align: center;
+    border-radius: 15px;
+    color: #daf6ff;
+    opacity: 0.85;
+    -moz-box-shadow: 1px 2px 3px rgba(0,0,0,.5);
+-webkit-box-shadow: 1px 2px 3px rgba(0,0,0,.5);
+box-shadow: 1px 2px 3px rgba(0,0,0,.5);
+    text-shadow: 0 0 20px rgba(10, 175, 230, 1),  0 0 20px rgba(10, 175, 230, 0);
+    background: #0f3854;
+    background: radial-gradient(ellipse at center,  #0a2e38  0%, #000000 70%);
 }
   </style>
 {% endblock css %}
@@ -109,7 +146,20 @@
 				<div id="second" class="hero-second"></div>
 			</div>
 		</div>
-    <div id="clock" class="clock-time">loading ...</div>
+    <div id="clock" class="clock-time col-md-12">
+        <p class="date">loading ...</p>
+        <p class="time"></p>
+
+        <div class="row">
+        <div class="col-md-6">
+            <button type="button" class="btn btn-lg btn-outline-info">Iniciar Dia</button>
+        </div>
+        <div class="col-md-6">
+            <button type="button" class="btn btn-lg btn-outline-danger">Otro boton</button>
+        </div>
+    </div>
+    </div>
+
   </div>
 
 </div>
@@ -135,7 +185,9 @@
       }
 
       function updateTime() {
-        $('#clock').html(moment().format('H:mm:ss D MMMM YYYY '));
+        var now = moment();
+        $('.date').html(now.format('D MMMM YYYY '));
+        $('.time').html(now.format('H:mm:ss'));
       }
 
       function timedUpdate () {
