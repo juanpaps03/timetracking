@@ -1,0 +1,151 @@
+{% extends "base.html" %}
+
+{% block css %}
+  {{ block.super }}
+
+  <style>
+      .big-clock {
+          padding: 5rem 1.5rem;
+          text-align: center;
+      }
+
+    .hero-circle {
+  width: 180px;
+  height: 180px;
+  margin: 0 auto;
+  position: relative;
+  border: 8px solid black;
+  border-radius: 50%;
+/*   background: url(../img/bg.png) 0 50%; */
+}
+
+.hero-face {
+  width: 100%;
+  height: 100%;
+}
+
+.hero-face:after {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 12px;
+  height: 12px;
+  margin: -6px 0 0 -6px;
+  background: black;
+  border-radius: 6px;
+  content: "";
+  display: block;
+}
+
+.hero-hour {
+  width: 0;
+  height: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin: -4px 0 -4px -25%;
+  padding: 4px 0 4px 25%;
+  background: black;
+  -webkit-transform-origin: 100% 50%;
+  -ms-transform-origin: 100% 50%;
+  transform-origin: 100% 50%;
+  border-radius: 4px 0 0 4px;
+}
+
+.hero-minute {
+  width: 0;
+  height: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin: -40% -3px 0;
+  padding: 40% 3px 0;
+  background: black;
+  -webkit-transform-origin: 50% 100%;
+  -ms-transform-origin: 50% 100%;
+  transform-origin: 50% 100%;
+  border-radius: 3px 3px 0 0;
+}
+
+.hero-second {
+  width: 0;
+  height: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin: -40% -1px 0 0;
+  padding: 40% 1px 0;
+  background: black;
+  -webkit-transform-origin: 50% 100%;
+  -ms-transform-origin: 50% 100%;
+  transform-origin: 50% 100%;
+}
+
+
+.clock-time {
+  height: 75px;
+  width: 100%;
+  line-height: 80px;
+  margin: 30px auto 0;
+  padding: 0 50px;
+  background: #292b2c;
+  color: #eee;
+  text-align: center;
+  border-radius: 15px;
+  box-shadow: 0 0 7px #222;
+  text-shadow: 0 0 3px #fff;
+}
+  </style>
+{% endblock css %}
+
+{% block content %}
+<div class="container">
+
+  <div class="big-clock">
+    <div class="hero-circle">
+			<div class="hero-face">
+				<div id="hour" class="hero-hour"></div>
+				<div id="minute" class="hero-minute"></div>
+				<div id="second" class="hero-second"></div>
+			</div>
+		</div>
+    <div id="clock" class="clock-time">loading ...</div>
+  </div>
+
+</div>
+{% endblock %}
+
+
+{% block javascript %}
+
+  {{ block.super }}
+  <script src="https://momentjs.com/downloads/moment.js"></script>
+  <script>
+
+  $( document ).ready(function() {
+      function updateClock(){
+          var now = moment(),
+              second = now.seconds() * 6,
+              minute = now.minutes() * 6 + second / 60,
+              hour = ((now.hours() % 12) / 12) * 360 + 90 + minute / 12;
+
+          $('#hour').css("transform", "rotate(" + hour + "deg)");
+          $('#minute').css("transform", "rotate(" + minute + "deg)");
+          $('#second').css("transform", "rotate(" + second + "deg)");
+      }
+
+      function updateTime() {
+        $('#clock').html(moment().format('H:mm:ss D MMMM YYYY '));
+      }
+
+      function timedUpdate () {
+          updateClock();
+          updateTime();
+          setTimeout(timedUpdate, 1000);
+      }
+
+      timedUpdate();
+  });
+
+  </script>
+{% endblock javascript %}

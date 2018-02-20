@@ -20,7 +20,7 @@ class UserRedirectView(LoginRequiredMixin, RedirectView):
     def get_redirect_url(self):
         user = self.request.user
         if user.user_type is User.OVERSEER:
-            return reverse('users:detail',
+            return reverse('tracker:dashboard',
                            kwargs={'username': self.request.user.username})
         elif user.is_superuser or user.is_staff:
             return reverse('admin:index')
