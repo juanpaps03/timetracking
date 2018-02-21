@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static i18n%}
 
 {% block css %}
   {{ block.super }}
@@ -151,19 +152,19 @@ box-shadow: 1px 2px 3px rgba(0,0,0,.5);
         <p class="time"></p>
 
         <div class="row">
-        <div class="col-md-6">
-            <button type="button" class="btn btn-lg btn-outline-info">Iniciar Dia</button>
+            <div class="col-md-6">
+                <a href="#" role="button"><button type="button" class="btn btn-lg btn-outline-info">{% trans "Start Day" %}</button></a>
+            </div>
+            <div class="col-md-6">
+                <a href="{% url 'tracker:log_hours' request.user.username %}" role="button"><button type="button" class="btn btn-lg btn-outline-warning">{% trans "Log Hours" %}</button></a>
+            </div>
         </div>
-        <div class="col-md-6">
-            <button type="button" class="btn btn-lg btn-outline-danger">Otro boton</button>
-        </div>
-    </div>
     </div>
 
   </div>
 
 </div>
-{% endblock %}
+{% endblock content%}
 
 
 {% block javascript %}

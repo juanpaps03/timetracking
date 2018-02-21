@@ -14,3 +14,10 @@ class Dashboard(View):
     def get(self, request, username):
         # <view logic>
         return render(request, 'tracker/dashboard.html')
+
+
+@method_decorator([user_permissions([User.OVERSEER])], name='dispatch')
+class LogHours(View):
+    def get(self, request, username):
+        # <view logic>
+        return render(request, 'tracker/log_hours.html')
