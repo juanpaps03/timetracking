@@ -65,7 +65,10 @@
     var table = $('#example').DataTable();
 
     $('#submit-hours').click( function() {
-        var data = table.$('input').serializeArray();
+        var data = [];
+        table.$('input').each(function (i, el) {
+           data.push({'user': $(el).attr('name'), 'amount': $(el).val()});
+         });
         alert(
             "The following data would have been submitted to the server: \n\n"+
             JSON.stringify(data)

@@ -17,15 +17,16 @@ class Building(models.Model):
 
 
 class Workday(models.Model):
+    building = models.ForeignKey(Building)
     date = models.DateField(auto_now=False, auto_now_add=True)
     finished = models.BooleanField(default=False)
-    logs = models.ManyToManyField('Loghour')
+    logs = models.ManyToManyField('LogHour')
 
     def __str__(self):
         return self.date
 
 
-class Loghour(models.Model):
+class LogHour(models.Model):
     amount = models.PositiveIntegerField(null=False, blank=False, default=0)
     user = models.ForeignKey(User)
     task = models.ForeignKey('Task')
