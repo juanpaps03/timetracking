@@ -3,22 +3,76 @@
 
 {% block css %}
   {{ block.super }}
+  <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.16/css/jquery.dataTables.css">
+  <style>
 
+  </style>
 {% endblock css %}
 
 {% block content %}
-
+  <div class="row navbar-space">
+    <div class="col col-md-12">
+      <label for="task">{% trans "Task" %}</label>
+      <select id="task" name="task">
+        {% for task in tasks %}
+          <option value="{{ task.id }}">{{ task.code }} - {{ task.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+  </div>
   <div class="row">
-    <div class="col col-md-8">.col .col-md-8</div>
-    <P>TEST</P>
-    <div class="col-6 col-md-4">.col-6 .col-md-4</div>
+    <div class="col col-md-12">
+      <table id="example" class="display" cellspacing="0" width="100%">
+        <thead>
+            <tr>
+                <th>{% trans "Surname" %}</th>
+                <th>{% trans "Name" %}</th>
+                <th>{% trans "Hours" %}</th>
+            </tr>
+        </thead>
+        <tfoot>
+            <tr>
+                <th>{% trans "Surname" %}</th>
+                <th>{% trans "Name" %}</th>
+                <th>{% trans "Hours" %}</th>
+            </tr>
+        </tfoot>
+        <tbody>
+          {% for worker in workers %}
+            <tr>
+              <td>{{ worker.last_name }}</td>
+              <td>{{ worker.first_name }}</td>
+              <td><input type="text" id="{{ worker.id }}-{{ worker.name }}-hours" name="{{ worker.id }}" value="61"></td>
+            </tr>
+          {% endfor %}
+        </tbody>
+    </table>
+    </div>
+  </div>
+  <div class="row">
+    <button id="submit-hours" type="submit">Submit form</button>
   </div>
 
 {% endblock content%}
 
 
 {% block javascript %}
-
   {{ block.super }}
+  <script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.16/js/jquery.dataTables.js"></script>
+
+  <script>
+  $(document).ready(function() {
+    var table = $('#example').DataTable();
+
+    $('#submit-hours').click( function() {
+        var data = table.$('input').serializeArray();
+        alert(
+            "The following data would have been submitted to the server: \n\n"+
+            JSON.stringify(data)
+        );
+        return false;
+    } );
+  } );
+  </script>
 
 {% endblock javascript %}
