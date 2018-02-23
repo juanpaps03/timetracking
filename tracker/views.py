@@ -25,7 +25,7 @@ class LogHours(View):
         user = request.user
 
         # Select the last building related to the overseer then obtain its tasks and workers
-        building = Building.objects.filter(overseer=user).last()
+        building = Building.objects.get_by_overseer(user)
         if building:
             tasks = building.tasks.all()
             workers = building.workers.all()
