@@ -22,14 +22,12 @@ class LogsHoursCrate(APIView):
             work_day = Workday.objects.get(building=building, date=date, finished=False)
             work_day.assign_logs(task_id, hours_per_user)
         except Workday.DoesNotExist:
-            return JsonResponse({'error': 'There was a problem obtaining work day. Maybe it was finished.'}, status=404)
+            return JsonResponse({'message': 'There was a problem obtaining work day. Maybe it was finished.'}, status=400)
         except Task.DoesNotExist:
-            return JsonResponse({'error': 'There was a problem obtaining task.'}, status=404)
+            return JsonResponse({'message': 'There was a problem obtaining task.'}, status=400)
+        except Exception:
+            return JsonResponse({'message': 'Something went wrong.'}, status=400)
 
-
-        error = []
-        info = []
-
-        return JsonResponse({'error': error, 'info': info}, status=200)
+        return JsonResponse({'message': 'Hours added correctly.'}, status=200)
 
 

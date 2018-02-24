@@ -7,7 +7,7 @@
 {% block head_title %}{% trans "Sign In" %}{% endblock %}
 
 {% block javascript_header %}
-        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/particles.js/2.0.0/particles.min.js"></script>
+    <script type="text/javascript" src="{% static 'js/particles.min.js' %}"></script>
 {% endblock javascript_header %}
 
 {% block css %}
@@ -46,5 +46,5 @@
 
 {% block javascript %}
     {{ block.super }}
-    <script src="{% static 'js/login.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/login.js' %}"></script>
 {% endblock javascript %}
