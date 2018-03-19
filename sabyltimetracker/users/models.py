@@ -10,10 +10,29 @@ class User(AbstractUser):
 
     # First Name and Last Name do not cover name patterns
     # around the globe.
+    WORKER = 1
+    OVERSEER = 2
+    USER_TYPE_CHOICES = [WORKER, OVERSEER]
+
+    user_type = models.PositiveSmallIntegerField(null=True, choices=[(i, x) for i, x in enumerate(USER_TYPE_CHOICES)],
+                                                 default=None)
     name = models.CharField(_('Name of User'), blank=True, max_length=255)
+    ci = models.CharField(null=False, blank=False, max_length=10)
+    phone = models.CharField(blank=True, max_length=20)
+    direction = models.CharField(blank=True, max_length=255)
 
     def __str__(self):
         return self.username
 
     def get_absolute_url(self):
         return reverse('users:detail', kwargs={'username': self.username})
+
+
+class Worker(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
+    dummy = models.CharField(blank=True, max_length=255)
+
+
+class Overseer(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
+    dummy = models.CharField(blank=True, max_length=255)

@@ -55,7 +55,7 @@ THIRD_PARTY_APPS = [
 LOCAL_APPS = [
     # custom users app
     'sabyltimetracker.users.apps.UsersConfig',
-    # Your stuff: custom apps go here
+    'tracker.apps.TrackerConfig'
 ]
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
