@@ -15,7 +15,7 @@ urlpatterns = [
     # User management
     url(r'^users/', include('sabyltimetracker.users.urls', namespace='users')),
     url(r'^accounts/', include('allauth.urls')),
-    url(r'^tracker/', include('tracker.urls')),
+    url(r'^tracker/(?P<username>[\w.@+-]+)/', include('tracker.urls', namespace="tracker")),
 
     # Your stuff: custom urls includes go here
 

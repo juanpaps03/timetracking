@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% load static i18n%}
+
+{% block css %}
+  {{ block.super }}
+  <link rel="stylesheet" type="text/css" href="{% static 'css/datatables.css' %}">
+  <style>
+
+  </style>
+{% endblock css %}
+
+{% block javascript_header %}
+  <script>
+    var csrf = "{{ csrf_token }}";
+    var post_url = "{% url 'tracker:api_add_hours' request.user.username %}";
+  </script>
+{% endblock javascript_header %}
+
+{% block content %}
+  <div class="row navbar-space">
+    <div class="col col-md-12">
+      <label for="task">{% trans "Task" %}</label>
+      <select id="task" name="task">
+        {% for task in tasks %}
+          <option value="{{ task.id }}">{{ task.code }} - {{ task.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col col-md-12">
+      <table id="hours_per_user" class="display" cellspacing="0" width="100%">
+        <thead>
+            <tr>
+                <th>{% trans "Surname" %}</th>
+                <th>{% trans "Name" %}</th>
+                <th>{% trans "Hours" %}</th>
+            </tr>
+        </thead>
+        <tfoot>
+            <tr>
+                <th>{% trans "Surname" %}</th>
+                <th>{% trans "Name" %}</th>
+                <th>{% trans "Hours" %}</th>
+            </tr>
+        </tfoot>
+        <tbody>
+          {% for worker in workers %}
+            <tr>
+              <td>{{ worker.last_name }}</td>
+              <td>{{ worker.first_name }}</td>
+              <td><input type="text" id="{{ worker.id }}-{{ worker.name }}-hours" name="{{ worker.id }}" value="61"></td>
+            </tr>
+          {% endfor %}
+        </tbody>
+    </table>
+    </div>
+  </div>
+  <div class="row">
+    <button id="submit-hours" type="submit">Submit form</button>
+  </div>
+
+{% endblock content%}
+
+
+{% block javascript %}
+  {{ block.super }}
+  <script type="text/javascript" charset="utf8" src="{% static 'js/datatables.js' %}"></script>
+  <script type="text/javascript" src="{% static 'js/log_hours.js' %}"></script>
+{% endblock javascript %}
