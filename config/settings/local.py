@@ -56,6 +56,10 @@ if os.environ.get('USE_DOCKER') == 'yes':
     ip = socket.gethostbyname(socket.gethostname())
     INTERNAL_IPS += [ip[:-1] + '1']
 
+
+ALLOWED_HOSTS = env.list('DJANGO_ALLOWED_HOSTS', default=['example.com', ])
+
+
 DEBUG_TOOLBAR_CONFIG = {
     'DISABLE_PANELS': [
         'debug_toolbar.panels.redirects.RedirectsPanel',

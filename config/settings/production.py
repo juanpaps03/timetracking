@@ -122,7 +122,7 @@ STATICFILES_DIRS = (
 # COMPRESSOR
 # ------------------------------------------------------------------------------
 #COMPRESS_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-COMPRESS_URL = STATIC_URL
+COMPRESS_STORAGE="compressor.storage.CompressorFileStorage"
 COMPRESS_ENABLED = env.bool('COMPRESS_ENABLED', default=True)
 # EMAIL
 # ------------------------------------------------------------------------------
