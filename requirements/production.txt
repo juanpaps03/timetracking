@@ -23,4 +23,5 @@ boto3==1.5.22
 # --------------------------
 raven==6.5.0
 
-
+# Whitenose needed to use statics with Django in heroku
+whitenose==3.3.1

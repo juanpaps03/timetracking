@@ -31,7 +31,8 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 # See https://docs.sentry.io/clients/python/integrations/django/
 INSTALLED_APPS += ['raven.contrib.django.raven_compat', ]
 RAVEN_MIDDLEWARE = ['raven.contrib.django.raven_compat.middleware.SentryResponseErrorIdMiddleware']
-MIDDLEWARE = RAVEN_MIDDLEWARE + MIDDLEWARE
+HEROKU_MIDDLEWARE = ['whitenoise.middleware.WhiteNoiseMiddleware']
+MIDDLEWARE = HEROKU_MIDDLEWARE + RAVEN_MIDDLEWARE + MIDDLEWARE
 
 
 # SECURITY CONFIGURATION
@@ -105,12 +106,13 @@ MEDIA_URL="media/"
 #STATIC_URL = 'https://s3.amazonaws.com/%s/static/' % AWS_STORAGE_BUCKET_NAME
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
 STATIC_URL = "/static/"
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
 )
-
 #STATICFILES_STORAGE = 'config.settings.production.StaticRootS3BotoStorage'
 # See: https://github.com/antonagestam/collectfast
 # For Django 1.7+, 'collectfast' should come before
