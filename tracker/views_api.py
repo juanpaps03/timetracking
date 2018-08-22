@@ -31,3 +31,14 @@ class LogsHoursCrate(APIView):
         return JsonResponse({'message': 'Hours added correctly.'}, status=200)
 
 
+class StartWorkday(APIView):
+
+    def post(self, request, username):
+        user = request.user
+        building = Building.objects.get_by_overseer(user)
+        date = timezone.now().date()
+
+        last_work_day = Workday.objects.filter(building=building, date='date__lt').latest('date')
+        work_day, _ = Workday.objects.get_or_create(building=building, date=date, finished=False)
+
+        return JsonResponse({'message': 'Hours added correctly.'}, status=200)
