@@ -114,6 +114,7 @@ MANAGERS = ADMINS
 DATABASES = {
     'default': env.db('DATABASE_URL', default='postgres:///sabyltimetracker'),
 }
+
 DATABASES['default']['ATOMIC_REQUESTS'] = True
 
 
