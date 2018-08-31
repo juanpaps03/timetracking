@@ -12,9 +12,9 @@ class User(AbstractUser):
     # around the globe.
     WORKER = 1
     OVERSEER = 2
-    USER_TYPE_CHOICES = [WORKER, OVERSEER]
+    USER_TYPE_CHOICES = [(WORKER, "Worker"), (OVERSEER, "Overseer")]
 
-    user_type = models.PositiveSmallIntegerField(null=True, choices=[(i, x) for i, x in enumerate(USER_TYPE_CHOICES)],
+    user_type = models.PositiveSmallIntegerField(null=True, choices=USER_TYPE_CHOICES,
                                                  default=None)
     name = models.CharField(_('Name of User'), blank=True, max_length=255)
     ci = models.CharField(null=False, blank=False, max_length=10)
