@@ -41,6 +41,7 @@ $(document).ready(function() {
                 },
               success: function(){
                   alert("Saved! It worked.");
+                  location.reload();
                 },
               error: function(XMLHttpRequest, textStatus, errorThrown) {
                 alert("some error " + String(errorThrown) + String(textStatus) + String(XMLHttpRequest.responseText));
@@ -54,4 +55,16 @@ $(document).ready(function() {
 
         return true;
     } );
+    $('#task').change( () => {
+        var option = $(this).find(":selected");
+        var name = $(option).attr('data-name');
+        if(name) {
+            $('.hours-label').text('Hours for ' + name);
+            // TODO translation
+            $('.hours-input').prop('disabled', false);
+        } else {
+            $('.hours-label').text('Select a task');
+            $('.hours-input').prop('disabled', true);
+        }
+    });
 } );
