@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static i18n%}
+{% load filters %}
 
 {% block css %}
   {{ block.super }}
@@ -18,17 +19,31 @@
 			</div>
 		</div>
     <div id="clock" class="clock-time col-md-12">
-        <p class="date">loading ...</p>
-        <p class="time"></p>
+      <p class="date">loading ...</p>
+      <p class="time"></p>
 
-        <div class="row">
-            <div class="col-md-6">
-                <a href="#" role="button"><button type="button" class="btn btn-lg btn-outline-info">{% trans "Start Day" %}</button></a>
-            </div>
-            <div class="col-md-6">
-                <a href="{% url 'tracker:log_hours' request.user.username %}" role="button"><button type="button" class="btn btn-lg btn-outline-warning">{% trans "Log Hours" %}</button></a>
-            </div>
+      <div class="row">
+        <div class="col-md-6">
+          <a href="#" role="button"><button type="button" class="btn btn-lg btn-outline-info">{% trans "Start Day" %}</button></a>
         </div>
+        <div class="col-md-6">
+          <a href="{% url 'tracker:log_hours' request.user.username %}" role="button"><button type="button" class="btn btn-lg btn-outline-warning">{% trans "Log Hours" %}</button></a>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      {%  if workers_missing_hours %}
+        {% if workers_missing_hours|length == 1 %}
+          <p>{% trans "1 worker is missing hours." %}</p>
+          <p>{{ workers_missing_hours|first }} {% trans " needs more hours logged." %}</p>
+        {% else %}
+          <p>{{ workers_missing_hours|length }} {% trans "workers are missing hours." %}</p>
+          <p>{{ workers_missing_hours|ellipsize:3 }} {% trans " need more hours logged." %}</p>
+        {% endif %}
+      {% else %}
+        <p>{% trans "All workers have enough logged hours. When you are sure everything is done, you can end the day." %}</p>
+      {% endif %}
     </div>
 
   </div>

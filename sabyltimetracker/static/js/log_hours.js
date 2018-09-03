@@ -15,7 +15,6 @@ function get_datatable_info(table){
     return hours_list;
 }
 
-
 $(document).ready(function() {
     var table = $('#hours_per_user').DataTable();
 
@@ -40,7 +39,6 @@ $(document).ready(function() {
                 'Content-Type': 'application/json'
                 },
               success: function(){
-                  alert("Saved! It worked.");
                   location.reload();
                 },
               error: function(XMLHttpRequest, textStatus, errorThrown) {
@@ -48,7 +46,7 @@ $(document).ready(function() {
                 return false;
                 }
             });
-        }else{
+        } else {
             alert("No information to send.");
             return false;
         }

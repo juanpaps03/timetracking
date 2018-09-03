@@ -1,4 +1,5 @@
 from django.utils import timezone
+from config import constants
 
 from django.db import models
 
@@ -47,6 +48,10 @@ class Workday(models.Model):
     logs = models.ManyToManyField('LogHour', blank=True)
     overseer = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True)
 
+    @staticmethod
+    def expected_hours():
+        return constants.EXPECTED_HOURS[timezone.now().date().weekday()]
+
     def assign_logs(self, task_id, list_hours_per_user):
         task = self.building.tasks.get(pk=task_id)
         logs = LogHour.create_log_hours(task, self.building, list_hours_per_user)
@@ -77,6 +82,16 @@ class LogHour(models.Model):
 
         log_objs = LogHour.objects.bulk_create(logs)
         return log_objs
+
+    @staticmethod
+    def sum_hours(logs):
+        if logs:
+            sum = 0
+            for log in logs:
+                sum += log.amount
+            return sum
+        else:
+            return 0
 
     def __str__(self):
         return '%d of user %s in task %s' % (self.amount, self.user, self.task)
