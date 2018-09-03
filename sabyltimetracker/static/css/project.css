@@ -28,3 +28,8 @@
 [hidden][style="display: block;"] {
   display: block !important;
 }
+
+
+.main {
+  margin-top: 56px;
+}

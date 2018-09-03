@@ -15,7 +15,6 @@ function get_datatable_info(table){
     return hours_list;
 }
 
-
 $(document).ready(function() {
     var table = $('#hours_per_user').DataTable();
 
@@ -40,18 +39,30 @@ $(document).ready(function() {
                 'Content-Type': 'application/json'
                 },
               success: function(){
-                  alert("Saved! It worked.");
+                  location.reload();
                 },
               error: function(XMLHttpRequest, textStatus, errorThrown) {
                 alert("some error " + String(errorThrown) + String(textStatus) + String(XMLHttpRequest.responseText));
                 return false;
                 }
             });
-        }else{
+        } else {
             alert("No information to send.");
             return false;
         }
 
         return true;
     } );
+    $('#task').change( () => {
+        var option = $(this).find(":selected");
+        var name = $(option).attr('data-name');
+        if(name) {
+            $('.hours-label').text('Hours for ' + name);
+            // TODO translation
+            $('.hours-input').prop('disabled', false);
+        } else {
+            $('.hours-label').text('Select a task');
+            $('.hours-input').prop('disabled', true);
+        }
+    });
 } );

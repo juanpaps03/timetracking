@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css?family=Share+Tech+Mono');
 
 .bgImageContainer{
-    background-image:url('/static/images/dashboard_background.png');
+    background-image:url('/static/images/dashboard_bg.png');
     -webkit-background-size: cover;
     -moz-background-size: cover;
     background-size: cover;
