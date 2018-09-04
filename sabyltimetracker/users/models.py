@@ -19,7 +19,7 @@ class User(AbstractUser):
     name = models.CharField(_('Name of User'), blank=True, max_length=255)
     ci = models.CharField(null=False, blank=False, max_length=10)
     phone = models.CharField(blank=True, max_length=20)
-    direction = models.CharField(blank=True, max_length=255)
+    address = models.CharField(blank=True, max_length=255)
 
     def __str__(self):
         return self.username
@@ -32,7 +32,13 @@ class Worker(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
     dummy = models.CharField(blank=True, max_length=255)
 
+    def __str__(self):
+        return self.user.username
+
 
 class Overseer(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
     dummy = models.CharField(blank=True, max_length=255)
+
+    def __str__(self):
+        return self.user.username

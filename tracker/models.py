@@ -17,15 +17,15 @@ class BuildingManager(models.Manager):
 
 class Building(models.Model):
     code = models.PositiveIntegerField(null=False, blank=False)
-    direction = models.CharField(blank=True, max_length=255)
-    overseer = models.ForeignKey(User)
+    address = models.CharField(blank=True, max_length=255)
+    overseer = models.OneToOneField(User, on_delete=models.SET_NULL, null=True, blank=True)
     workers = models.ManyToManyField(User, related_name="workers_in_building")
     tasks = models.ManyToManyField('Task', related_name="enabled_tasks")
     assigned = models.DateTimeField(auto_now=False, auto_now_add=True)
 
     objects = BuildingManager()
 
-    # If the oversee is modified, assigned date is update.
+    # If the overseer is modified, assigned date is updated.
     # The assigned date is used to get the last building
     # related to the overseer. The last building is used
     # to work along the project.
@@ -45,6 +45,7 @@ class Workday(models.Model):
     date = models.DateField(auto_now=False, auto_now_add=True)
     finished = models.BooleanField(default=False)
     logs = models.ManyToManyField('LogHour', blank=True)
+    overseer = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True)
 
     def assign_logs(self, task_id, list_hours_per_user):
         task = self.building.tasks.get(pk=task_id)
