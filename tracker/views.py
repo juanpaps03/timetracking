@@ -9,7 +9,7 @@ from django.http import HttpResponse, JsonResponse
 from django.views import View
 
 from sabyltimetracker.users.models import User
-from tracker.models import Building, Workday, LogHour
+from tracker.models import Building, Workday, LogHour, Task
 from sabyltimetracker.users.users_permissions_decorator import user_permissions
 
 @method_decorator([user_permissions([User.OVERSEER])], name='dispatch')
@@ -21,6 +21,7 @@ class Dashboard(View):
         workers_missing_hours = []
         user = request.user
         building = Building.objects.get_by_overseer(user)
+        workday = None
         if building:
             workers = building.workers.all()
             date = timezone.now().date()
@@ -36,7 +37,7 @@ class Dashboard(View):
                 return JsonResponse({'message': 'There was a problem obtaining work day. Maybe it was finished.'},
                                     status=400)
 
-        context = {'workers_missing_hours': workers_missing_hours}
+        context = {'workers_missing_hours': workers_missing_hours, 'workday': workday}
 
         return render(request, 'tracker/dashboard.html', context)
 
@@ -66,3 +67,35 @@ class LogHours(View):
         context = {'tasks': tasks, 'workers': workers}
 
         return render(request, 'tracker/log_hours.html', context)
+
+
+@method_decorator([user_permissions([User.OVERSEER])], name='dispatch')
+class DayReview(View):
+    def get(self, request, username):
+        # <view logic>
+        workers = []
+        expected_hours = Workday.expected_hours()
+        workers_missing_hours = []
+        user = request.user
+        building = Building.objects.get_by_overseer(user)
+        workday = None
+        if building:
+            workers = building.workers.all()
+            date = timezone.now().date()
+            try:
+                workday = Workday.objects.get(building=building, date=date, finished=False)
+                logs = LogHour.objects.all().filter(workday=workday)
+                for worker in workers:
+                    worker.logs = list(logs.filter(user=worker))
+                    if LogHour.sum_hours(worker.logs) < expected_hours:
+                        workers_missing_hours.append(worker)
+                tasks = Task.objects.get_by_building(building)
+                for task in tasks:
+                    task.logs = list(logs.filter(task=task))
+            except Workday.DoesNotExist:
+                return JsonResponse({'message': 'There was a problem obtaining work day. Maybe it was finished.'},
+                                    status=400)
+
+        context = {'workers': workers, 'tasks': tasks, 'workers_missing_hours': workers_missing_hours, 'workday': workday}
+
+        return render(request, 'tracker/day_review.html', context)

@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+{% load static i18n%}
+{% load filters %}
+
+{% block css %}
+  {{ block.super }}
+  <link rel="stylesheet" type="text/css" href="{% static 'css/datatables.css' %}">
+{% endblock css %}
+
+{% block javascript %}
+  {{ block.super }}
+  <script type="text/javascript" charset="utf8" src="{% static 'js/datatables.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/day_review.js' %}"></script>
+{% endblock javascript %}
+
+{% block content %}
+<div class="container">
+
+  <h1>Day review</h1>
+
+  <div class="row">
+    {{ workday }}
+  </div>
+
+  <div class="row">
+    {%  if workers_missing_hours %}
+      {% if workers_missing_hours|length == 1 %}
+        <p>{% trans "1 worker is missing hours." %}</p>
+        <p>{{ workers_missing_hours|first }} {% trans " needs more hours logged." %}</p>
+      {% else %}
+        <p>{{ workers_missing_hours|length }} {% trans "workers are missing hours." %}</p>
+        <p>{{ workers_missing_hours|ellipsize:3 }} {% trans " need more hours logged." %}</p>
+      {% endif %}
+    {% else %}
+      <p>{% trans "All workers have enough logged hours. When you are sure everything is done, you can end the day." %}</p>
+    {% endif %}
+  </div>
+
+  <div class="row">
+    <div class="col col-md-12">
+      <h2>Hours by worker</h2>
+      <table id="hours_per_worker" class="display" cellspacing="0" width="100%">
+        <thead>
+          <tr>
+            <th>{% trans "Surname" %}</th>
+            <th>{% trans "Name" %}</th>
+            <th>{% trans "Hours Logged" %}</th>
+          </tr>
+        </thead>
+        <tfoot>
+          <tr>
+           <th>{% trans "Surname" %}</th>
+            <th>{% trans "Name" %}</th>
+            <th>{% trans "Hours Logged" %}</th>
+          </tr>
+        </tfoot>
+        <tbody>
+          {% for worker in workers %}
+            <tr>
+              <td>{{ worker.last_name }}</td>
+              <td>{{ worker.first_name }}</td>
+              <td>
+                <ul>
+                  {% for log in worker.logs %}
+                    <li>
+                      {{ log.task.name }} - {{ log.amount }} {% trans "hours" %}
+                    </li>
+                  {% endfor %}
+                </ul>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col col-md-12">
+      <h2>Hours by task</h2>
+      <table id="hours_per_task" class="display" cellspacing="0" width="100%">
+        <thead>
+          <tr>
+            <th>{% trans "Task" %}</th>
+            <th>{% trans "Hours Logged" %}</th>
+          </tr>
+        </thead>
+        <tfoot>
+          <tr>
+           <th>{% trans "Task" %}</th>
+            <th>{% trans "Hours Logged" %}</th>
+          </tr>
+        </tfoot>
+        <tbody>
+          {% for task in tasks %}
+            <tr>
+              <td>{{ task.name }}</td>
+              <td>
+                <ul>
+                  {% for log in task.logs %}
+                    <li>
+                      {{ log.user.last_name }}, {{ log.user.first_name }} - {{ log.amount }} {% trans "hours" %}
+                    </li>
+                  {% endfor %}
+                </ul>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="row">
+    <a href="{% url 'tracker:log_hours' request.user.username %}" role="button"><button type="button">{% trans "Edit Hours" %}</button></a>
+    <form method="post" action="{% url 'tracker:api_end_day' request.user.username %}">{% csrf_token %}
+      <button type="submit">{% trans "Confirm and End Day" %}</button>
+    </form>
+  </div>
+
+</div>
+{% endblock content%}
