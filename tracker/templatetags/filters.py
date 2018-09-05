@@ -1,13 +1,12 @@
 from django import template
 
 from tracker.models import LogHour
+from django.utils.safestring import mark_safe
+
+import json
+
 
 register = template.Library()
-
-
-@register.filter
-def sum_hours(logs):
-    return LogHour.sum_hours(logs)
 
 @register.filter
 def ellipsize(things, amount):
@@ -24,3 +23,8 @@ def ellipsize(things, amount):
         if len(things) > 1:
             x += " and " + str(things[len(things)-1])
     return x
+
+
+@register.filter(is_safe=True)
+def js(obj):
+    return mark_safe(json.dumps(obj))

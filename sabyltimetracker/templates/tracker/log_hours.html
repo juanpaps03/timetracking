@@ -4,85 +4,137 @@
 
 {% block css %}
   {{ block.super }}
-  <link rel="stylesheet" type="text/css" href="{% static 'css/datatables.css' %}">
-  <style>
-
-  </style>
+  <link rel="stylesheet" href="{% static '/css/datatable/dataTables.bootstrap.min.css' %}">
 {% endblock css %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+  <div class="col-sm-4">
+      <div class="page-header float-left">
+          <div class="page-title">
+              <h1>{% trans 'Log Hours' %}</h1>
+          </div>
+      </div>
+  </div>
+  <div class="col-sm-8">
+      <div class="page-header float-right">
+          <div class="page-title">
+              <ol class="breadcrumb text-right">
+                  <li class="active"><a href="{% url 'home' %}">{% trans 'Dashboard' %}</a></li>
+                  <li class="active">{% trans 'Log Hours' %}</li>
+              </ol>
+          </div>
+      </div>
+  </div>
+</div>
+{%  endblock breadcrumbs %}
 
 {% block javascript_header %}
   <script>
     var csrf = "{{ csrf_token }}";
     var post_url = "{% url 'tracker:api_add_hours' request.user.username %}";
+    var tasks = {{ tasks|js }};
+    var workers = {{ workers|js }};
   </script>
 {% endblock javascript_header %}
 
 {% block content %}
-  <div class="row">
-    <div class="col col-md-12">
-      <label for="task">{% trans "Task" %}</label>
-      <select id="task" name="task">
-          <option value=""></option>
-        {% for task in tasks %}
-          <option value="{{ task.id }}" data-name="{{ task.name }}">{{ task.code }} - {{ task.name }}</option>
-        {% endfor %}
-      </select>
+<div class="row">
+  <div class="col-xs-6 col-lg-12">
+    <div class="card">
+      <div class="card-header">
+        <strong>1</strong>
+        <small>{% trans 'Task selection' %}</small>
+      </div>
+      <div class="card-body card-block">
+        <div class="form-group">
+          <label for="task" class=" form-control-label">{% trans "Select task" %}</label>
+          <select id="task" name="task" class="form-control">
+              <option value=""></option>
+            {% for task in tasks %}
+              <option value="{{ task.id }}">{{ task.code }} - {{ task.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
     </div>
   </div>
-  <div class="row">
-    <div class="col col-md-12">
-      <table id="hours_per_user" class="display" cellspacing="0" width="100%">
-        <thead>
-          <tr>
-            <th>{% trans "Surname" %}</th>
-            <th>{% trans "Name" %}</th>
-            <th>{% trans "Hours Logged" %}</th>
-            <th class="hours-label">
-              {% trans "Select a task" %}
-            </th>
-          </tr>
-        </thead>
-        <tfoot>
-          <tr>
-           <th>{% trans "Surname" %}</th>
-            <th>{% trans "Name" %}</th>
-            <th>{% trans "Hours Logged" %}</th>
-            <th class="hours-label">
-              {% trans "Select a task" %}
-            </th>
-          </tr>
-        </tfoot>
-        <tbody>
-          {% for worker in workers %}
+</div>
+
+<div class="row">
+  <div class="col-xs-6 col-lg-12">
+    <div class="card">
+      <div class="card-header">
+        <strong>2</strong>
+        <small>{% trans 'Hours per user' %}</small>
+      </div>
+      <div class="card-body card-block">
+        <table id="hours_per_user" class="table table-striped table-bordered">
+          <thead>
             <tr>
-              <td>{{ worker.last_name }}</td>
-              <td>{{ worker.first_name }}</td>
-              <td>
-                {{ worker.logs|sum_hours }}
-              </td>
-              <td>
-                <input type="text" class="hours-input"
-                   id="{{ worker.id }}-{{ worker.name }}-hours"
-                   name="{{ worker.id }}"
-                   value="0"
-                   disabled
-                />
-              </td>
+              <th>{% trans "Surname" %}</th>
+              <th>{% trans "Name" %}</th>
+              <th class="hours-label">
+                {% trans "Select a task" %}
+              </th>
+              <th class="logged-hours-label">
+                {% trans "Total hours logged" %}
+              </th>
             </tr>
-          {% endfor %}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {% for worker in workers %}
+              <tr>
+                <td>{{ worker.last_name }}</td>
+                <td>{{ worker.first_name }}</td>
+                <td>
+                  <input type="text" class="hours-input form-control"
+                     id="{{ worker.id }}-hours"
+                     name="{{ worker.id }}"
+                     value="0"
+                     disabled
+                  />
+                </td>
+                <td id="{{ worker.id }}-logged-hours"></td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
-  <div class="row">
-    <button id="submit-hours" type="submit">{% trans "Log Hours For This Task" %}</button>
-    <a href="{% url 'tracker:day_review' request.user.username %}" role="button"><button type="button">{% trans "End Day" %}</button></a>
+</div>
+
+<div class="row">
+  <div class="col-xs-6 col-lg-12">
+    <div class="card">
+      <div class="card-header">
+        <strong>3</strong>
+        <small>{% trans 'Confirm hours' %}</small>
+      </div>
+      <div class="card-body card-block">
+        <button id="submit-hours" type="submit" disabled class="btn btn-success">{% trans "Log Hours" %}</button>
+        <a href="{% url 'tracker:day_review' request.user.username %}" role="button" class="btn btn-outline-primary">{% trans "End Day" %}</a>
+      </div>
+    </div>
   </div>
+</div>
 {% endblock content%}
 
 
 {% block javascript %}
   {{ block.super }}
-  <script type="text/javascript" charset="utf8" src="{% static 'js/datatables.js' %}"></script>
   <script type="text/javascript" src="{% static 'js/log_hours.js' %}"></script>
+
+  <script src="{% static 'js/data-table/datatables.min.js' %}"></script>
+  <script src="{% static 'js/data-table/dataTables.bootstrap.min.js' %}"></script>
+  <script src="{% static 'js/data-table/dataTables.buttons.min.js' %}"></script>
+  <script src="{% static 'js/data-table/buttons.bootstrap.min.js' %}"></script>
+  <script src="{% static 'js/data-table/jszip.min.js' %}"></script>
+  <script src="{% static 'js/data-table/pdfmake.min.js' %}"></script>
+  <script src="{% static 'js/data-table/vfs_fonts.js' %}"></script>
+  <script src="{% static 'js/data-table/buttons.html5.min.js' %}"></script>
+  <script src="{% static 'js/data-table/buttons.print.min.js' %}"></script>
+  <script src="{% static 'js/data-table/buttons.colVis.min.js' %}"></script>
+  <script src="{% static 'js/data-table/datatables-init.js' %}"></script>
 {% endblock javascript %}

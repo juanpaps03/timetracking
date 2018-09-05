@@ -16,7 +16,7 @@ function get_datatable_info(table){
 }
 
 $(document).ready(function() {
-    var table = $('#hours_per_user').DataTable();
+    update_logged_hours(null);
 
     $('#submit-hours').click( function() {
         var taskId = $('#task').val();
@@ -54,15 +54,67 @@ $(document).ready(function() {
         return true;
     } );
     $('#task').change( () => {
-        var option = $(this).find(":selected");
-        var name = $(option).attr('data-name');
-        if(name) {
-            $('.hours-label').text('Hours for ' + name);
-            // TODO translation
-            $('.hours-input').prop('disabled', false);
+        let option = $(this).find(":selected");
+        let id = parseInt($(option).val());
+        let task = find_task(id);
+        const $hours_label = $('.hours-label');
+        const $hours_input = $('.hours-input');
+        const $submit_hours = $('#submit-hours');
+        $hours_input.val(0);
+        if(task) {
+            if (task.logs) {
+                let i;
+                for (i in task.logs) {
+                    let log = task.logs[i];
+                    $('#'+log.user.id+'-hours').val(log.amount);
+                }
+                $submit_hours.text('Update hours for '+ task.name);
+            } else {
+                $submit_hours.text('Log hours for '+ task.name);
+            }
+
+            $hours_label.text('Hours for ' + task.name); // TODO translation
+            $hours_input.prop('disabled', false);
+            $submit_hours.prop('disabled', false);
+            update_logged_hours(task.id);
         } else {
-            $('.hours-label').text('Select a task');
-            $('.hours-input').prop('disabled', true);
+            $hours_label.text('Select a task');
+            $hours_input.prop('disabled', true);
+            $submit_hours.prop('disabled', true);
+            $submit_hours.text('Log hours');
+            update_logged_hours(null);
         }
     });
 } );
+
+
+function find_task(task_id) {
+    let task = null;
+    let i = 0;
+    while (task==null && i < tasks.length) {
+        if (task_id === tasks[i].id)
+            task = tasks[i];
+        i++;
+    }
+    return task;
+}
+
+function update_logged_hours(excluded_task_id) {
+    let i, j;
+    for (i in workers) {
+        let worker = workers[i];
+        let sum = 0;
+        for (j in worker.logs) {
+            let log = worker.logs[j];
+            if (log.task.id !== excluded_task_id)
+                sum += log.amount;
+        }
+        $('#'+worker.id+'-logged-hours').text(sum);
+    }
+    $logged_hours_label = $('.logged-hours-label');
+    if(excluded_task_id)
+        $logged_hours_label.text('Hours for other tasks'); // TODO translation
+    else
+        $logged_hours_label.text('Total hours logged'); // TODO translation
+
+}

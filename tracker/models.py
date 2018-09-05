@@ -54,6 +54,8 @@ class Workday(models.Model):
 
     def assign_logs(self, task_id, list_hours_per_user):
         task = self.building.tasks.get(pk=task_id)
+        old_task_logs = self.logs.filter(task=task)
+        old_task_logs.delete()
         logs = LogHour.create_log_hours(task, self.building, list_hours_per_user)
         self.logs.add(*logs)
 

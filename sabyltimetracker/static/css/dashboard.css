@@ -1,20 +1,6 @@
 @import url('https://fonts.googleapis.com/css?family=Share+Tech+Mono');
 
-.bgImageContainer{
-    background-image:url('/static/images/dashboard_bg.png');
-    -webkit-background-size: cover;
-    -moz-background-size: cover;
-    background-size: cover;
-    -o-background-size: cover;
-    width:100%;
-    height:100%;
-    -webkit-filter: blur(5px);
-    z-index:0;
-    position:absolute;
-}
-
 .big-clock {
-    padding: 7rem 1.5rem;
     text-align: center;
 }
 
@@ -107,16 +93,7 @@
     width: 100%;
     line-height: 15px;
     margin: 20px 0 0 0;
-    padding: 20px 20px 20px 20px;
+    padding: 10px;
     font-family: 'Share Tech Mono', "Times New Roman", Times, serif;
     text-align: center;
-    border-radius: 15px;
-    color: #daf6ff;
-    opacity: 0.85;
-    -moz-box-shadow: 1px 2px 3px rgba(0,0,0,.5);
-    -webkit-box-shadow: 1px 2px 3px rgba(0,0,0,.5);
-    box-shadow: 1px 2px 3px rgba(0,0,0,.5);
-    text-shadow: 0 0 20px rgba(10, 175, 230, 1),  0 0 20px rgba(10, 175, 230, 0);
-    background: #0f3854;
-    background: radial-gradient(ellipse at center,  #0a2e38  0%, #000000 70%);
 }
