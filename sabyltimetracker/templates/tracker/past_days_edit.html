@@ -12,7 +12,7 @@
   <div class="col-sm-4">
       <div class="page-header float-left">
           <div class="page-title">
-              <h1>{% trans 'Log Hours' %}</h1>
+              <h1>{{ workday.date }}</h1>
           </div>
       </div>
   </div>
@@ -20,8 +20,8 @@
       <div class="page-header float-right">
           <div class="page-title">
               <ol class="breadcrumb text-right">
-                  <li class="active"><a href="{% url 'home' %}">{% trans 'Dashboard' %}</a></li>
-                  <li class="active">{% trans 'Log Hours' %}</li>
+                  <li><a href="{% url 'tracker:past_days' request.user.username %}">{% trans 'Past Days' %}</a></li>
+                  <li class="active">{{ workday.date }}</li>
               </ol>
           </div>
       </div>
@@ -32,7 +32,7 @@
 {% block javascript_header %}
   <script>
     var csrf = "{{ csrf_token }}";
-    var post_url = "{% url 'tracker:api_add_hours' request.user.username %}";
+    var post_url = "{% url 'tracker:api_add_hours_past_day' username=request.user.username date=workday.date %}";
     var tasks = {{ tasks|js }};
     var workers = {{ workers|js }};
   </script>
@@ -110,11 +110,10 @@
     <div class="card">
       <div class="card-header">
         <strong>3</strong>
-        <small>{% trans 'Confirm hours' %}</small>
+        <small>{% trans 'Confirmation' %}</small>
       </div>
       <div class="card-body card-block">
         <button id="submit-hours" type="submit" disabled class="btn btn-success">{% trans "Log Hours" %}</button>
-        <a href="{% url 'tracker:day_review' request.user.username %}" role="button" class="btn btn-outline-primary">{% trans "End Day" %}</a>
       </div>
     </div>
   </div>
@@ -125,8 +124,11 @@
 {% block javascript %}
   {{ block.super }}
   <script type="text/javascript" src="{% static 'js/log_hours.js' %}"></script>
+{# TODO now it's same script because it does the same thing. Generalize/diversify when it's decided it #}
+{# TODO (continues)... won't change, or when it actually does change. #}
 
   <script type="text/javascript" charset="utf8" src="{% static 'js/datatables.js' %}"></script>
+
 
   <script src="{% static 'js/data-table/datatables.min.js' %}"></script>
   <script src="{% static 'js/data-table/dataTables.bootstrap.min.js' %}"></script>

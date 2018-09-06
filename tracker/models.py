@@ -70,6 +70,10 @@ class Workday(models.Model):
         self.save()
         return True
 
+    def is_editable_by_overseer(self):
+        return True
+    #    print(timezone.now() - timezone.timedelta(days=constants.DAYS_ABLE_TO_EDIT) TODO make real control
+
     def __str__(self):
         return '%s - %s' % (str(self.date), str(self.building))
 

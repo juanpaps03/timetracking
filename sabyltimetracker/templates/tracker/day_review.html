@@ -20,7 +20,7 @@
       <div class="page-header float-right">
           <div class="page-title">
               <ol class="breadcrumb text-right">
-                  <li class="active"><a href="{% url 'home' %}">{% trans 'Dashboard' %}</a></li>
+                  <li><a href="{% url 'home' %}">{% trans 'Dashboard' %}</a></li>
                   <li class="active">{% trans 'Day Review' %}</li>
               </ol>
           </div>
@@ -164,8 +164,6 @@
 
 {% block javascript %}
   {{ block.super }}
-  <script type="text/javascript" src="{% static 'js/day_review.js' %}"></script>
-
   <script src="{% static 'js/data-table/datatables.min.js' %}"></script>
   <script src="{% static 'js/data-table/dataTables.bootstrap.min.js' %}"></script>
   <script src="{% static 'js/data-table/dataTables.buttons.min.js' %}"></script>

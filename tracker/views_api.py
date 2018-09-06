@@ -53,4 +53,24 @@ class EndDay(APIView):
             return JsonResponse({'message': 'Something went wrong.'}, status=400)
 
 
+class LogsHoursCratePastDay(APIView):
+    def post(self, request, date, username):
+        user = request.user
+        building = Building.objects.get_by_overseer(user)
+        task_id = request.data.get('task', None)
+        hours_per_user = request.data.get('hours_list', [])
+        try:
+            work_day = Workday.objects.get(building=building, date=date)
+            if work_day.is_editable_by_overseer():
+                work_day.assign_logs(task_id, hours_per_user)
+            else:
+                return JsonResponse({'message': 'You do not have permission to edit this workday.'},
+                                    status=403)
+        except Workday.DoesNotExist:
+            return JsonResponse({'message': 'There was a problem obtaining work day. Maybe it was finished.'}, status=400)
+        except Task.DoesNotExist:
+            return JsonResponse({'message': 'There was a problem obtaining task.'}, status=400)
+        except Exception:
+            return JsonResponse({'message': 'Something went wrong.'}, status=400)
 
+        return JsonResponse({'message': 'Hours added correctly.'}, status=200)

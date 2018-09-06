@@ -1,28 +1,27 @@
 //Returns a list of objects {'user': test, 'amount': 0} from
 //the datatable. Only the rows with amount greater than 0 are added.
 function get_datatable_info(table){
-    var hours_list = [];
+    let hours_list = [];
     table.$('input').each(function (i, el) {
-       var htmlElement = $(el);
-       var hours = parseFloat(htmlElement.val());
-       var userId = htmlElement.attr('name');
-
-       if (hours > 0){
-          hours_list.push({'user': userId, 'amount': hours});
-       }
+        let htmlElement = $(el);
+        let hours = parseFloat(htmlElement.val());
+        let userId = htmlElement.attr('name');
+        hours_list.push({'user': userId, 'amount': hours});
     });
 
     return hours_list;
 }
 
 $(document).ready(function() {
+    let table = $('#hours_per_user').DataTable();
+
     update_logged_hours(null);
 
     $('#submit-hours').click( function() {
-        var taskId = $('#task').val();
-        var hoursList = get_datatable_info(table);
+        let taskId = $('#task').val();
+        let hoursList = get_datatable_info(table);
 
-        var data = {'task': taskId, 'hours_list': hoursList};
+        let data = {'task': taskId, 'hours_list': hoursList};
 
         // csrf and post_url are rendered in server side and
         // are defined in log_hours.html javascript_header section
