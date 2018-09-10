@@ -1,9 +1,11 @@
 from django.utils import timezone
 from config import constants
 
+import datetime
 from django.db import models
 
 from sabyltimetracker.users.models import User
+from django.core.validators import MinValueValidator, MaxValueValidator
 
 
 class BuildingManager(models.Manager):
@@ -43,9 +45,8 @@ class Building(models.Model):
 
 class Workday(models.Model):
     building = models.ForeignKey(Building)
-    date = models.DateField(auto_now=False, auto_now_add=True)
+    date = models.DateField(auto_now=False, default=datetime.date.today)
     finished = models.BooleanField(default=False)
-    logs = models.ManyToManyField('LogHour', blank=True)
     overseer = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True)
 
     @staticmethod
@@ -56,7 +57,7 @@ class Workday(models.Model):
         task = self.building.tasks.get(pk=task_id)
         old_task_logs = self.logs.filter(task=task)
         old_task_logs.delete()
-        logs = LogHour.create_log_hours(task, self.building, list_hours_per_user)
+        logs = LogHour.create_log_hours(self, task, self.building, list_hours_per_user)
         self.logs.add(*logs)
 
     def end(self):
@@ -79,21 +80,24 @@ class Workday(models.Model):
 
 
 class LogHour(models.Model):
-    amount = models.PositiveIntegerField(null=False, blank=False, default=0)
+    workday=models.ForeignKey('Workday', on_delete=models.CASCADE,
+                              related_name='logs')
     user = models.ForeignKey(User)
     task = models.ForeignKey('Task')
+    amount = models.PositiveIntegerField(null=False, blank=False, default=1,
+                                         validators=[MaxValueValidator(24), MinValueValidator(1)])
 
     @staticmethod
-    def create_log_hours(task, building, list_hours_per_user):
+    def create_log_hours(workday, task, building, list_hours_per_user):
         logs = []
         for item in list_hours_per_user:
             user_id = item.get('user', None)
             user_amount_hours = item.get('amount', 0)
 
-            if user_amount_hours > 0:
+            if user_amount_hours > 0:  # no trivial logs
                 try:
-                    worker = building.workers.get(pk=user_id)
-                    logs.append(LogHour(user=worker, amount=user_amount_hours, task=task))
+                    worker = building.workers.get(pk=user_id)  # only valid if worker works in the correct building
+                    logs.append(LogHour(user=worker, amount=user_amount_hours, task=task, workday=workday))
                 except Exception:
                     pass
 

@@ -35,6 +35,13 @@
     var post_url = "{% url 'tracker:api_add_hours_past_day' username=request.user.username date=workday.date %}";
     var tasks = {{ tasks|js }};
     var workers = {{ workers|js }};
+    const SELECT_TASK_TXT = '{% trans 'Select a task' %}';
+    const UPDATE_HOURS_FOR_TXT = '{% trans 'Update hours for' %}';
+    const LOG_HOURS_FOR_TXT = '{% trans 'Log hours for' %}';
+    const HOURS_FOR_TXT = '{% trans 'Hours for' %}';
+    const LOG_HOURS_TXT = '{% trans 'Log hours' %}';
+    const HOURS_OTHER_TASKS_TXT = '{% trans 'Hours for other tasks' %}';
+    const TOTAL_HOURS_TXT = '{% trans 'Total hours logged' %}';
   </script>
 {% endblock javascript_header %}
 
