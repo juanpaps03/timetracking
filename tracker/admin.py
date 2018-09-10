@@ -13,7 +13,6 @@ admin.site.register(Task)
 
 @admin.register(Workday)
 class WorkdayAdmin(admin.ModelAdmin):
-
     def save_model(self, request, obj, form, change):
         obj.overseer = obj.building.overseer
         super().save_model(request, obj, form, change)
@@ -22,8 +21,7 @@ class WorkdayAdmin(admin.ModelAdmin):
         return ('overseer',)
 
 
-
-# Manager group and permissions
+# Creating manager group and permissions
 manager_group, created = Group.objects.get_or_create(name='Manager')
 
 content_type = ContentType.objects.get_for_model(Building)

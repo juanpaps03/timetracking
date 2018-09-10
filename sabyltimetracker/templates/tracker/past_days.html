@@ -33,15 +33,13 @@
     <div class="col-xs-6 col-lg-12">
       <div class="card">
         <div class="card-header">
-          <strong>1</strong>
-          <small>{% trans 'Day selection' %}</small>
+          <strong><label for="day" class="hidden">{% trans "Select Day" %}</label></strong>
         </div>
         <div class="card-body">
           <p class="text-muted m-b-15">{% trans 'Workdays among the past' %} {{ days }} {% trans 'days can be edited.' %}</p>
           <div class="form-group">
-            <label for="day" class=" form-control-label">{% trans "Select Day" %}</label>
             <select id="day" name="date" class="form-control">
-                <option value=""></option>
+                <option value="">{% trans '-Select a workday-' %}</option>
               {% for workday in workdays %}
                 <option value="{% url 'tracker:past_days_edit' username=request.user.username date=workday.date|date:'Y-m-d' %}">{{ workday.date }} {% trans 'at' %} {{ workday.building }}</option>
               {% endfor %}
@@ -56,7 +54,7 @@
     <div class="col-xs-6 col-lg-12">
       <div class="card">
         <div class="card-body card-block">
-          <button id="next" class="btn btn-primary" disabled>{% trans "Next" %}</button>
+          <button id="next" class="btn btn-lg btn-block btn-primary" disabled>{% trans "Next" %}</button>
         </div>
       </div>
     </div>

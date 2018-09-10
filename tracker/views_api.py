@@ -13,6 +13,8 @@ from tracker.models import Building, Workday, Task
 
 class LogsHoursCrate(APIView):
     def post(self, request, username):
+        messages.success(request, '5555 ended.')  # TODO
+
         user = request.user
         building = Building.objects.get_by_overseer(user)
         date = timezone.now().date()

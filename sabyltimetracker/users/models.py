@@ -16,7 +16,7 @@ class User(AbstractUser):
 
     user_type = models.PositiveSmallIntegerField(null=True, choices=USER_TYPE_CHOICES,
                                                  default=None)
-    name = models.CharField(_('Name of User'), blank=True, max_length=255)
+    name = models.CharField(_('Name of User'), blank=True, max_length=255)  # TODO DELETE
     ci = models.CharField(null=False, blank=False, max_length=10)
     phone = models.CharField(blank=True, max_length=20)
     address = models.CharField(blank=True, max_length=255)

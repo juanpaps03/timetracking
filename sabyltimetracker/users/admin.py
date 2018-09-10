@@ -43,7 +43,7 @@ class MyUserAdmin(UserAdmin):
     def get_readonly_fields(self, request, obj=None):
         rof = super(UserAdmin, self).get_readonly_fields(request, obj)
         if obj and not request.user.is_superuser:
-            rof += ('is_staff', 'is_superuser', 'groups', 'user_permissions', 'username', 'is_active', 'password')
+            rof += ('is_superuser', 'groups', 'user_permissions', 'username', 'is_active', 'password')
         return rof
 
     def full_name(self, obj):

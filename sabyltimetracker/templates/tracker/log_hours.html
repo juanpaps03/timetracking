@@ -50,14 +50,12 @@
   <div class="col-xs-6 col-lg-12">
     <div class="card">
       <div class="card-header">
-        <strong>1</strong>
-        <small>{% trans 'Task selection' %}</small>
+        <strong><label for="task" class=" form-control-label">{% trans "Select task" %}</label></strong>
       </div>
       <div class="card-body card-block">
         <div class="form-group">
-          <label for="task" class=" form-control-label">{% trans "Select task" %}</label>
           <select id="task" name="task" class="form-control">
-              <option value=""></option>
+              <option value="">{% trans '-Select a task-' %}</option>
             {% for task in tasks %}
               <option value="{{ task.id }}">{{ task.code }} - {{ task.name }}</option>
             {% endfor %}
@@ -72,8 +70,7 @@
   <div class="col-xs-6 col-lg-12">
     <div class="card">
       <div class="card-header">
-        <strong>2</strong>
-        <small>{% trans 'Hours per user' %}</small>
+        <strong>{% trans 'Hours per worker' %}</strong>
       </div>
       <div class="card-body card-block">
         <table id="hours_per_user" class="table table-striped table-bordered">
@@ -115,13 +112,8 @@
 <div class="row">
   <div class="col-xs-6 col-lg-12">
     <div class="card">
-      <div class="card-header">
-        <strong>3</strong>
-        <small>{% trans 'Confirm hours' %}</small>
-      </div>
       <div class="card-body card-block">
-        <button id="submit-hours" type="submit" disabled class="btn btn-success">{% trans "Log Hours" %}</button>
-        <a href="{% url 'tracker:day_review' request.user.username %}" role="button" class="btn btn-outline-primary">{% trans "End Day" %}</a>
+        <button id="submit-hours" type="submit" disabled class="btn btn-lg btn-block btn-success">{% trans "Log Hours" %}</button>
       </div>
     </div>
   </div>
