@@ -8,24 +8,24 @@
 {% endblock css %}
 
 {% block breadcrumbs %}
-<div class="breadcrumbs">
-  <div class="col-sm-4">
+  <div class="breadcrumbs">
+    <div class="col-sm-4">
       <div class="page-header float-left">
-          <div class="page-title">
-              <h1>{% trans 'Past Days' %}</h1>
-          </div>
+        <div class="page-title">
+          <h1>{% trans 'Past Days' %}</h1>
+        </div>
       </div>
-  </div>
-  <div class="col-sm-8">
+    </div>
+    <div class="col-sm-8">
       <div class="page-header float-right">
-          <div class="page-title">
-              <ol class="breadcrumb text-right">
-                  <li class="active">{% trans 'Past Days' %}</li>
-              </ol>
-          </div>
+        <div class="page-title">
+          <ol class="breadcrumb text-right">
+            <li class="active">{% trans 'Past Days' %}</li>
+          </ol>
+        </div>
       </div>
+    </div>
   </div>
-</div>
 {%  endblock breadcrumbs %}
 
 {% block content %}
@@ -39,7 +39,7 @@
           <p class="text-muted m-b-15">{% trans 'Workdays among the past' %} {{ days }} {% trans 'days can be edited.' %}</p>
           <div class="form-group">
             <select id="day" name="date" class="form-control">
-                <option value="">{% trans '-Select a workday-' %}</option>
+              <option value="">{% trans '-Select a workday-' %}</option>
               {% for workday in workdays %}
                 <option value="{% url 'tracker:past_days_edit' username=request.user.username date=workday.date|date:'Y-m-d' %}">{{ workday.date }} {% trans 'at' %} {{ workday.building }}</option>
               {% endfor %}

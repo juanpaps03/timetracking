@@ -5,6 +5,8 @@ function get_datatable_info(table){
     table.$('input').each(function (i, el) {
         let htmlElement = $(el);
         let hours = parseFloat(htmlElement.val());
+        if (htmlElement.attr('type') === 'checkbox')
+            hours = (htmlElement.prop('checked') ? 1 : 0);
         let userId = htmlElement.attr('name');
         hours_list.push({'user': userId, 'amount': hours});
     });
@@ -13,6 +15,7 @@ function get_datatable_info(table){
 }
 
 $(document).ready(function() {
+    $('[data-toggle="tooltip"]').tooltip();
     let table = $('#hours_per_user').DataTable();
 
     update_logged_hours(null);
@@ -59,22 +62,36 @@ $(document).ready(function() {
         const $hours_label = $('.hours-label');
         const $hours_input = $('.hours-input');
         const $submit_hours = $('#submit-hours');
+        $hours_input.attr('type', 'text');
         $hours_input.val(0);
+        $hours_input.prop('checked', false);
         if(task) {
-            if (task.logs) {
-                let i;
-                for (i in task.logs) {
-                    let log = task.logs[i];
-                    $('#'+log.user.id+'-hours').val(log.amount);
-                }
-                $submit_hours.text(UPDATE_HOURS_FOR_TXT+ ' ' + task.name);
-            } else {
-                $submit_hours.text(LOG_HOURS_FOR_TXT +' '+ task.name);
-            }
-
-            $hours_label.text(HOURS_FOR_TXT + ' ' + task.name); // TODO translation
             $hours_input.prop('disabled', false);
             $submit_hours.prop('disabled', false);
+            if(task.code !== absence_code) {
+                if (task.logs) {
+                    for (let i in task.logs) {
+                        let log = task.logs[i];
+                        $('#'+log.user.id+'-hours').val(log.amount);
+                    }
+                    $submit_hours.text(UPDATE_HOURS_FOR_TXT+ ' ' + task.name);
+                } else {
+                    $submit_hours.text(LOG_HOURS_FOR_TXT +' '+ task.name);
+                }
+                $hours_label.text(HOURS_FOR_TXT + ' ' + task.name);
+            } else {
+                $hours_input.attr('type', 'checkbox');
+                if (task.logs) {
+                    for (let i in task.logs) {
+                        let log = task.logs[i];
+                        $('#'+log.user.id+'-hours').prop('checked', true);
+                    }
+                    $submit_hours.text(UPDATE_ABSENCES_TXT);
+                } else {
+                    $submit_hours.text(LOG_ABSENCES_TXT);
+                }
+                $hours_label.text(ABSENCES_TXT);
+            }
             update_logged_hours(task.id);
         } else {
             $hours_label.text(SELECT_TASK_TXT);
@@ -105,12 +122,12 @@ function update_logged_hours(excluded_task_id) {
         let sum = 0;
         for (j in worker.logs) {
             let log = worker.logs[j];
-            if (log.task.id !== excluded_task_id)
+            if (log.task.id !== excluded_task_id && log.task.code !== absence_code)
                 sum += log.amount;
         }
         $('#'+worker.id+'-logged-hours').text(sum);
     }
-    $logged_hours_label = $('.logged-hours-label');
+    let $logged_hours_label = $('.logged-hours-label');
     if(excluded_task_id)
         $logged_hours_label.text(HOURS_OTHER_TASKS_TXT);
     else

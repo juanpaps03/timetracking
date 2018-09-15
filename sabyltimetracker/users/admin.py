@@ -33,7 +33,7 @@ class MyUserAdmin(UserAdmin):
     form = MyUserChangeForm
     add_form = MyUserCreationForm
     fieldsets = (
-            ('User Profile', {'fields': ('name', 'user_type')}),
+            ('User Profile', {'fields': ('user_type',)}),
     ) + UserAdmin.fieldsets
     list_display = ('username', 'full_name', 'is_superuser')
     list_filter = ('is_active', 'user_type', 'is_staff', 'groups__name')

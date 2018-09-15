@@ -8,155 +8,107 @@
 {% endblock css %}
 
 {% block breadcrumbs %}
-<div class="breadcrumbs">
-  <div class="col-sm-4">
+  <div class="breadcrumbs">
+    <div class="col-sm-4">
       <div class="page-header float-left">
-          <div class="page-title">
-              <h1>{% trans 'Day Review' %}</h1>
-          </div>
+        <div class="page-title">
+          <h1>{% trans 'Day Review' %}</h1>
+        </div>
       </div>
-  </div>
-  <div class="col-sm-8">
+    </div>
+    <div class="col-sm-8">
       <div class="page-header float-right">
-          <div class="page-title">
-              <ol class="breadcrumb text-right">
-                  <li><a href="{% url 'home' %}">{% trans 'Dashboard' %}</a></li>
-                  <li class="active">{% trans 'Day Review' %}</li>
-              </ol>
-          </div>
+        <div class="page-title">
+          <ol class="breadcrumb text-right">
+            <li><a href="{% url 'home' %}">{% trans 'Dashboard' %}</a></li>
+            <li class="active">{% trans 'Day Review' %}</li>
+          </ol>
+        </div>
       </div>
+    </div>
   </div>
-</div>
 {%  endblock breadcrumbs %}
 
 {% block content %}
-<div class="row">
-  <div class="col-xs-6 col-lg-12">
-    <div class="card">
-      <div class="card-header">
-        <strong>{% trans 'Overview for' %} {{ workday }}</strong>
-      </div>
-      <div class="card-body card-block">
-        <div class="stat-widget-one">
-          <div class="stat-content dib">
-            {%  if workers_missing_hours %}
-              {% if workers_missing_hours|length == 1 %}
-                <div class="stat-text">
+  <div class="row">
+    <div class="col-xs-6 col-lg-12">
+      <div class="card">
+        <div class="card-header">
+          <strong>{% trans 'Overview for' %} {{ workday }}</strong>
+        </div>
+        <div class="card-body card-block">
+          <div class="stat-widget-one">
+            <div class="stat-content dib">
+              {%  if workers_missing_hours %}
+                {% if workers_missing_hours|length == 1 %}
+                  <div class="stat-text">
                     {{ workers_missing_hours|first }} {% trans " needs more hours logged." %}
-                </div>
-                <div class="stat-digit">{% trans "1 worker missing hours." %}</div>
+                  </div>
+                  <div class="stat-digit">{% trans "1 worker missing hours." %}</div>
+                {% else %}
+                  <div class="stat-text">
+                    {{ workers_missing_hours|ellipsize:3 }} {% trans " need more hours logged." %}
+                  </div>
+                  <div class="stat-digit">{{ workers_missing_hours|length }} {% trans "workers missing hours." %}</div>
+                {% endif %}
               {% else %}
                 <div class="stat-text">
-                  {{ workers_missing_hours|ellipsize:3 }} {% trans " need more hours logged." %}
+                  {% trans "All workers have enough logged hours. When you are sure everything is done, you can end the day." %}
                 </div>
-                <div class="stat-digit">{{ workers_missing_hours|length }} {% trans "workers missing hours." %}</div>
               {% endif %}
-            {% else %}
-              <div class="stat-text">
-                {% trans "All workers have enough logged hours. When you are sure everything is done, you can end the day." %}
-              </div>
-            {% endif %}
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
-</div>
 
-<div class="row">
-  <div class="col-xs-6 col-lg-12">
-    <div class="card">
-      <div class="card-header">
-        <strong>{% trans 'Hours Review' %}</strong>
-      </div>
-      <div class="card-body">
-        <ul class="nav nav-tabs" id="myTab" role="tablist">
-          <li class="nav-item">
-                <a class="nav-link active" id="workers-tab" data-toggle="tab" href="#workers" role="tab" aria-controls="workers" aria-selected="true">{% trans 'Hours by Worker' %}</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" id="tasks-tab" data-toggle="tab" href="#tasks" role="tab" aria-controls="tabs" aria-selected="false">{% trans 'Hours by Task' %}</a>
-            </li>
-        </ul>
-        <div class="tab-content pl-3 p-1" id="myTabContent">
-            <div class="tab-pane show active" id="workers" role="tabpanel" aria-labelledby="home-tab">
-              <h4>{% trans 'Hours by Worker' %}</h4>
-              <table id="hours_per_worker" class="table table-striped table-bordered">
-                <thead>
-                  <tr>
-                    <th>{% trans "Surname" %}</th>
-                    <th>{% trans "Name" %}</th>
-                    <th>{% trans "Hours Logged" %}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {% for worker in workers %}
-                    <tr>
-                      <td>{{ worker.last_name }}</td>
-                      <td>{{ worker.first_name }}</td>
-                      <td>
-                        <ul>
-                          {% for log in worker.logs %}
-                            <li>
-                              {{ log.task.name }} - {{ log.amount }} {% trans "hours" %}
-                            </li>
-                          {% endfor %}
-                        </ul>
-                      </td>
-                    </tr>
-                  {% endfor %}
-                </tbody>
-              </table>
-            </div>
-            <div class="tab-pane" id="tasks" role="tabpanel" aria-labelledby="profile-tab">
-              <h4>{% trans 'Hours by Task' %}</h4>
-              <table id="hours_per_task" class="table table-striped table-bordered">
-                <thead>
-                  <tr>
-                    <th>{% trans "Task" %}</th>
-                    <th>{% trans "Hours Logged" %}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {% for task in tasks %}
-                    <tr>
-                      <td>{{ task.name }}</td>
-                      <td>
-                        <ul>
-                          {% for log in task.logs %}
-                            <li>
-                              {{ log.user.last_name }}, {{ log.user.first_name }} - {{ log.amount }} {% trans "hours" %}
-                            </li>
-                          {% endfor %}
-                        </ul>
-                      </td>
-                    </tr>
-                  {% endfor %}
-                </tbody>
-              </table>
-            </div>
+  <div class="row">
+    <div class="col-xs-6 col-lg-12">
+      <div class="card">
+        <div class="card-header">
+          <strong>{% trans 'Logs Review' %}</strong>
+        </div>
+        <div class="card-body">
+          <table id="logs" class="table table-striped table-bordered">
+            <thead>
+            <tr>
+              <th>{% trans "Full Name" %}</th>
+              <th>{% trans "Task" %}</th>
+              <th>{% trans "Hours Logged" %}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for log in logs %}
+              <tr>
+                <td>{{ log.user.last_name }}, {{ log.user.first_name }}</td>
+                <td>{{ log.task.name }}</td>
+                <td>{% if log.task.code == absence_code %}-{% else %}{{ log.amount }}{% endif %}</td>
+              </tr>
+            {% endfor %}
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
   </div>
-</div>
 
-<div class="row">
-  <div class="col-xs-6 col-lg-12">
-    <div class="card">
-      <div class="card-body card-block">
-        <form method="post" action="{% url 'tracker:api_end_day' request.user.username %}">{% csrf_token %}
-          <div class="col-sm-6 col-12">
-            <a href="{% url 'tracker:log_hours' request.user.username %}" role="button" class="btn btn-lg btn-block btn-outline-primary">{% trans "Edit Hours" %}</a>
-          </div>
-          <div class="col-sm-6 col-12">
-            <button type="submit" class="btn btn-lg btn-block btn-outline-success">{% trans "Confirm and End Day" %}</button>
-          </div>
-        </form>
+  <div class="row">
+    <div class="col-xs-6 col-lg-12">
+      <div class="card">
+        <div class="card-body card-block">
+          <form method="post" action="{% url 'tracker:api_end_day' request.user.username %}">{% csrf_token %}
+            <div class="col-sm-6 col-12">
+              <a href="{% url 'tracker:log_hours' request.user.username %}" role="button" class="btn btn-lg btn-block btn-outline-primary">{% trans "Edit Hours" %}</a>
+            </div>
+            <div class="col-sm-6 col-12">
+              <button type="submit" class="btn btn-lg btn-block btn-outline-success">{% trans "Confirm and End Day" %}</button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   </div>
-</div>
 
 {% endblock content%}
 
@@ -173,4 +125,7 @@
   <script src="{% static 'js/data-table/buttons.print.min.js' %}"></script>
   <script src="{% static 'js/data-table/buttons.colVis.min.js' %}"></script>
   <script src="{% static 'js/data-table/datatables-init.js' %}"></script>
+  <script>
+    $('#logs').DataTable();
+  </script>
 {% endblock javascript %}

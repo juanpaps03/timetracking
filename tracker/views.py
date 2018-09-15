@@ -1,17 +1,15 @@
-from django.utils import timezone
-from django.contrib import messages
-
-from django.utils.decorators import method_decorator
-
+from django.http import JsonResponse
 from django.shortcuts import render
-
-from django.http import HttpResponse, JsonResponse
+from django.utils import timezone
+from django.utils.decorators import method_decorator
+from django.utils.translation import ugettext_lazy as _
 from django.views import View
 
+from config import constants, messages
 from sabyltimetracker.users.models import User
-from tracker.models import Building, Workday, LogHour, Task
 from sabyltimetracker.users.users_permissions_decorator import user_permissions
-from config import constants
+from tracker.models import Building, Workday, LogHour, Task
+
 
 @method_decorator([user_permissions([User.OVERSEER])], name='dispatch')
 class Dashboard(View):
@@ -28,20 +26,19 @@ class Dashboard(View):
             workers = building.workers.all()
             date = timezone.now().date()
             try:
+                print(date)
                 workday = Workday.objects.get(building=building, date=date, finished=False)
                 logs = LogHour.objects.all().filter(workday=workday)
                 for worker in workers:
                     worker_logs = list(logs.filter(user=worker))
                     if worker_logs:
                         workers_with_logs += 1
-                    hours = LogHour.sum_hours(worker_logs)
-                    if hours < expected_hours:
+                    if not LogHour.worker_passes_controls(workday, worker_logs):
                         workers_missing_hours.append(worker)
             except Workday.DoesNotExist:
-                return JsonResponse({'message': 'There was a problem obtaining work day. Maybe it was finished.'},
-                                    status=400)
+                return JsonResponse({'message': messages.WORKDAY_FINISHED}, status=400)
         if workers:
-            workers_ratio = round(workers_with_logs / len(workers))
+            workers_ratio = round(100 * workers_with_logs / len(workers))
         else:
             workers_ratio = 100
 
@@ -69,21 +66,19 @@ class LogHours(View):
             date = timezone.now().date()
             try:
                 workday = Workday.objects.get(building=building, date=date, finished=False)
+                expected = workday.expected_hours()
                 logs = LogHour.objects.all().filter(workday=workday)
                 for worker in workers:
-                    if logs:
-                        worker.logs = list(logs.filter(user=worker))
+                    worker.logs = list(logs.filter(user=worker))
+                    worker.passes_controls = LogHour.worker_passes_controls(workday, worker.logs)
+                    if expected > 0:
+                        worker.hours_percent = round(100 * LogHour.sum_hours(worker.logs) / expected)
                     else:
-                        worker.logs = []
+                        worker.hours_percent = 100
                 for task in tasks:
-                    if logs:
-                        task.logs = list(logs.filter(task=task))
-                    else:
-                        task.logs = []
+                    task.logs = list(logs.filter(task=task))
             except Workday.DoesNotExist:
-                return JsonResponse({'message': 'There was a problem obtaining work day. Maybe it was finished.'},
-                                    status=400)
-
+                return JsonResponse({'message': messages.WORKDAY_FINISHED}, status=400)
         # filter out useless data
         tasks = [
             {
@@ -99,12 +94,14 @@ class LogHours(View):
                 'id': worker.id,
                 'first_name': worker.first_name,
                 'last_name': worker.last_name,
-                'logs': [{'task': {'id': log.task.id}, 'amount': log.amount} for log in worker.logs]
+                'logs': [{'task': {'id': log.task.id, 'name': log.task.name, 'code': log.task.code}, 'amount': log.amount} for log in worker.logs],
+                'passes_controls': worker.passes_controls,
+                'hours_percent': worker.hours_percent
             }
             for worker in workers
         ]
 
-        context = {'tasks': tasks, 'workers': workers}
+        context = {'tasks': tasks, 'workers': workers, 'expected': expected, 'workday': workday, 'absence_code': constants.ABSENCE_CODE}
 
         return render(request, 'tracker/log_hours.html', context)
 
@@ -112,13 +109,12 @@ class LogHours(View):
 @method_decorator([user_permissions([User.OVERSEER])], name='dispatch')
 class DayReview(View):
     def get(self, request, username):
-        # <view logic>
-        workers = []
-        expected_hours = Workday.expected_hours()
+        overseer = request.user
+        building = Building.objects.get_by_overseer(overseer)
+        expected = Workday.expected_hours()
         workers_missing_hours = []
-        user = request.user
-        building = Building.objects.get_by_overseer(user)
         workday = None
+        logs = None
         if building:
             workers = building.workers.all()
             date = timezone.now().date()
@@ -127,16 +123,13 @@ class DayReview(View):
                 logs = LogHour.objects.all().filter(workday=workday)
                 for worker in workers:
                     worker.logs = list(logs.filter(user=worker))
-                    if LogHour.sum_hours(worker.logs) < expected_hours:
+                    if not LogHour.worker_passes_controls(workday, worker.logs):
                         workers_missing_hours.append(worker)
-                tasks = Task.objects.get_by_building(building)
-                for task in tasks:
-                    task.logs = list(logs.filter(task=task))
             except Workday.DoesNotExist:
-                return JsonResponse({'message': 'There was a problem obtaining work day. Maybe it was finished.'},
-                                    status=400)
+                return JsonResponse({'message': messages.WORKDAY_FINISHED}, status=400)
 
-        context = {'workers': workers, 'tasks': tasks, 'workers_missing_hours': workers_missing_hours, 'workday': workday}
+        context = {'logs': logs, 'workers_missing_hours': workers_missing_hours,
+                   'workday': workday, 'absence_code': constants.ABSENCE_CODE}
 
         return render(request, 'tracker/day_review.html', context)
 
@@ -163,17 +156,22 @@ class PastDaysEdit(View):
         workday = None
         try:
             workday = Workday.objects.filter(overseer=user, date=date).first()
+            expected = workday.expected_hours()
             building = workday.building
             workers = building.workers.all()
             logs = LogHour.objects.all().filter(workday=workday)
             tasks = Task.objects.get_by_building(building)
             for worker in workers:
                 worker.logs = list(logs.filter(user=worker))
+                worker.passes_controls = LogHour.worker_passes_controls(workday, worker.logs)
+                if expected > 0:
+                    worker.hours_percent = round(100 * LogHour.sum_hours(worker.logs) / expected)
+                else:
+                    worker.hours_percent = 100
             for task in tasks:
                 task.logs = list(logs.filter(task=task))
         except Workday.DoesNotExist:
-            return JsonResponse({'message': 'There was a problem obtaining work day.'},
-                                status=400)
+            return JsonResponse({'message': messages.WORKDAY_NOT_FOUND}, status=400)
 
         # filter out useless data
         tasks = [
@@ -190,11 +188,15 @@ class PastDaysEdit(View):
                 'id': worker.id,
                 'first_name': worker.first_name,
                 'last_name': worker.last_name,
-                'logs': [{'task': {'id': log.task.id}, 'amount': log.amount} for log in worker.logs]
+                'logs': [{'task': {'id': log.task.id, 'name': log.task.name, 'code': log.task.code},
+                          'amount': log.amount} for log in worker.logs],
+                'passes_controls': worker.passes_controls,
+                'hours_percent': worker.hours_percent
             }
             for worker in workers
         ]
 
-        context = {'workers': workers, 'tasks': tasks, 'workday': workday}
+        context = {'tasks': tasks, 'workers': workers, 'expected': expected, 'workday': workday,
+                   'absence_code': constants.ABSENCE_CODE}
 
         return render(request, 'tracker/past_days_edit.html', context)

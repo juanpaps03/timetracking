@@ -8,25 +8,25 @@
 {% endblock css %}
 
 {% block breadcrumbs %}
-<div class="breadcrumbs">
-  <div class="col-sm-4">
+  <div class="breadcrumbs">
+    <div class="col-sm-4">
       <div class="page-header float-left">
-          <div class="page-title">
-              <h1>{% trans 'Log Hours' %}</h1>
-          </div>
+        <div class="page-title">
+          <h1>{% trans 'Log Hours' %}</h1>
+        </div>
       </div>
-  </div>
-  <div class="col-sm-8">
+    </div>
+    <div class="col-sm-8">
       <div class="page-header float-right">
-          <div class="page-title">
-              <ol class="breadcrumb text-right">
-                  <li class="active"><a href="{% url 'home' %}">{% trans 'Dashboard' %}</a></li>
-                  <li class="active">{% trans 'Log Hours' %}</li>
-              </ol>
-          </div>
+        <div class="page-title">
+          <ol class="breadcrumb text-right">
+            <li class="active"><a href="{% url 'home' %}">{% trans 'Dashboard' %}</a></li>
+            <li class="active">{% trans 'Log Hours' %}</li>
+          </ol>
+        </div>
       </div>
+    </div>
   </div>
-</div>
 {%  endblock breadcrumbs %}
 
 {% block javascript_header %}
@@ -35,6 +35,7 @@
     var post_url = "{% url 'tracker:api_add_hours' request.user.username %}";
     var tasks = {{ tasks|js }};
     var workers = {{ workers|js }};
+    var absence_code = '{{ absence_code }}';
     const SELECT_TASK_TXT = '{% trans 'Select a task' %}';
     const UPDATE_HOURS_FOR_TXT = '{% trans 'Update hours for' %}';
     const LOG_HOURS_FOR_TXT = '{% trans 'Log hours for' %}';
@@ -42,82 +43,131 @@
     const LOG_HOURS_TXT = '{% trans 'Log hours' %}';
     const HOURS_OTHER_TASKS_TXT = '{% trans 'Hours for other tasks' %}';
     const TOTAL_HOURS_TXT = '{% trans 'Total hours logged' %}';
+    const UPDATE_ABSENCES_TXT = '{% trans 'Update absences' %}';
+    const LOG_ABSENCES_TXT = '{% trans 'Log absences' %}';
+    const ABSENCES_TXT = '{% trans 'Absences' %}';
+
+
   </script>
 {% endblock javascript_header %}
 
 {% block content %}
-<div class="row">
-  <div class="col-xs-6 col-lg-12">
-    <div class="card">
-      <div class="card-header">
-        <strong><label for="task" class=" form-control-label">{% trans "Select task" %}</label></strong>
-      </div>
-      <div class="card-body card-block">
-        <div class="form-group">
-          <select id="task" name="task" class="form-control">
+  <div class="row">
+    <div class="col-xs-6 col-lg-12">
+      <div class="card">
+        <div class="card-header">
+          <strong><label for="task" class=" form-control-label">{% trans "Select task" %}</label></strong>
+        </div>
+        <div class="card-body card-block">
+          <div class="form-group">
+            <select id="task" name="task" class="form-control">
               <option value="">{% trans '-Select a task-' %}</option>
-            {% for task in tasks %}
-              <option value="{{ task.id }}">{{ task.code }} - {{ task.name }}</option>
-            {% endfor %}
-          </select>
+              {% for task in tasks %}
+                <option value="{{ task.id }}">{{ task.code }} - {{ task.name }}</option>
+              {% endfor %}
+            </select>
+          </div>
         </div>
       </div>
     </div>
   </div>
-</div>
 
-<div class="row">
-  <div class="col-xs-6 col-lg-12">
-    <div class="card">
-      <div class="card-header">
-        <strong>{% trans 'Hours per worker' %}</strong>
-      </div>
-      <div class="card-body card-block">
-        <table id="hours_per_user" class="table table-striped table-bordered">
-          <thead>
+  <div class="row">
+    <div class="col-xs-6 col-lg-12">
+      <div class="card">
+        <div class="card-header">
+          <strong>{% trans 'Hours per worker' %}</strong>
+        </div>
+        <div class="card-body card-block">
+          <p>{% trans 'Today is'%} {{ workday.date|date:"l" }}. {% trans 'Each worker is expected to work' %} {{ expected }} {% trans 'hours.' %}</p>
+          <table id="hours_per_user" class="table table-striped table-bordered">
+            <thead>
             <tr>
-              <th>{% trans "Surname" %}</th>
-              <th>{% trans "Name" %}</th>
-              <th class="hours-label">
-                {% trans "Select a task" %}
-              </th>
-              <th class="logged-hours-label">
-                {% trans "Total hours logged" %}
-              </th>
+              <th>{% trans "Full Name" %}</th>
+              <th class="hours-label">{% trans "Select a task" %}</th>
+              <th class="logged-hours-label">{% trans "Total hours logged" %}</th>
             </tr>
-          </thead>
-          <tbody>
+            </thead>
+            <tbody>
             {% for worker in workers %}
               <tr>
-                <td>{{ worker.last_name }}</td>
-                <td>{{ worker.first_name }}</td>
+                <td>{{ worker.last_name }}, {{ worker.first_name }}</td>
                 <td>
                   <input type="text" class="hours-input form-control"
-                     id="{{ worker.id }}-hours"
-                     name="{{ worker.id }}"
-                     value="0"
-                     disabled
+                         id="{{ worker.id }}-hours"
+                         name="{{ worker.id }}"
+                         value="0"
+                         disabled
                   />
                 </td>
-                <td id="{{ worker.id }}-logged-hours"></td>
+                <td data-toggle="modal" data-target="#{{ worker.id }}-detail">
+                  <p class="text-center"><u id="{{ worker.id }}-logged-hours">{{ worker.total_hours }}</u></p>
+                  {% if worker.passes_controls %}
+                    <div class="progress">
+                      <div class="progress-bar bg-success" role="progressbar" style="width: {{ worker.hours_percent }}%" aria-valuenow="{{ worker.hours_percent }}" aria-valuemin="0" aria-valuemax="100">{{ worker.hours_percent }}%</div>
+                    </div>
+                  {% elif worker.hours_percent < 100 %}
+                    <div class="progress">
+                      <div class="progress-bar bg-warning" role="progressbar" style="width: {{ worker.hours_percent }}%" aria-valuenow="{{ worker.hours_percent }}" aria-valuemin="0" aria-valuemax="100">{{ worker.hours_percent }}%</div>
+                    </div>
+                  {% else %}
+                    <div class="progress">
+                      <div class="progress-bar bg-danger" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">{{ worker.hours_percent }}%</div>
+                    </div>
+                  {% endif %}
+                </td>
+                <div class="modal fade" id="{{ worker.id }}-detail" tabindex="-1" role="dialog" aria-labelledby="{{ worker.id }}-label" aria-hidden="true">
+                  <div class="modal-dialog modal-md" role="document">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="{{ worker.id }}-label">{% trans 'Detail for' %} {{ worker.last_name }}, {{ worker.first_name }}</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="{% trans 'Close' %}">
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                      </div>
+                      <div class="modal-body">
+                        <ul>
+                          {% for log in worker.logs %}
+                            {% if log.task.code == absence_code %}
+                              <li>
+                                <p>
+                                  {% trans 'Completely or partially absent. ' %}
+                                </p>
+                              </li>
+                            {% else %}
+                              <li>
+                                <p>
+                                  {{ log.amount }} {% trans 'hours in' %} {{ log.task.name }}.
+                                </p>
+                              </li>
+                            {% endif %}
+                          {% endfor %}
+                        </ul>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-lg btn-block btn-secondary" data-dismiss="modal">{% trans 'Close' %}</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </tr>
             {% endfor %}
-          </tbody>
-        </table>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   </div>
-</div>
 
-<div class="row">
-  <div class="col-xs-6 col-lg-12">
-    <div class="card">
-      <div class="card-body card-block">
-        <button id="submit-hours" type="submit" disabled class="btn btn-lg btn-block btn-success">{% trans "Log Hours" %}</button>
+  <div class="row">
+    <div class="col-xs-6 col-lg-12">
+      <div class="card">
+        <div class="card-body card-block">
+          <button id="submit-hours" type="submit" disabled class="btn btn-lg btn-block btn-success">{% trans "Log Hours" %}</button>
+        </div>
       </div>
     </div>
   </div>
-</div>
 {% endblock content%}
 
 
