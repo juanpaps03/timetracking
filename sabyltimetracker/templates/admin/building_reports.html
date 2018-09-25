@@ -1,0 +1,41 @@
+{% extends "admin/change_form.html" %}
+{% load i18n admin_static admin_modify %}
+{% block content %}
+
+  <div id="content-main">
+    <form action="" method="POST">
+      {% csrf_token %}
+      <fieldset class="module aligned">
+        <div class="form-row">
+          <label for="month">{% trans 'Month' %}</label>
+          <select id="month" name="month">
+            <option value="1">{% trans 'January' %}</option>
+            <option value="2">{% trans 'February' %}</option>
+            <option value="3">{% trans 'March' %}</option>
+            <option value="4">{% trans 'April' %}</option>
+            <option value="5">{% trans 'May' %}</option>
+            <option value="6">{% trans 'June' %}</option>
+            <option value="7">{% trans 'July' %}</option>
+            <option value="8">{% trans 'August' %}</option>
+            <option value="9">{% trans 'September' %}</option>
+            <option value="10">{% trans 'October' %}</option>
+            <option value="11">{% trans 'November' %}</option>
+            <option value="12">{% trans 'December' %}</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <label for="year">{% trans 'Year' %}</label>
+          <select id="year" name="year">
+            {% for y in year_range %}
+              <option value="{{ y }}">{{ y }}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </fieldset>
+      <div class="submit-row">
+        <input type="submit" class="default" value='{% trans 'Download Report' %}'>
+      </div>
+    </form>
+  </div>
+
+{% endblock %}

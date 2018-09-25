@@ -12,11 +12,10 @@ class User(AbstractUser):
     # around the globe.
     WORKER = 1
     OVERSEER = 2
-    USER_TYPE_CHOICES = [(WORKER, "Worker"), (OVERSEER, "Overseer")]
+    USER_TYPE_CHOICES = [(WORKER, _("Worker")), (OVERSEER, _("Overseer"))]
 
     user_type = models.PositiveSmallIntegerField(null=True, choices=USER_TYPE_CHOICES,
                                                  default=None)
-    name = models.CharField(_('Name of User'), blank=True, max_length=255)
     ci = models.CharField(null=False, blank=False, max_length=10)
     phone = models.CharField(blank=True, max_length=20)
     address = models.CharField(blank=True, max_length=255)
@@ -26,6 +25,9 @@ class User(AbstractUser):
 
     def get_absolute_url(self):
         return reverse('users:detail', kwargs={'username': self.username})
+
+    def full_name(self):
+        return '%s, %s' % (self.last_name, self.first_name)
 
 
 class Worker(models.Model):

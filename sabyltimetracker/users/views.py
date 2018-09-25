@@ -3,7 +3,6 @@ from django.core.urlresolvers import reverse
 from django.views.generic import DetailView, ListView, RedirectView, UpdateView
 
 from django.contrib.auth.mixins import LoginRequiredMixin
-
 from .models import User
 
 
@@ -19,12 +18,11 @@ class UserRedirectView(LoginRequiredMixin, RedirectView):
 
     def get_redirect_url(self):
         user = self.request.user
-        if user.user_type is User.OVERSEER:
+        if user.is_superuser or user.is_staff:
+            return reverse('admin:index')
+        elif user.user_type is User.OVERSEER:
             return reverse('tracker:dashboard',
                            kwargs={'username': self.request.user.username})
-        elif user.is_superuser or user.is_staff:
-            return reverse('admin:index')
-
         raise PermissionDenied
 
 
