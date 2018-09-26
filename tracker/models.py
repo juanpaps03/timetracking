@@ -27,7 +27,7 @@ class Building(models.Model):
     code = models.PositiveIntegerField(null=False, blank=False)
     address = models.CharField(blank=True, max_length=255)
     overseer = models.OneToOneField(User, on_delete=models.SET_NULL, null=True, blank=True)
-    workers = models.ManyToManyField(User, related_name="buildings")
+    workers = models.ManyToManyField('Worker', related_name="buildings")
     tasks = models.ManyToManyField('Task', related_name="buildings")
     assigned = models.DateTimeField(auto_now=False, auto_now_add=True)
 
@@ -51,7 +51,7 @@ class Building(models.Model):
             workdays = Workday.objects.filter(date__year=year, date__month=month, building=building)
             logs = LogHour.objects.filter(workday__in=workdays)
             for worker in workers:
-                worker.logs = logs.filter(user=worker)
+                worker.logs = logs.filter(worker=worker)
         except ObjectDoesNotExist:
             for worker in workers:
                 worker.logs = None
@@ -167,7 +167,7 @@ class Workday(models.Model):
         expected = Workday.expected_hours()
         workers_in_building = User.objects.filter(buildings__in=[self.building]).all()
         for worker in workers_in_building:
-            worker_logs = self.logs.filter(user=worker)
+            worker_logs = self.logs.filter(worker=worker)
             if not LogHour.worker_passes_controls(self, worker_logs):
                 return False
         self.finished = True
@@ -181,7 +181,7 @@ class Workday(models.Model):
         max_column = utils.column_letter(3 + amount_of_tasks)
         workers = workday.building.workers.all()
         for worker in workers:
-            worker.logs = list(workday.logs.filter(user=worker))
+            worker.logs = list(workday.logs.filter(worker=worker))
 
         output = io.BytesIO()
         workbook = xlsxwriter.Workbook(output)
@@ -254,7 +254,7 @@ class Workday(models.Model):
 
 class LogHour(models.Model):
     workday = models.ForeignKey('Workday', on_delete=models.CASCADE, related_name='logs')
-    user = models.ForeignKey(User)
+    worker = models.ForeignKey('Worker')
     task = models.ForeignKey('Task')
     amount = models.PositiveIntegerField(null=False, blank=False, default=1,
                                          validators=[MaxValueValidator(24), MinValueValidator(1)])
@@ -269,7 +269,7 @@ class LogHour(models.Model):
             if user_amount_hours > 0:  # no trivial logs
                 try:
                     worker = building.workers.get(pk=user_id)  # only valid if worker works in the correct building
-                    logs.append(LogHour(user=worker, amount=user_amount_hours, task=task, workday=workday))
+                    logs.append(LogHour(worker=worker, amount=user_amount_hours, task=task, workday=workday))
                 except Exception:
                     pass
 
@@ -300,7 +300,7 @@ class LogHour(models.Model):
             return False
 
     def __str__(self):
-        return '%d %s %s %s %s' % (self.amount, _('of'), self.user, _('in task'), self.task)
+        return '%d %s %s %s %s' % (self.amount, _('of'), self.worker, _('in task'), self.task)
 
 
 class TaskManager(models.Manager):
@@ -317,9 +317,41 @@ class Task(models.Model):
     code = models.CharField(null=False, blank=False, max_length=20, unique=True)
     name = models.CharField(null=False, blank=True, max_length=255, unique=True)
     description = models.TextField()
-    parent_task = models.ForeignKey('self', blank=True, null=True, related_name='task_relationship')
+    category = models.ForeignKey('TaskCategory', null=True, blank=True, default=None)
 
     objects = TaskManager()
 
     def __str__(self):
         return '%s - %s' % (self.code, self.name)
+
+
+class TaskCategory(models.Model):
+    class Meta:
+        verbose_name_plural = "task categories"
+    name = models.CharField(primary_key=True, max_length=40, blank=False)
+
+    def __str__(self):
+        return str(self.name)
+
+
+class WorkerCategory(models.Model):
+    class Meta:
+        verbose_name_plural = "worker categories"
+
+    name = models.CharField(primary_key=True, max_length=40, blank=False)
+
+    def __str__(self):
+        return str(self.name)
+
+
+class Worker(models.Model):
+    code = models.CharField(primary_key=True, max_length=10)
+    first_name = models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100)
+    category = models.ForeignKey('WorkerCategory', null=True, blank=True, default=None)
+
+    def full_name(self):
+        return '%s, %s' % (self.last_name, self.first_name)
+
+    def __str__(self):
+        return self.full_name()

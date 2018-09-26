@@ -13,11 +13,14 @@ from django.utils.translation import ugettext_lazy as _
 from rest_framework.decorators import api_view
 
 from config import constants, messages
-from tracker.models import Building, Workday, LogHour, Task
+from tracker.models import Building, Workday, LogHour, Task, TaskCategory, Worker, WorkerCategory
 from .models import User
 
 admin.site.register(LogHour)
 admin.site.register(Task)
+admin.site.register(TaskCategory)
+admin.site.register(WorkerCategory)
+admin.site.register(Worker)
 
 
 @admin.register(Building)
@@ -77,43 +80,53 @@ class WorkdayAdmin(admin.ModelAdmin):
         return my_urls + urls
 
 
-# Creating manager group and permissions
-manager_group, created = Group.objects.get_or_create(name='Manager')
+def create_manager_group():
+    # Creating manager group and permissions
+    manager_group, created = Group.objects.get_or_create(name='Manager')
 
-content_type = ContentType.objects.get_for_model(Building)
-permissions = Permission.objects.filter(content_type=content_type)
-for p in permissions:
-    manager_group.permissions.add(p)
-
-content_type = ContentType.objects.get_for_model(Workday)
-permissions = Permission.objects.filter(content_type=content_type)
-for p in permissions:
-    manager_group.permissions.add(p)
-
-content_type = ContentType.objects.get_for_model(LogHour)
-permissions = Permission.objects.filter(content_type=content_type)
-for p in permissions:
-    manager_group.permissions.add(p)
-
-content_type = ContentType.objects.get_for_model(Task)
-permissions = Permission.objects.filter(content_type=content_type)
-for p in permissions:
-    manager_group.permissions.add(p)
-
-content_type = ContentType.objects.get_for_model(User)
-permissions = Permission.objects.filter(content_type=content_type)
-for p in permissions:
-    if p.codename != "delete_user":
+    content_type = ContentType.objects.get_for_model(Building)
+    permissions = Permission.objects.filter(content_type=content_type)
+    for p in permissions:
         manager_group.permissions.add(p)
 
-manager_group.save()
+    content_type = ContentType.objects.get_for_model(Workday)
+    permissions = Permission.objects.filter(content_type=content_type)
+    for p in permissions:
+        manager_group.permissions.add(p)
 
-# absence task creation.
-absence_task, created = Task.objects.get_or_create(code=constants.ABSENCE_CODE,
-                                                   name=_('Absence'),
-                                                   description=_('Auto-generated task that designates partial or total worker absence for a day.'))
-absence_task.buildings = Building.objects.all()
-absence_task.save()
+    content_type = ContentType.objects.get_for_model(LogHour)
+    permissions = Permission.objects.filter(content_type=content_type)
+    for p in permissions:
+        manager_group.permissions.add(p)
+
+    content_type = ContentType.objects.get_for_model(Task)
+    permissions = Permission.objects.filter(content_type=content_type)
+    for p in permissions:
+        manager_group.permissions.add(p)
+
+    content_type = ContentType.objects.get_for_model(User)
+    permissions = Permission.objects.filter(content_type=content_type)
+    for p in permissions:
+        if p.codename != "delete_user":
+            manager_group.permissions.add(p)
+
+    manager_group.save()
+
+
+# create_manager_group()
+
+
+def create_absence_task():
+    # absence task creation.
+    absence_task, created = Task.objects.get_or_create(code=constants.ABSENCE_CODE,
+                                                       name=_('Absence'),
+                                                       description=_('Auto-generated task that designates partial or total worker absence for a day.'))
+    absence_task.buildings = Building.objects.all()
+    absence_task.save()
+
+
+# create_absence_task()
+
 
 # custom views
 @api_view(['GET', 'POST'])

@@ -72,7 +72,7 @@ $(document).ready(function() {
                 if (task.logs) {
                     for (let i in task.logs) {
                         let log = task.logs[i];
-                        $('#'+log.user.id+'-hours').val(log.amount);
+                        $('#'+log.worker.code+'-hours').val(log.amount);
                     }
                     $submit_hours.text(UPDATE_HOURS_FOR_TXT+ ' ' + task.name);
                 } else {
@@ -84,7 +84,7 @@ $(document).ready(function() {
                 if (task.logs) {
                     for (let i in task.logs) {
                         let log = task.logs[i];
-                        $('#'+log.user.id+'-hours').prop('checked', true);
+                        $('#'+log.worker.code+'-hours').prop('checked', true);
                     }
                     $submit_hours.text(UPDATE_ABSENCES_TXT);
                 } else {
@@ -125,7 +125,7 @@ function update_logged_hours(excluded_task_id) {
             if (log.task.id !== excluded_task_id && log.task.code !== absence_code)
                 sum += log.amount;
         }
-        $('#'+worker.id+'-logged-hours').text(sum);
+        $('#'+worker.code+'-logged-hours').text(sum);
     }
     let $logged_hours_label = $('.logged-hours-label');
     if(excluded_task_id)

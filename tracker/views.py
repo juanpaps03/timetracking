@@ -30,7 +30,7 @@ class Dashboard(View):
                 workday = Workday.objects.get(building=building, date=date, finished=False)
                 logs = LogHour.objects.all().filter(workday=workday)
                 for worker in workers:
-                    worker_logs = list(logs.filter(user=worker))
+                    worker_logs = list(logs.filter(worker=worker))
                     if worker_logs:
                         workers_with_logs += 1
                     if not LogHour.worker_passes_controls(workday, worker_logs):
@@ -69,7 +69,7 @@ class LogHours(View):
                 expected = workday.expected_hours()
                 logs = LogHour.objects.all().filter(workday=workday)
                 for worker in workers:
-                    worker.logs = list(logs.filter(user=worker))
+                    worker.logs = list(logs.filter(worker=worker))
                     worker.passes_controls = LogHour.worker_passes_controls(workday, worker.logs)
                     if expected > 0:
                         worker.hours_percent = round(100 * LogHour.sum_hours(worker.logs) / expected)
@@ -85,13 +85,13 @@ class LogHours(View):
                 'id': task.id,
                 'name': task.name,
                 'code': task.code,
-                'logs': [{'user': {'id': log.user.id}, 'amount': log.amount} for log in task.logs]
+                'logs': [{'worker': {'code': log.worker.code}, 'amount': log.amount} for log in task.logs]
             }
             for task in tasks
         ]
         workers = [
             {
-                'id': worker.id,
+                'code': worker.code,
                 'first_name': worker.first_name,
                 'last_name': worker.last_name,
                 'logs': [{'task': {'id': log.task.id, 'name': log.task.name, 'code': log.task.code}, 'amount': log.amount} for log in worker.logs],
@@ -122,7 +122,7 @@ class DayReview(View):
                 workday = Workday.objects.get(building=building, date=date, finished=False)
                 logs = LogHour.objects.all().filter(workday=workday)
                 for worker in workers:
-                    worker.logs = list(logs.filter(user=worker))
+                    worker.logs = list(logs.filter(worker=worker))
                     if not LogHour.worker_passes_controls(workday, worker.logs):
                         workers_missing_hours.append(worker)
             except Workday.DoesNotExist:
@@ -162,7 +162,7 @@ class PastDaysEdit(View):
             logs = LogHour.objects.all().filter(workday=workday)
             tasks = Task.objects.get_by_building(building)
             for worker in workers:
-                worker.logs = list(logs.filter(user=worker))
+                worker.logs = list(logs.filter(worker=worker))
                 worker.passes_controls = LogHour.worker_passes_controls(workday, worker.logs)
                 if expected > 0:
                     worker.hours_percent = round(100 * LogHour.sum_hours(worker.logs) / expected)
@@ -179,13 +179,13 @@ class PastDaysEdit(View):
                 'id': task.id,
                 'name': task.name,
                 'code': task.code,
-                'logs': [{'user': {'id': log.user.id}, 'amount': log.amount} for log in task.logs]
+                'logs': [{'worker': {'code': log.worker.code}, 'amount': log.amount} for log in task.logs]
             }
             for task in tasks
         ]
         workers = [
             {
-                'id': worker.id,
+                'code': worker.code,
                 'first_name': worker.first_name,
                 'last_name': worker.last_name,
                 'logs': [{'task': {'id': log.task.id, 'name': log.task.name, 'code': log.task.code},

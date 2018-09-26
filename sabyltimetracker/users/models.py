@@ -30,14 +30,6 @@ class User(AbstractUser):
         return '%s, %s' % (self.last_name, self.first_name)
 
 
-class Worker(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
-    dummy = models.CharField(blank=True, max_length=255)
-
-    def __str__(self):
-        return self.user.username
-
-
 class Overseer(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
     dummy = models.CharField(blank=True, max_length=255)

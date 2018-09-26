@@ -94,14 +94,14 @@
                 <td>{{ worker.last_name }}, {{ worker.first_name }}</td>
                 <td>
                   <input type="text" class="hours-input form-control"
-                         id="{{ worker.id }}-hours"
-                         name="{{ worker.id }}"
+                         id="{{ worker.code }}-hours"
+                         name="{{ worker.code }}"
                          value="0"
                          disabled
                   />
                 </td>
-                <td data-toggle="modal" data-target="#{{ worker.id }}-detail">
-                  <p class="text-center"><u id="{{ worker.id }}-logged-hours">{{ worker.total_hours }}</u></p>
+                <td data-toggle="modal" data-target="#{{ worker.code }}-detail">
+                  <p class="text-center"><u id="{{ worker.code }}-logged-hours">{{ worker.total_hours }}</u></p>
                   {% if worker.passes_controls %}
                     <div class="progress">
                       <div class="progress-bar bg-success" role="progressbar" style="width: {{ worker.hours_percent }}%" aria-valuenow="{{ worker.hours_percent }}" aria-valuemin="0" aria-valuemax="100">{{ worker.hours_percent }}%</div>
@@ -116,11 +116,11 @@
                     </div>
                   {% endif %}
                 </td>
-                <div class="modal fade" id="{{ worker.id }}-detail" tabindex="-1" role="dialog" aria-labelledby="{{ worker.id }}-label" aria-hidden="true">
+                <div class="modal fade" id="{{ worker.code }}-detail" tabindex="-1" role="dialog" aria-labelledby="{{ worker.code }}-label" aria-hidden="true">
                   <div class="modal-dialog modal-md" role="document">
                     <div class="modal-content">
                       <div class="modal-header">
-                        <h5 class="modal-title" id="{{ worker.id }}-label">{% trans 'Detail for' %} {{ worker.last_name }}, {{ worker.first_name }}</h5>
+                        <h5 class="modal-title" id="{{ worker.code }}-label">{% trans 'Detail for' %} {{ worker.last_name }}, {{ worker.first_name }}</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="{% trans 'Close' %}">
                           <span aria-hidden="true">&times;</span>
                         </button>

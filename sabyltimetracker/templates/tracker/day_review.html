@@ -81,7 +81,7 @@
             <tbody>
             {% for log in logs %}
               <tr>
-                <td>{{ log.user.last_name }}, {{ log.user.first_name }}</td>
+                <td>{{ log.worker.last_name }}, {{ log.worker.first_name }}</td>
                 <td>{{ log.task.name }}</td>
                 <td>{% if log.task.code == absence_code %}-{% else %}{{ log.amount }}{% endif %}</td>
               </tr>
