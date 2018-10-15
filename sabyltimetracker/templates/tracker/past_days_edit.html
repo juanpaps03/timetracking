@@ -34,18 +34,21 @@
     var csrf = "{{ csrf_token }}";
     var post_url = "{% url 'tracker:api_add_hours_past_day' username=request.user.username date=workday.date %}";
     var tasks = {{ tasks|js }};
+    var grouped_tasks = {{ grouped_tasks|js }};
     var workers = {{ workers|js }};
-    var absence_code = '{{ absence_code }}';
     const SELECT_TASK_TXT = '{% trans 'Select a task' %}';
+    const SELECT_CAT_FIRST_TXT = '{% trans '-' %}';
     const UPDATE_HOURS_FOR_TXT = '{% trans 'Update hours for' %}';
     const LOG_HOURS_FOR_TXT = '{% trans 'Log hours for' %}';
+    const UPDATE_BOOLEAN_TASK_TXT = '{% trans 'Update' %}';
+    const LOG_BOOLEAN_TASK_TXT = '{% trans 'Log' %}';
     const HOURS_FOR_TXT = '{% trans 'Hours for' %}';
     const LOG_HOURS_TXT = '{% trans 'Log hours' %}';
     const HOURS_OTHER_TASKS_TXT = '{% trans 'Hours for other tasks' %}';
     const TOTAL_HOURS_TXT = '{% trans 'Total hours logged' %}';
-    const UPDATE_ABSENCES_TXT = '{% trans 'Update absences' %}';
-    const LOG_ABSENCES_TXT = '{% trans 'Log absences' %}';
-    const ABSENCES_TXT = '{% trans 'Absences' %}';
+    const WRONG_PRECISION_TXT= '{% trans 'All hours must be whole or half hours.' %}';
+    const COMMENT_REQUIRED_TXT = '{% trans 'Comment is mandatory for this task.' %}';
+    const COMMENT_NOT_REQUIRED_TXT = '{% trans 'Comment (optional)' %}';
   </script>
 {% endblock javascript_header %}
 
@@ -56,14 +59,25 @@
         <div class="card-header">
           <strong><label for="task" class=" form-control-label">{% trans "Select task" %}</label></strong>
         </div>
-        <div class="card-body card-block">
-          <div class="form-group">
-            <select id="task" name="task" class="form-control">
-              <option value="">{% trans '-Select a task-' %}</option>
-              {% for task in tasks %}
-                <option value="{{ task.id }}">{{ task.code }} - {{ task.name }}</option>
-              {% endfor %}
-            </select>
+                <div class="card-body card-block">
+          <div class="row form-group">
+            <div class="col-12 col-lg-3"><label for="task-category">Task category:</label></div>
+            <div class="col-12 col-lg-9">
+              <select id="task-category" class="form-control">
+                <option value="">{% trans '-Select a category-' %}</option>
+                {% for category in grouped_tasks %}
+                  <option value="{{ category.name }}">{{ category.name }}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+          <div class="row form-group">
+            <div class="col-12 col-lg-3"><label for="task">Task:</label></div>
+            <div class="col-12 col-lg-9">
+              <select id="task" name="task" class="form-control" disabled>
+                <option value="">{% trans '---' %}</option>
+              </select>
+            </div>
           </div>
         </div>
       </div>
@@ -82,8 +96,10 @@
             <thead>
             <tr>
               <th>{% trans "Full Name" %}</th>
-              <th class="hours-label">
-                {% trans "Select a task" %}
+              <th>{% trans "Category" %}</th>
+              <th>
+                <span class="hours-label">{% trans "Select a task" %}</span>
+                <input id="select-all" type="checkbox" class="form-control checkbox-lg"/>
               </th>
               <th class="logged-hours-label">
                 {% trans "Total hours logged" %}
@@ -93,9 +109,10 @@
             <tbody>
             {% for worker in workers %}
               <tr>
+                <td>{{ worker.category }}</td>
                 <td>{{ worker.last_name }}, {{ worker.first_name }}</td>
                 <td>
-                  <input type="text" class="hours-input form-control"
+                  <input type="number" min="0" max="24" step="0.5"class="hours-input form-control"
                          id="{{ worker.code }}-hours"
                          name="{{ worker.code }}"
                          value="0"
@@ -130,19 +147,23 @@
                       <div class="modal-body">
                         <ul>
                           {% for log in worker.logs %}
-                            {% if log.task.code == absence_code %}
-                              <li>
-                                <p>
-                                  {% trans 'Completely or partially absent. ' %}
-                                </p>
-                              </li>
-                            {% else %}
-                              <li>
-                                <p>
-                                  {{ log.amount }} {% trans 'hours in' %} {{ log.task.name }}.
-                                </p>
-                              </li>
-                            {% endif %}
+                            <li>
+                              <p>
+                                {% if log.task.is_boolean %}
+                                  {% if log.comment %}
+                                    {{ log.task.name }} {% trans 'with comment: "' %}{{ log.comment }}".
+                                  {% else %}
+                                    {{ log.task.name }}.
+                                  {% endif %}
+                                {% else %}
+                                  {% if log.comment %}
+                                    {{ log.amount }} {% trans 'hours in' %} {{ log.task.name }} {% trans 'with comment: "' %}{{ log.comment }}".
+                                  {% else %}
+                                    {{ log.amount }} {% trans 'hours in' %} {{ log.task.name }}.
+                                  {% endif %}
+                                {% endif %}
+                              </p>
+                            </li>
                           {% endfor %}
                         </ul>
                       </div>
@@ -156,6 +177,21 @@
             {% endfor %}
             </tbody>
           </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="comment-group" class="row">
+    <div class="col-xs-6 col-lg-12">
+      <div class="card">
+        <div class="card-header">
+          <strong><label for="comment">{% trans "Comment" %}</label></strong>
+        </div>
+        <div class="card-body card-block">
+          <div class="form-group">
+            <textarea id="comment" name="comment" rows="2" placeholder="{% trans 'Comment (optional)' %}" class="form-control"></textarea>
+          </div>
         </div>
       </div>
     </div>

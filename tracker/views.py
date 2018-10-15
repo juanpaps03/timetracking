@@ -4,54 +4,58 @@ from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext_lazy as _
 from django.views import View
+from django.contrib import messages as django_messages
+
 
 from config import constants, messages
-from sabyltimetracker.users.models import User
-from sabyltimetracker.users.users_permissions_decorator import user_permissions
 from tracker.models import Building, Workday, LogHour, Task
+from itertools import groupby
+from operator import itemgetter
+from tracker.serializers import *
 
 
-@method_decorator([user_permissions([User.OVERSEER])], name='dispatch')
 class Dashboard(View):
     def get(self, request, username):
         # <view logic>
         workers = []
-        expected_hours = Workday.expected_hours()
-        workers_missing_hours = []
+        workers_missing_logs = []
         user = request.user
         building = Building.objects.get_by_overseer(user)
         workday = None
         workers_with_logs = 0
         if building:
             workers = building.workers.all()
-            date = timezone.now().date()
+            date = timezone.localdate(timezone.now())
             try:
-                print(date)
-                workday = Workday.objects.get(building=building, date=date, finished=False)
+                workday = Workday.objects.filter(building=building, finished=False).order_by('-date')[0]
+                if workday.date != date:
+                    django_messages.warning(request, messages.OLD_UNFINISHED_WORKDAY)
                 logs = LogHour.objects.all().filter(workday=workday)
                 for worker in workers:
                     worker_logs = list(logs.filter(worker=worker))
                     if worker_logs:
                         workers_with_logs += 1
                     if not LogHour.worker_passes_controls(workday, worker_logs):
-                        workers_missing_hours.append(worker)
-            except Workday.DoesNotExist:
-                return JsonResponse({'message': messages.WORKDAY_FINISHED}, status=400)
-        if workers:
-            workers_ratio = round(100 * workers_with_logs / len(workers))
+                        workers_missing_logs.append(worker)
+                if workers:
+                    workers_ratio = round(100 * workers_with_logs / len(workers))
+                else:
+                    workers_ratio = 100
+
+                context = {
+                    'workers_missing_logs': workers_missing_logs,
+                    'workday': workday,
+                    'workers_ratio': workers_ratio,
+                    'building': building
+                }
+                return render(request, 'tracker/dashboard.html', context)
+            except IndexError:
+                context = {'building': building}
+                return render(request, 'tracker/start_day.html', context)
         else:
-            workers_ratio = 100
-
-        context = {
-            'workers_missing_hours': workers_missing_hours,
-            'workday': workday,
-            'workers_ratio': workers_ratio,
-            'building': building
-        }
-        return render(request, 'tracker/dashboard.html', context)
+            return JsonResponse({'message': messages.BUILDING_NOT_FOUND}, status=400)
 
 
-@method_decorator([user_permissions([User.OVERSEER])], name='dispatch')
 class LogHours(View):
     def get(self, request, username):
         tasks = []
@@ -63,9 +67,11 @@ class LogHours(View):
         if building:
             tasks = building.tasks.all()
             workers = building.workers.all()
-            date = timezone.now().date()
+            date = timezone.localdate(timezone.now())
             try:
-                workday = Workday.objects.get(building=building, date=date, finished=False)
+                workday = Workday.objects.filter(building=building, finished=False).order_by('-date')[0]
+                if workday.date != date:
+                    django_messages.warning(request, messages.OLD_UNFINISHED_WORKDAY)
                 expected = workday.expected_hours()
                 logs = LogHour.objects.all().filter(workday=workday)
                 for worker in workers:
@@ -77,76 +83,69 @@ class LogHours(View):
                         worker.hours_percent = 100
                 for task in tasks:
                     task.logs = list(logs.filter(task=task))
-            except Workday.DoesNotExist:
-                return JsonResponse({'message': messages.WORKDAY_FINISHED}, status=400)
+            except IndexError:
+                return JsonResponse({'message': messages.WORKDAY_NOT_FOUND}, status=400)
         # filter out useless data
-        tasks = [
-            {
-                'id': task.id,
-                'name': task.name,
-                'code': task.code,
-                'logs': [{'worker': {'code': log.worker.code}, 'amount': log.amount} for log in task.logs]
-            }
-            for task in tasks
-        ]
-        workers = [
-            {
-                'code': worker.code,
-                'first_name': worker.first_name,
-                'last_name': worker.last_name,
-                'logs': [{'task': {'id': log.task.id, 'name': log.task.name, 'code': log.task.code}, 'amount': log.amount} for log in worker.logs],
-                'passes_controls': worker.passes_controls,
-                'hours_percent': worker.hours_percent
-            }
-            for worker in workers
-        ]
+        tasks = serialize_tasks_with_logs(tasks)
+        keyfunc = itemgetter("category")
+        grouped_tasks = [{'name': key, 'tasks': list(grp)} for key, grp in groupby(sorted(tasks, key=keyfunc), key=keyfunc)]
 
-        context = {'tasks': tasks, 'workers': workers, 'expected': expected, 'workday': workday, 'absence_code': constants.ABSENCE_CODE}
+        context = {
+            'grouped_tasks': grouped_tasks,
+            'tasks': tasks,
+            'workers': serialize_workers_with_logs(workers),
+            'expected': expected,
+            'workday': workday
+        }
 
         return render(request, 'tracker/log_hours.html', context)
 
 
-@method_decorator([user_permissions([User.OVERSEER])], name='dispatch')
 class DayReview(View):
     def get(self, request, username):
         overseer = request.user
         building = Building.objects.get_by_overseer(overseer)
-        expected = Workday.expected_hours()
-        workers_missing_hours = []
+        workers_missing_logs = []
         workday = None
         logs = None
         if building:
             workers = building.workers.all()
-            date = timezone.now().date()
+            date = timezone.localdate(timezone.now())
             try:
-                workday = Workday.objects.get(building=building, date=date, finished=False)
+                workday = Workday.objects.filter(building=building, finished=False).order_by('-date')[0]
+                if workday.date != date:
+                    django_messages.warning(request, messages.OLD_UNFINISHED_WORKDAY)
                 logs = LogHour.objects.all().filter(workday=workday)
                 for worker in workers:
                     worker.logs = list(logs.filter(worker=worker))
                     if not LogHour.worker_passes_controls(workday, worker.logs):
-                        workers_missing_hours.append(worker)
-            except Workday.DoesNotExist:
-                return JsonResponse({'message': messages.WORKDAY_FINISHED}, status=400)
+                        workers_missing_logs.append(worker)
+            except IndexError:
+                return JsonResponse({'message': messages.WORKDAY_NOT_FOUND}, status=400)
 
-        context = {'logs': logs, 'workers_missing_hours': workers_missing_hours,
-                   'workday': workday, 'absence_code': constants.ABSENCE_CODE}
+        context = {
+            'logs': serialize_logs(logs, with_workers=True, with_tasks=True),
+            'workers_missing_logs': workers_missing_logs,
+            'workday': workday
+        }
 
         return render(request, 'tracker/day_review.html', context)
 
 
-@method_decorator([user_permissions([User.OVERSEER])], name='dispatch')
 class PastDays(View):
     def get(self, request, username):
         user = request.user
-        threshold = timezone.now() - timezone.timedelta(days=constants.DAYS_ABLE_TO_EDIT)
-        workdays = Workday.objects.filter(overseer=user, date__gte=threshold, date__lt=timezone.now()).order_by('-date')
+        view_threshold = timezone.localdate(timezone.now()) - timezone.timedelta(days=constants.DAYS_ABLE_TO_VIEW)
+        edit_threshold = timezone.localdate(timezone.now()) - timezone.timedelta(days=constants.DAYS_ABLE_TO_EDIT)
+        workdays = Workday.objects.filter(overseer=user, date__lt=timezone.localdate(timezone.now()), date__gte=view_threshold)
+        editable_workdays = workdays.filter(date__gte=edit_threshold).order_by('-date')
+        workdays = workdays.difference(editable_workdays).order_by('-date')
 
-        context = {'workdays': workdays, 'days': constants.DAYS_ABLE_TO_EDIT}
+        context = {'editable_workdays': editable_workdays, 'non_editable_workdays': workdays, 'days': constants.DAYS_ABLE_TO_EDIT}
 
         return render(request, 'tracker/past_days.html', context)
 
 
-@method_decorator([user_permissions([User.OVERSEER])], name='dispatch')
 class PastDaysEdit(View):
     def get(self, request, date, username):
         user = request.user
@@ -174,29 +173,16 @@ class PastDaysEdit(View):
             return JsonResponse({'message': messages.WORKDAY_NOT_FOUND}, status=400)
 
         # filter out useless data
-        tasks = [
-            {
-                'id': task.id,
-                'name': task.name,
-                'code': task.code,
-                'logs': [{'worker': {'code': log.worker.code}, 'amount': log.amount} for log in task.logs]
-            }
-            for task in tasks
-        ]
-        workers = [
-            {
-                'code': worker.code,
-                'first_name': worker.first_name,
-                'last_name': worker.last_name,
-                'logs': [{'task': {'id': log.task.id, 'name': log.task.name, 'code': log.task.code},
-                          'amount': log.amount} for log in worker.logs],
-                'passes_controls': worker.passes_controls,
-                'hours_percent': worker.hours_percent
-            }
-            for worker in workers
-        ]
+        tasks = serialize_tasks_with_logs(tasks)
+        keyfunc = itemgetter("category")
+        grouped_tasks = [{'name': key, 'tasks': list(grp)} for key, grp in groupby(sorted(tasks, key=keyfunc), key=keyfunc)]
 
-        context = {'tasks': tasks, 'workers': workers, 'expected': expected, 'workday': workday,
-                   'absence_code': constants.ABSENCE_CODE}
+        context = {
+            'grouped_tasks': grouped_tasks,
+            'tasks': tasks,
+            'workers': serialize_workers_with_logs(workers),
+            'expected': expected,
+            'workday': workday
+        }
 
         return render(request, 'tracker/past_days_edit.html', context)

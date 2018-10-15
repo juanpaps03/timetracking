@@ -39,21 +39,21 @@
         <div class="card-body card-block">
           <div class="stat-widget-one">
             <div class="stat-content dib">
-              {%  if workers_missing_hours %}
-                {% if workers_missing_hours|length == 1 %}
+              {%  if workers_missing_logs %}
+                {% if workers_missing_logs|length == 1 %}
                   <div class="stat-text">
-                    {{ workers_missing_hours|first }} {% trans " needs more hours logged." %}
+                    {{ workers_missing_logs|first }} {% trans " needs more logs." %}
                   </div>
-                  <div class="stat-digit">{% trans "1 worker missing hours." %}</div>
+                  <div class="stat-digit">{% trans "1 worker missing logs." %}</div>
                 {% else %}
                   <div class="stat-text">
-                    {{ workers_missing_hours|ellipsize:3 }} {% trans " need more hours logged." %}
+                    {{ workers_missing_logs|ellipsize:3 }} {% trans " need more logs." %}
                   </div>
-                  <div class="stat-digit">{{ workers_missing_hours|length }} {% trans "workers missing hours." %}</div>
+                  <div class="stat-digit">{{ workers_missing_logs|length }} {% trans "workers missing logs." %}</div>
                 {% endif %}
               {% else %}
                 <div class="stat-text">
-                  {% trans "All workers have enough logged hours. When you are sure everything is done, you can end the day." %}
+                  {% trans "All workers have enough logs. When you are sure everything is done, you can end the day." %}
                 </div>
               {% endif %}
             </div>
@@ -83,7 +83,7 @@
               <tr>
                 <td>{{ log.worker.last_name }}, {{ log.worker.first_name }}</td>
                 <td>{{ log.task.name }}</td>
-                <td>{% if log.task.code == absence_code %}-{% else %}{{ log.amount }}{% endif %}</td>
+                <td>{% if log.task.is_boolean %}-{% else %}{{ log.amount }}{% endif %}</td>
               </tr>
             {% endfor %}
             </tbody>
@@ -97,14 +97,50 @@
     <div class="col-xs-6 col-lg-12">
       <div class="card">
         <div class="card-body card-block">
-          <form method="post" action="{% url 'tracker:api_end_day' request.user.username %}">{% csrf_token %}
-            <div class="col-sm-6 col-12">
-              <a href="{% url 'tracker:log_hours' request.user.username %}" role="button" class="btn btn-lg btn-block btn-outline-primary">{% trans "Edit Hours" %}</a>
-            </div>
-            <div class="col-sm-6 col-12">
-              <button type="submit" class="btn btn-lg btn-block btn-outline-success">{% trans "Confirm and End Day" %}</button>
-            </div>
-          </form>
+          <div class="col-sm-6 col-12">
+            <a href="{% url 'tracker:log_hours' request.user.username %}" role="button" class="btn btn-lg btn-block btn-outline-primary">{% trans "Back to Edit Hours" %}</a>
+          </div>
+          <div class="col-sm-6 col-12">
+            <form method="post" action="{% url 'tracker:api_end_day' request.user.username %}">{% csrf_token %}
+              <button type="submit"
+                      class="btn btn-lg btn-block btn-outline-success"
+                      {% if workers_missing_logs %} disabled {% endif %}
+              >
+                {% trans "Confirm and End Day" %}
+              </button>
+            </form>
+            {%  if workers_missing_logs %}
+              <p class="col-xs-6">
+                {% trans 'Ammend logs to correctly end the day.' %}
+                <a href="#" class="btn btn-sm btn-link" data-toggle="modal" data-target="#comment-modal">{% trans 'End anyway?' %}</a href="#">
+              </p>
+              <div class="modal fade" id="comment-modal" tabindex="-1" role="dialog" aria-labelledby="modal-label" aria-hidden="true">
+                <div class="modal-dialog modal-md" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="modal-label">{% trans 'End Day Without Validation' %}</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="{% trans 'Close' %}">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+                      <p>
+                        {% trans 'To end a day without all workers having their required hours logged, a written comment is mandatory.' %}
+                      </p>
+                      <form method="post" action="{% url 'tracker:api_end_day' request.user.username %}">{% csrf_token %}
+                        <textarea name="comment" required rows="6" placeholder="{% trans 'Comment (required)' %}" class="form-control"></textarea>
+                        <br>
+                        <button type="submit" class="btn btn-lg btn-block btn-outline-success">{% trans "Confirm and End Day" %}</button>
+                      </form>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-lg btn-block btn-secondary" data-dismiss="modal">{% trans 'Close' %}</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            {% endif %}
+          </div>
         </div>
       </div>
     </div>

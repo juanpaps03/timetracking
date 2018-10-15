@@ -1,17 +1,25 @@
 $(document).ready(function() {
     $('#day').change( () => {
         let option = $(this).find(":selected");
-        let v = $(option).val();
-        const $next = $('#next');
-        if(v) {
-            $next.prop('disabled', false);
+        $option = $(option);
+        let url = $option.attr('data-url');
+        const $edit = $('#edit');
+        const $report = $('#report');
+        if(url) {
+            $report.prop('disabled', false);
+            $edit.prop('disabled', false);
         } else {
-            $next.prop('disabled', true);
+            $edit.prop('disabled', true);
+            if ($option.val())
+                $report.prop('disabled', false);
+            else
+                $report.prop('disabled', true);
         }
     });
-    $('#next').click( () => {
+
+    $('#edit').click( () => {
         let option = $(this).find(":selected");
-        let v = $(option).val();
+        let v = $(option).attr('data-url');
         window.location.href = v;
     });
 } );

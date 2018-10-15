@@ -50,21 +50,21 @@
         <div class="stat-widget-one">
           <div class="stat-icon dib"><i class="ti-time text-primary border-primary"></i></div>
           <div class="stat-content dib">
-            {%  if workers_missing_hours %}
-              {% if workers_missing_hours|length == 1 %}
+            {%  if workers_missing_logs %}
+              {% if workers_missing_logs|length == 1 %}
                 <div class="stat-text">
-                  {{ workers_missing_hours|first }} {% trans " needs more hours logged." %}
+                  {{ workers_missing_logs|first }} {% trans " needs more logs." %}
                 </div>
-                <div class="stat-digit">{% trans "1 worker missing hours." %}</div>
+                <div class="stat-digit">{% trans "1 worker missing logs." %}</div>
               {% else %}
                 <div class="stat-text">
-                  {{ workers_missing_hours|ellipsize:3 }} {% trans " need more hours logged." %}
+                  {{ workers_missing_logs|ellipsize:3 }} {% trans " need more logs." %}
                 </div>
-                <div class="stat-digit">{{ workers_missing_hours|length }} {% trans "workers missing hours." %}</div>
+                <div class="stat-digit">{{ workers_missing_logs|length }} {% trans "workers missing logs." %}</div>
               {% endif %}
             {% else %}
               <div class="stat-text">
-                {% trans "All workers have enough logged hours. When you are sure everything is done, you can end the day." %}
+                {% trans "All workers have enough logs. When you are sure everything is done, you can end the day." %}
               </div>
             {% endif %}
           </div>
@@ -116,5 +116,5 @@
 {% block javascript %}
   {{ block.super }}
   <script src="https://momentjs.com/downloads/moment.js"></script>
-  <script type="text/javascript" src="{% static 'js/dashboard.js' %}"></script>
+  <script type="text/javascript" src="{% static 'js/clock.js' %}"></script>
 {% endblock javascript %}
