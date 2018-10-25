@@ -1,15 +1,9 @@
+from collections import OrderedDict
+
 # # General
-# starting year of deployment (for year selection in reports)
+# starting year
 START_YEAR = 2018
-# company name.
-COMPANY_NAME = 'Sabyl Constructora'
-# time period for which the overseer can edit previous workdays.
-DAYS_ABLE_TO_EDIT = 7
-# time period for which the overseer can view previous workdays.
-DAYS_ABLE_TO_VIEW = 3650
-# amount of hours workers are expected to work each day of the week (in monday to sunday format)
-EXPECTED_HOURS = [9, 9, 9, 9, 8, 0, 0]
-# suffix for general tasks in each category.
+# suffix for general tasks of each task category.
 GENERAL_CODE_SUFFIX = 'GR'
 
 
@@ -62,14 +56,6 @@ MIN_FULL_NAME_WIDTH = 15
 MIN_WORKER_CATEGORY_WIDTH = 4
 
 
-# incentive hours threshold for computation
-INCENTIVE_THRESHOLD = 44
-# incentive hours percentage
-INCENTIVE_PERCENT = 10.42
-
-# additional half hours
-WINTER_TIME_THRESHOLD = 4.5
-SUMMER_TIME_THRESHOLD = 5
 # this is a yearly array, first position is for start year. start and end date is included in winter period.
 WINTER_PERIOD = [
     ('2018-03-11', '2018-10-15'),
@@ -79,3 +65,30 @@ WINTER_PERIOD = [
     ('2022-03-13', '2022-10-17')
 ]
 
+
+# DYNAMIC CONSTANTS DEFAULTS:
+DYNAMIC_CONSTANTS = {
+    'COMPANY_NAME': ('Sabyl Constructora', 'Name of the company'),
+    'DAYS_ABLE_TO_EDIT': (7, 'time period in days for which the overseer can edit previous workdays'),
+    'DAYS_ABLE_TO_VIEW': (36500, 'time period in days for which the overseer can view previous workdays'
+                                 '(default 100 years)'),
+    'MONDAY_HOURS': (9, 'hours expected for mondays'),x
+    'TUESDAY_HOURS': (9, 'hours expected for tuesdays'),
+    'WEDNESDAY_HOURS': (9, 'hours expected for wednesdays'),
+    'THURSDAY_HOURS': (9, 'hours expected for thursdays'),
+    'FRIDAY_HOURS': (8, 'hours expected for fridays'),
+    'SATURDAY_HOURS': (0, 'hours expected for saturdays'),
+    'SUNDAY_HOURS': (0, 'hours expected for sundays'),
+    'INCENTIVE_THRESHOLD': (44, 'amount of hours worked needed in a week to get incentive'),
+    'INCENTIVE_PERCENT': (10.42, 'bonus percent for reaching the threshold of hours needed in a week'),
+    'WINTER_TIME_THRESHOLD': (4.5, 'additional half hour threshold for winter time.'),
+    'SUMMER_TIME_THRESHOLD': (5, 'additional half hour threshold for summer time.'),
+
+}
+
+DYNAMIC_CONSTANT_FIELDSETS = OrderedDict([
+    ('General Options', ('COMPANY_NAME', 'DAYS_ABLE_TO_EDIT', 'DAYS_ABLE_TO_VIEW')),
+    ('Expected hours', ('MONDAY_HOURS', 'TUESDAY_HOURS', 'WEDNESDAY_HOURS', 'THURSDAY_HOURS', 'FRIDAY_HOURS',
+                        'SATURDAY_HOURS', 'SUNDAY_HOURS')),
+    ('Bonus hours', ('INCENTIVE_THRESHOLD', 'INCENTIVE_PERCENT', 'WINTER_TIME_THRESHOLD', 'SUMMER_TIME_THRESHOLD')),
+])

@@ -13,6 +13,8 @@ from itertools import groupby
 from operator import itemgetter
 from tracker.serializers import *
 
+from constance import config
+
 
 class Dashboard(View):
     def get(self, request, username):
@@ -22,6 +24,7 @@ class Dashboard(View):
         user = request.user
         building = Building.objects.get_by_overseer(user)
         workday = None
+        is_old_workday = False
         workers_with_logs = 0
         if building:
             workers = building.workers.all()
@@ -30,6 +33,7 @@ class Dashboard(View):
                 workday = Workday.objects.filter(building=building, finished=False).order_by('-date')[0]
                 if workday.date != date:
                     django_messages.warning(request, messages.OLD_UNFINISHED_WORKDAY)
+                    is_old_workday = True
                 logs = LogHour.objects.all().filter(workday=workday)
                 for worker in workers:
                     worker_logs = list(logs.filter(worker=worker))
@@ -46,7 +50,8 @@ class Dashboard(View):
                     'workers_missing_logs': workers_missing_logs,
                     'workday': workday,
                     'workers_ratio': workers_ratio,
-                    'building': building
+                    'building': building,
+                    'is_old_workday': is_old_workday
                 }
                 return render(request, 'tracker/dashboard.html', context)
             except IndexError:
@@ -61,6 +66,7 @@ class LogHours(View):
         tasks = []
         workers = []
         user = request.user
+        is_old_workday = False
 
         # Select the building related to the overseer then obtain its tasks and workers
         building = Building.objects.get_by_overseer(user)
@@ -72,6 +78,7 @@ class LogHours(View):
                 workday = Workday.objects.filter(building=building, finished=False).order_by('-date')[0]
                 if workday.date != date:
                     django_messages.warning(request, messages.OLD_UNFINISHED_WORKDAY)
+                    is_old_workday = True
                 expected = workday.expected_hours()
                 logs = LogHour.objects.all().filter(workday=workday)
                 for worker in workers:
@@ -95,7 +102,8 @@ class LogHours(View):
             'tasks': tasks,
             'workers': serialize_workers_with_logs(workers),
             'expected': expected,
-            'workday': workday
+            'workday': workday,
+            'is_old_workday': is_old_workday
         }
 
         return render(request, 'tracker/log_hours.html', context)
@@ -108,6 +116,7 @@ class DayReview(View):
         workers_missing_logs = []
         workday = None
         logs = None
+        is_old_workday = False
         if building:
             workers = building.workers.all()
             date = timezone.localdate(timezone.now())
@@ -115,6 +124,7 @@ class DayReview(View):
                 workday = Workday.objects.filter(building=building, finished=False).order_by('-date')[0]
                 if workday.date != date:
                     django_messages.warning(request, messages.OLD_UNFINISHED_WORKDAY)
+                    is_old_workday = True
                 logs = LogHour.objects.all().filter(workday=workday)
                 for worker in workers:
                     worker.logs = list(logs.filter(worker=worker))
@@ -126,7 +136,8 @@ class DayReview(View):
         context = {
             'logs': serialize_logs(logs, with_workers=True, with_tasks=True),
             'workers_missing_logs': workers_missing_logs,
-            'workday': workday
+            'workday': workday,
+            'is_old_workday': is_old_workday
         }
 
         return render(request, 'tracker/day_review.html', context)
@@ -135,13 +146,13 @@ class DayReview(View):
 class PastDays(View):
     def get(self, request, username):
         user = request.user
-        view_threshold = timezone.localdate(timezone.now()) - timezone.timedelta(days=constants.DAYS_ABLE_TO_VIEW)
-        edit_threshold = timezone.localdate(timezone.now()) - timezone.timedelta(days=constants.DAYS_ABLE_TO_EDIT)
+        view_threshold = timezone.localdate(timezone.now()) - timezone.timedelta(days=config.DAYS_ABLE_TO_VIEW)
+        edit_threshold = timezone.localdate(timezone.now()) - timezone.timedelta(days=config.DAYS_ABLE_TO_EDIT)
         workdays = Workday.objects.filter(overseer=user, date__lt=timezone.localdate(timezone.now()), date__gte=view_threshold)
         editable_workdays = workdays.filter(date__gte=edit_threshold).order_by('-date')
         workdays = workdays.difference(editable_workdays).order_by('-date')
 
-        context = {'editable_workdays': editable_workdays, 'non_editable_workdays': workdays, 'days': constants.DAYS_ABLE_TO_EDIT}
+        context = {'editable_workdays': editable_workdays, 'non_editable_workdays': workdays, 'days': config.DAYS_ABLE_TO_EDIT}
 
         return render(request, 'tracker/past_days.html', context)
 

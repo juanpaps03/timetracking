@@ -53,6 +53,21 @@
 {% endblock javascript_header %}
 
 {% block content %}
+  {% if is_old_workday %}
+    <div class="row">
+      <div class="col-xs-6 col-lg-12">
+        <div class="card card-danger">
+          <div class="card-header">
+            <strong>{% trans "Old workday" %}</strong>
+          </div>
+          <div class="card-body card-block">
+            <p>{{ workday.date }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  {% endif %}
+
   <div class="row">
     <div class="col-xs-6 col-lg-12">
       <div class="card">

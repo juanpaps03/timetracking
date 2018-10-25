@@ -123,7 +123,8 @@ def create_default_tasks():
                                                          name=_('Union Assembly'),
                                                          description=_(
                                                          'Auto-generated task that designates a worker in an union assembly.'),
-                                                         category=special_category)
+                                                         category=special_category,
+                                                         in_monthly_report=False)
     union_assembly_task.buildings = Building.objects.all()
     union_assembly_task.save()
     # NO DHT
@@ -135,7 +136,8 @@ def create_default_tasks():
                                                          'Auto-generated task that designates a worker on leave for blood donation.'),
                                                          category=special_category,
                                                          is_boolean=True,
-                                                         whole_day=True)
+                                                         whole_day=True,
+                                                         in_monthly_report=False)
     blood_donation_task.buildings = Building.objects.all()
     blood_donation_task.save()
 
@@ -144,7 +146,8 @@ def create_default_tasks():
                                                     name=_('Sick'),
                                                     description=_('Auto-generated task that designates a sick worker.'),
                                                     category=special_category,
-                                                    is_boolean=True)
+                                                    is_boolean=True,
+                                                    in_monthly_report=False)
     sick_task.buildings = Building.objects.all()
     sick_task.save()
 
@@ -154,7 +157,8 @@ def create_default_tasks():
                                                        description=_('Auto-generated task that designates worker absence for a day.'),
                                                        category=special_category,
                                                        is_boolean=True,
-                                                       whole_day=True)
+                                                       whole_day=True,
+                                                       in_monthly_report=False)
     absence_task.buildings = Building.objects.all()
     absence_task.save()
 
@@ -174,7 +178,8 @@ def create_default_tasks():
                                                            description=_('Auto-generated task that designates a worker on bereavement leave.'),
                                                            category=special_category,
                                                            is_boolean=True,
-                                                           whole_day=True)
+                                                           whole_day=True,
+                                                           in_monthly_report=False)
     bereavement_task.buildings = Building.objects.all()
     bereavement_task.save()
 
@@ -184,7 +189,8 @@ def create_default_tasks():
                                                      description=_('Auto-generated task that designates a worker on study leave.'),
                                                      category=special_category,
                                                      is_boolean=True,
-                                                     whole_day=True)
+                                                     whole_day=True,
+                                                     in_monthly_report=False)
     study_task.buildings = Building.objects.all()
     study_task.save()
 
@@ -198,7 +204,6 @@ def create_default_tasks():
                                                               whole_day=True)
     disabled_child_leave_task.buildings = Building.objects.all()
     disabled_child_leave_task.save()
-    # YES DHT TODO
 
     # marriage leave task creation.
     marriage_leave_task, created = Task.objects.get_or_create(code=constants.MARRIAGE_LEAVE_CODE,
@@ -207,7 +212,8 @@ def create_default_tasks():
                                                                   'Auto-generated task that designates a worker on marriage leave.'),
                                                               category=special_category,
                                                               is_boolean=True,
-                                                              whole_day=True)
+                                                              whole_day=True,
+                                                              in_monthly_report=False)
     marriage_leave_task.buildings = Building.objects.all()
     marriage_leave_task.save()
 
@@ -218,7 +224,8 @@ def create_default_tasks():
                                                                   'Auto-generated task that designates a worker on paternity leave.'),
                                                               category=special_category,
                                                               is_boolean=True,
-                                                              whole_day=True)
+                                                              whole_day=True,
+                                                              in_monthly_report=False)
     paternity_leave_task.buildings = Building.objects.all()
     paternity_leave_task.save()
 
@@ -235,10 +242,10 @@ def create_default_tasks():
     strike_task, created = Task.objects.get_or_create(code=constants.STRIKE_CODE,
                                                       name=_('Strike'),
                                                       description=_('Auto-generated task that designates a worker on strike.'),
-                                                      category=special_category)
+                                                      category=special_category,
+                                                      in_monthly_report=False)
     strike_task.buildings = Building.objects.all()
     strike_task.save()
-    # NO DHT TODO
 
     # general strike task creation.
     general_strike_task, created = Task.objects.get_or_create(code=constants.GENERAL_STRIKE_CODE,
@@ -247,7 +254,8 @@ def create_default_tasks():
                                                           'Auto-generated task that designates a worker on general strike.'),
                                                       category=special_category,
                                                       is_boolean=True,
-                                                      whole_day=True)
+                                                      whole_day=True,
+                                                      in_monthly_report=False)
     general_strike_task.buildings = Building.objects.all()
     general_strike_task.save()
 
@@ -257,7 +265,8 @@ def create_default_tasks():
                                                       description=_(
                                                           'Auto-generated task that designates a worker that left early.'),
                                                       category=special_category,
-                                                      is_boolean=True)
+                                                      is_boolean=True,
+                                                      in_monthly_report=False)
     early_leave_task.buildings = Building.objects.all()
     early_leave_task.save()
 
@@ -285,9 +294,10 @@ def create_default_tasks():
                                                       description=_(
                                                           'Auto-generated task that designates a worker on antiquity leave.'),
                                                       category=special_category,
-                                                      is_boolean=True)
-    training_task.buildings = Building.objects.all()
-    training_task.save()
+                                                      is_boolean=True,
+                                                      in_monthly_report=False)
+    antiquity_task.buildings = Building.objects.all()
+    antiquity_task.save()
 
     # suspended task creation.
     suspended_task, created = Task.objects.get_or_create(code=constants.SUSPENDED_CODE,
@@ -295,7 +305,8 @@ def create_default_tasks():
                                                          description=_(
                                                          'Auto-generated task that designates a suspended worker.'),
                                                          category=special_category,
-                                                         is_boolean=True)
+                                                         is_boolean=True,
+                                                         in_monthly_report=False)
     suspended_task.buildings = Building.objects.all()
     suspended_task.save()
 
@@ -304,7 +315,8 @@ def create_default_tasks():
                                                          name=_('Postobra'),
                                                          description=_(
                                                          'Auto-generated task that designates a worker on post-obra.'),
-                                                         category=special_category)
+                                                         category=special_category,
+                                                         in_monthly_report=False)
     post_obra_task.buildings = Building.objects.all()
     post_obra_task.save()
 

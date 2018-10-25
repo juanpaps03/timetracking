@@ -8,6 +8,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/dev/ref/settings/
 """
 import environ
+from .. import constants
 
 ROOT_DIR = environ.Path(__file__) - 3  # (sabyltimetracker/config/settings/base.py - 3 = sabyltimetracker/)
 APPS_DIR = ROOT_DIR.path('sabyltimetracker')
@@ -50,6 +51,8 @@ THIRD_PARTY_APPS = [
     'allauth.account',  # registration
     'allauth.socialaccount',  # registration
     'rest_framework',
+    'constance',
+    'constance.backends.database'
 ]
 
 # Apps specific for this project go here.
@@ -278,3 +281,9 @@ ADMIN_URL = r'^admin/'
 
 # Your common stuff: Below this line define 3rd party library settings
 # ------------------------------------------------------------------------------
+
+CONSTANCE_BACKEND = 'constance.backends.database.DatabaseBackend'
+CONSTANCE_IGNORE_ADMIN_VERSION_CHECK = True
+
+CONSTANCE_CONFIG = constants.DYNAMIC_CONSTANTS
+CONSTANCE_CONFIG_FIELDSETS = constants.DYNAMIC_CONSTANT_FIELDSETS

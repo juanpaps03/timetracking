@@ -13,6 +13,8 @@ from sabyltimetracker.users.models import User
 from tracker import utils
 from django.utils.dateparse import parse_datetime
 
+from constance import config
+
 
 class BuildingManager(models.Manager):
     # In order to obtain the last building related to the oversee,
@@ -67,7 +69,7 @@ class Building(models.Model):
         header = workbook.add_format({ 'bg_color': '#F7F7F7', 'color': 'black', 'align': 'center', 'border': 1 })
 
         # title row
-        r.merge_range('A1:C3', _('COMPANY NAME'), title)
+        r.merge_range('A1:C3', config.COMPANY_NAME, title)
         r.insert_image('A1', 'static:images:logo.png')
         r.merge_range('D1:AR1', _('Worked Hours Detail'), title)
         building_info = '%s: %s' % (_('Building'), str(self))
@@ -144,14 +146,15 @@ class Building(models.Model):
                 code_width = len(worker.code)
             if len(worker.full_name()) > full_name_width:
                 full_name_width = len(worker.full_name())
-            first_additional_half_hours = 0
-            second_additional_half_hours = 0
-            first_incentive_hours = 0
-            second_incentive_hours = 0
+            first_additional_half_hours = 0  # first fortnight
+            second_additional_half_hours = 0  # second fortnight
+            first_incentive_hours = 0  # first fortnight
+            second_incentive_hours = 0  # second fortnight
             for day in range(1, 32):
-                hours = LogHour.sum_hours(worker.logs.filter(workday__date__day=day))
+                hours = LogHour.sum_hours(worker.logs.filter(workday__date__day=day, task__in_monthly_report=True))
                 r.write('%s%d' % (utils.column_letter(10 + day), row), hours)
-                if hours >= Workday.additional_half_hour_threshold(day, month, year):
+                # no half additional hours on strike days.
+                if hours >= Workday.additional_half_hour_threshold(day, month, year) and worker.logs.filter(task__code=constants.STRIKE_CODE).count == 0:
                     if day <= 15:
                         first_additional_half_hours += 0.5
                     else:
@@ -196,7 +199,20 @@ class Workday(models.Model):
         super(Workday, self).save(*args, **kwargs)
 
     def expected_hours(self):
-        return constants.EXPECTED_HOURS[self.date.weekday()]
+        day = self.date.weekday()
+        if day == 0:
+            return config.MONDAY_HOURS
+        if day == 1:
+            return config.TUESDAY_HOURS
+        if day == 2:
+            return config.WEDNESDAY_HOURS
+        if day == 3:
+            return config.THURSDAY_HOURS
+        if day == 4:
+            return config.FRIDAY_HOURS
+        if day == 5:
+            return config.SATURDAY_HOURS
+        return config.SUNDAY_HOURS
 
     @staticmethod
     def additional_half_hour_threshold(day, month, year):
@@ -206,9 +222,9 @@ class Workday(models.Model):
         winter_end = datetime.datetime.strptime(winter_end, "%Y-%m-%d").date()
         today = datetime.date(year, month, day)
         if winter_start <= today <= winter_end:
-            return constants.WINTER_TIME_THRESHOLD
+            return config.WINTER_TIME_THRESHOLD
         else:
-            return constants.SUMMER_TIME_THRESHOLD
+            return config.SUMMER_TIME_THRESHOLD
 
     @staticmethod
     def calculate_incentive(day, month, year, building, worker):
@@ -219,8 +235,8 @@ class Workday(models.Model):
                 monday = date - timezone.timedelta(days=4)
                 week_logs = LogHour.objects.filter(workday__date__lte=date, workday__date__gte=monday, worker=worker)
                 week_hours = LogHour.sum_hours(week_logs)
-                if week_hours >= constants.INCENTIVE_THRESHOLD:
-                    return float(week_hours) * constants.INCENTIVE_PERCENT / 100
+                if week_hours >= config.INCENTIVE_THRESHOLD:
+                    return float(week_hours) * config.INCENTIVE_PERCENT / 100
             return 0
         except Workday.DoesNotExist:
             return 0
@@ -274,7 +290,7 @@ class Workday(models.Model):
 
         # title row
 
-        r.merge_range('A1:C3', constants.COMPANY_NAME, title)
+        r.merge_range('A1:C3', config.COMPANY_NAME, title)
         r.insert_image('A1', 'static:images:logo.png')
         r.merge_range('D1:%s1' % max_column, _('Daily Report'), title)
         building_info = '%s: %s' % (_('Building'), str(workday.building))
@@ -364,7 +380,7 @@ class Workday(models.Model):
 
     def is_editable_by_overseer(self):
         return True
-    #    print(timezone.now() - timezone.timedelta(days=constants.DAYS_ABLE_TO_EDIT) TODO make real control
+    #    print(timezone.now() - timezone.timedelta(days=config.DAYS_ABLE_TO_EDIT) TODO make real control
 
     def __str__(self):
         return '%s - %s' % (str(self.date), str(self.building))
@@ -403,6 +419,8 @@ class LogHour(models.Model):
             for log in logs:
                 if not log.task.is_boolean:
                     sum += log.amount
+                elif log.task.whole_day:
+                    sum += log.workday.expected_hours()
             return sum
         else:
             return 0
@@ -447,6 +465,7 @@ class Task(models.Model):
     requires_comment = models.BooleanField(default=False)
     is_boolean = models.BooleanField(default=False)
     whole_day = models.BooleanField(default=False)
+    in_monthly_report = models.BooleanField(default=True)
 
     objects = TaskManager()
 
@@ -484,3 +503,25 @@ class Worker(models.Model):
 
     def __str__(self):
         return self.full_name()
+#
+# class myConstant(models.Model)
+#     # ...
+#
+#     def clean(self):
+#         if self.id:  # instance already exists
+#         # do some clean
+#         elif myConstant.objects.count() > 0:
+#             raise ValidationError("Only one instance allowed")
+#         else:
+#
+#     # do some clean
+#
+#     def save(self):
+#         # check if this instance already exists
+#         if self.id:
+#             super().save()
+#         # else: count numbers of all instances of this model
+#         elif myConstant.objects.all().count() > 0:
+#             return  # no save will be processed
+#         else:
+#             super().save()

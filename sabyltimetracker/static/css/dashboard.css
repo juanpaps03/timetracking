@@ -97,3 +97,8 @@
     font-family: 'Share Tech Mono', "Times New Roman", Times, serif;
     text-align: center;
 }
+
+.date-static {
+    letter-spacing: 0.1em;
+    font-size: 18px;
+}
