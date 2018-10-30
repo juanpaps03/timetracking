@@ -72,7 +72,7 @@ DYNAMIC_CONSTANTS = {
     'DAYS_ABLE_TO_EDIT': (7, 'time period in days for which the overseer can edit previous workdays'),
     'DAYS_ABLE_TO_VIEW': (36500, 'time period in days for which the overseer can view previous workdays'
                                  '(default 100 years)'),
-    'MONDAY_HOURS': (9, 'hours expected for mondays'),x
+    'MONDAY_HOURS': (9, 'hours expected for mondays'),
     'TUESDAY_HOURS': (9, 'hours expected for tuesdays'),
     'WEDNESDAY_HOURS': (9, 'hours expected for wednesdays'),
     'THURSDAY_HOURS': (9, 'hours expected for thursdays'),

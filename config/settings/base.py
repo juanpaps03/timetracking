@@ -13,6 +13,7 @@ from .. import constants
 ROOT_DIR = environ.Path(__file__) - 3  # (sabyltimetracker/config/settings/base.py - 3 = sabyltimetracker/)
 APPS_DIR = ROOT_DIR.path('sabyltimetracker')
 
+LOCALE_PATHS = ("local",)
 # Load operating system environment variables and then prepare to use them
 env = environ.Env()
 
