@@ -32,7 +32,7 @@ class BuildingAdmin(admin.ModelAdmin):
                            reverse('admin:building_reports', kwargs={'building': obj.code}),
                            _('Make Reports')
                            )
-    report_buttons.short_description = 'Monthly Reports'
+    report_buttons.short_description = _('Monthly Reports')
 
     def get_urls(self):
         def wrap(view):
@@ -64,7 +64,7 @@ class WorkdayAdmin(admin.ModelAdmin):
                            reverse('admin:workday_daily_report', kwargs={'building': obj.building, 'date': obj.date}),
                            _('Download Report')
                            )
-    report_buttons.short_description = 'Daily Reports'
+    report_buttons.short_description = _('Daily Reports')
 
     def get_urls(self):
         def wrap(view):

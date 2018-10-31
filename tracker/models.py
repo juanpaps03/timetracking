@@ -6,7 +6,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 from django.utils import timezone
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy as _
 
 from config import constants
 from sabyltimetracker.users.models import User
@@ -27,8 +27,12 @@ class BuildingManager(models.Manager):
 
 
 class Building(models.Model):
-    code = models.PositiveIntegerField(null=False, blank=False)
-    address = models.CharField(blank=True, max_length=255)
+    class Meta:
+        verbose_name = _('building')
+        verbose_name_plural = _('buildings')
+
+    code = models.PositiveIntegerField(_('code'), null=False, blank=False)
+    address = models.CharField(_('address'), blank=True, max_length=255)
     overseer = models.OneToOneField(User, on_delete=models.SET_NULL, null=True, blank=True)
     workers = models.ManyToManyField('Worker', related_name="buildings")
     tasks = models.ManyToManyField('Task', related_name="buildings")
@@ -184,13 +188,17 @@ class Building(models.Model):
 
 
 class Workday(models.Model):
+    class Meta:
+        verbose_name = _('workday')
+        verbose_name_plural = _('workdays')
+
     building = models.ForeignKey(Building)
-    date = models.DateField(auto_now=False, default=datetime.date.today)
-    finished = models.BooleanField(default=False)
+    date = models.DateField(_('date'), auto_now=False, default=datetime.date.today)
+    finished = models.BooleanField(_('finished'), default=False)
     overseer = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True)
-    comment = models.CharField(null=True, blank=True, max_length=400, default=None)
-    force_finished = models.BooleanField(default=False)
-    holiday = models.BooleanField(default=False)
+    comment = models.CharField(_('comment'), null=True, blank=True, max_length=400, default=None)
+    force_finished = models.BooleanField(_('force finished'), default=False)
+    holiday = models.BooleanField(_('holiday'), default=False)
 
     def save(self, *args, **kwargs):
         if self.holiday:
@@ -387,12 +395,16 @@ class Workday(models.Model):
 
 
 class LogHour(models.Model):
+    class Meta:
+        verbose_name = _('log hour')
+        verbose_name_plural = _('log hours')
+
     workday = models.ForeignKey('Workday', on_delete=models.CASCADE, related_name='logs')
     worker = models.ForeignKey('Worker')
     task = models.ForeignKey('Task')
-    amount = models.DecimalField(max_digits=2, decimal_places=1, null=False, blank=False, default=1,
+    amount = models.DecimalField(_('amount'), max_digits=2, decimal_places=1, null=False, blank=False, default=1,
                                  validators=[MaxValueValidator(24), MinValueValidator(1)])
-    comment = models.CharField(null=True, blank=True, max_length=255, default=None)
+    comment = models.CharField(_('comment'), null=True, blank=True, max_length=255, default=None)
 
     @staticmethod
     def create_log_hours(workday, task, building, list_hours_per_user, comment=None):
@@ -458,14 +470,18 @@ class TaskManager(models.Manager):
 
 
 class Task(models.Model):
-    code = models.CharField(null=False, blank=False, max_length=20, unique=True)
-    name = models.CharField(null=False, blank=True, max_length=255, unique=True)
-    description = models.TextField()
+    class Meta:
+        verbose_name = _('task')
+        verbose_name_plural = _('tasks')
+
+    code = models.CharField(_('code'), null=False, blank=False, max_length=20, unique=True)
+    name = models.CharField(_('name'), null=False, blank=True, max_length=255, unique=True)
+    description = models.TextField(_('description'))
     category = models.ForeignKey('TaskCategory')
-    requires_comment = models.BooleanField(default=False)
-    is_boolean = models.BooleanField(default=False)
-    whole_day = models.BooleanField(default=False)
-    in_monthly_report = models.BooleanField(default=True)
+    requires_comment = models.BooleanField(_('requires comment'), default=False)
+    is_boolean = models.BooleanField(_('is boolean'), default=False)
+    whole_day = models.BooleanField(_('whole day'), default=False)
+    in_monthly_report = models.BooleanField(_('in monthly report'), default=True)
 
     objects = TaskManager()
 
@@ -493,9 +509,13 @@ class WorkerCategory(models.Model):
 
 
 class Worker(models.Model):
-    code = models.CharField(primary_key=True, max_length=10)
-    first_name = models.CharField(max_length=100)
-    last_name = models.CharField(max_length=100)
+    class Meta:
+        verbose_name = _('worker')
+        verbose_name_plural = _('workers')
+
+    code = models.CharField(_('code'), primary_key=True, max_length=10)
+    first_name = models.CharField(_('first name'), max_length=100)
+    last_name = models.CharField(_('last name'), max_length=100)
     category = models.ForeignKey('WorkerCategory')
 
     def full_name(self):
@@ -503,25 +523,3 @@ class Worker(models.Model):
 
     def __str__(self):
         return self.full_name()
-#
-# class myConstant(models.Model)
-#     # ...
-#
-#     def clean(self):
-#         if self.id:  # instance already exists
-#         # do some clean
-#         elif myConstant.objects.count() > 0:
-#             raise ValidationError("Only one instance allowed")
-#         else:
-#
-#     # do some clean
-#
-#     def save(self):
-#         # check if this instance already exists
-#         if self.id:
-#             super().save()
-#         # else: count numbers of all instances of this model
-#         elif myConstant.objects.all().count() > 0:
-#             return  # no save will be processed
-#         else:
-#             super().save()
