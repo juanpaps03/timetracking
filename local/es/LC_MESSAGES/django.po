@@ -1112,46 +1112,46 @@ msgstr "Tareas"
 
 #: tracker/models.py:484
 msgid "name"
-msgstr ""
+msgstr "nombre"
 
 #: tracker/models.py:485
 msgid "description"
-msgstr ""
+msgstr "descripción"
 
 #: tracker/models.py:487
 msgid "requires comment"
-msgstr ""
+msgstr "requiere comentario"
 
 #: tracker/models.py:488
 msgid "is boolean"
-msgstr ""
+msgstr "es checkbox"
 
 #: tracker/models.py:489
 msgid "whole day"
-msgstr ""
+msgstr "todo el día"
 
 #: tracker/models.py:490
 #, fuzzy
 #| msgid "Monthly Report"
 msgid "in monthly report"
-msgstr "Reporte Mensual"
+msgstr "en reporte mensual"
 
 #: tracker/models.py:519
 #, fuzzy
 #| msgid "Workers"
 msgid "worker"
-msgstr "Trabajadores"
+msgstr "trabajador"
 
 #: tracker/models.py:520
 #, fuzzy
 #| msgid "Workers"
 msgid "workers"
-msgstr "Trabajadores"
+msgstr "trabajadores"
 
 #: tracker/models.py:523
 msgid "first name"
-msgstr ""
+msgstr "nombre"
 
 #: tracker/models.py:524
 msgid "last name"
-msgstr ""
+msgstr "apellido"
