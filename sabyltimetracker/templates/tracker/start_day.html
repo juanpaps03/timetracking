@@ -51,19 +51,19 @@
     </div>
   </div>
 
-  <div class="row">
-    <div class="col-xs-12 col-lg-12">
-      <div class="card">
-        <div class="card-body card-block">
-          <form method="post" action="{% url 'tracker:api_start_day' request.user.username %}">{% csrf_token %}
-            <div class="col-sm-12 col-12">
-              <button type="submit" class="btn btn-lg btn-block btn-outline-success">{% trans "Start Day" %}</button>
-            </div>
-          </form>
-        </div>
+  {% if able_to_start %}
+  <div class="col-12">
+    <div class="card">
+      <div class="card-body card-block">
+        <form method="post" action="{% url 'tracker:api_start_day' request.user.username %}">{% csrf_token %}
+          <div class="col-sm-12 col-12">
+            <button type="submit" class="btn btn-lg btn-block btn-outline-success">{% trans "Start Day" %}</button>
+          </div>
+        </form>
       </div>
     </div>
   </div>
+  {% endif %}
 {% endblock content%}
 
 

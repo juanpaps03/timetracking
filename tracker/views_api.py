@@ -66,8 +66,10 @@ class StartDay(APIView):
     def post(self, request, username):
         user = request.user
         building = Building.objects.get_by_overseer(user)
-        Workday.start(building)
-        return redirect('tracker:dashboard', username=username)
+        if Workday.start(building):
+            return redirect('tracker:dashboard', username=username)
+        else:
+            return JsonResponse({'message': messages.GENERIC_ERROR}, status=500)
 
 
 class EndDay(APIView):

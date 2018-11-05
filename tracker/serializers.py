@@ -1,25 +1,16 @@
 def serialize_task(task, with_logs=False):
+    serialized_task = {
+        'id': task.id,
+        'code': task.code,
+        'name': task.name,
+        'category': task.category.name,
+        'description': task.description,
+        'requires_comment': task.requires_comment,
+        'is_boolean': task.is_boolean
+    }
     if with_logs:
-        return {
-            'id': task.id,
-            'code': task.code,
-            'name': task.name,
-            'category': task.category.name,
-            'description': task.description,
-            'requires_comment': task.requires_comment,
-            'is_boolean': task.is_boolean,
-            'logs': [{'worker': {'code': log.worker.code}, 'amount': float(log.amount)} for log in task.logs],
-        }
-    else:
-        return {
-            'id': task.id,
-            'code': task.code,
-            'name': task.name,
-            'category': task.category.name,
-            'description': task.description,
-            'requires_comment': task.requires_comment,
-            'is_boolean': task.is_boolean
-        }
+        serialized_task['logs'] = [{'worker': {'code': log.worker.code}, 'amount': float(log.amount)} for log in task.logs]
+    return serialized_task
 
 
 def serialize_tasks_with_logs(tasks):
@@ -27,30 +18,15 @@ def serialize_tasks_with_logs(tasks):
 
 
 def serialize_log(log, with_worker=False, with_task=False):
-    if with_worker and with_task:
-        return {
-            'task': serialize_task(log.task),
-            'worker': {'code': log.worker.code, 'first_name': log.worker.first_name, 'last_name': log.worker.last_name},
-            'amount': float(log.amount),
-            'comment': log.comment
-        }
-    elif with_worker:
-        return {
-            'worker': {'code': log.worker.code, 'first_name': log.worker.first_name, 'last_name': log.worker.last_name},
-            'amount': float(log.amount),
-            'comment': log.comment
-        }
-    elif with_task:
-        return {
-            'task': serialize_task(log.task),
-            'amount': float(log.amount),
-            'comment': log.comment
-        }
-    else:
-        return {
-            'amount': float(log.amount),
-            'comment': log.comment
-        }
+    serialized_log = {
+        'amount': float(log.amount),
+        'comment': log.comment
+    }
+    if with_task:
+        serialized_log['task'] = serialize_task(log.task)
+    if with_worker:
+        serialized_log['worker'] = {'code': log.worker.code, 'first_name': log.worker.first_name, 'last_name': log.worker.last_name},
+    return serialized_log
 
 
 def serialize_logs(logs, with_workers, with_tasks):

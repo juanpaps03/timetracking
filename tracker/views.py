@@ -55,7 +55,9 @@ class Dashboard(View):
                 }
                 return render(request, 'tracker/dashboard.html', context)
             except IndexError:
-                context = {'building': building}
+                workday = Workday.objects.filter(building=building, finished=True).order_by('-date')[0]
+                able_to_start = workday.date != date
+                context = {'building': building, 'able_to_start': able_to_start}
                 return render(request, 'tracker/start_day.html', context)
         else:
             return JsonResponse({'message': messages.BUILDING_NOT_FOUND}, status=400)

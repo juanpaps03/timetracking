@@ -251,8 +251,14 @@ class Workday(models.Model):
 
     @staticmethod
     def start(building):
-        workday = Workday(building = building, overseer=building.overseer)
-        workday.save()
+        workday = Workday.objects.filter(building=building).order_by('-date')[0]
+        date = timezone.localdate(timezone.now())
+        if workday.date != date:
+            workday = Workday(building=building, overseer=building.overseer)
+            workday.save()
+            return True
+        else:
+            return False
 
     def assign_logs(self, task_id, list_hours_per_user, comment=None):
         task = self.building.tasks.get(pk=task_id)
