@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-30 10:17-0300\n"
+"POT-Creation-Date: 2018-11-05 12:35-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,9 +17,11 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
 #: config/messages.py:3
 msgid "There was a problem obtaining work day. Maybe it was finished."
-msgstr "Hubo un problema al obtener el día de trabajo. Quizás ya fue finalizado."
+msgstr ""
+"Hubo un problema al obtener el día de trabajo. Quizás ya fue finalizado."
 
 #: config/messages.py:4
 msgid "There was a problem obtaining work day."
@@ -120,8 +122,8 @@ msgid ""
 "You currently do not have any e-mail address set up. You should really add "
 "an e-mail address so you can receive notifications, reset your password, etc."
 msgstr ""
-"Actualmente no tienes ningún correo electrónico asociado."
-" Se recomienda agregar uno para recibir notificaciones, restaurar tu contraseña, etc."
+"Actualmente no tienes ningún correo electrónico asociado. Se recomienda "
+"agregar uno para recibir notificaciones, restaurar tu contraseña, etc."
 
 #: sabyltimetracker/templates/account/email.html:51
 msgid "Add E-mail Address"
@@ -146,8 +148,8 @@ msgid ""
 "Please confirm that <a href=\"mailto:%(email)s\">%(email)s</a> is an e-mail "
 "address for user %(user_display)s."
 msgstr ""
-"Por favor, confirme que <a href=\"mailto:%(email)s\">%(email)s</a> es un correo"
-"electrónico para el usuario %(user_display)s."
+"Por favor, confirme que <a href=\"mailto:%(email)s\">%(email)s</a> es un "
+"correoelectrónico para el usuario %(user_display)s."
 
 #: sabyltimetracker/templates/account/email_confirm.html:20
 msgid "Confirm"
@@ -159,8 +161,9 @@ msgid ""
 "This e-mail confirmation link expired or is invalid. Please <a href="
 "\"%(email_url)s\">issue a new e-mail confirmation request</a>."
 msgstr ""
-"Este vínculo de confirmación de correo electrónico expiró o es inválido. Por favor "
-"<a href=\"%(email_url)s\">solicite un nuevo correo electrónico de confirmación</a>."
+"Este vínculo de confirmación de correo electrónico expiró o es inválido. Por "
+"favor <a href=\"%(email_url)s\">solicite un nuevo correo electrónico de "
+"confirmación</a>."
 
 #: sabyltimetracker/templates/account/login.html:7
 #: sabyltimetracker/templates/account/login.html:24
@@ -201,8 +204,8 @@ msgid ""
 "Forgotten your password? Enter your e-mail address below, and we'll send you "
 "an e-mail allowing you to reset it."
 msgstr ""
-"¿Olvidó su contraseña? Ingrese su correo electrónico debajo, y le enviaremos un "
-"correo electrónico permitiéndole restablecerla."
+"¿Olvidó su contraseña? Ingrese su correo electrónico debajo, y le enviaremos "
+"un correo electrónico permitiéndole restablecerla."
 
 #: sabyltimetracker/templates/account/password_reset.html:21
 msgid "Reset My Password"
@@ -210,7 +213,8 @@ msgstr "Restablecer Mi Contraseña"
 
 #: sabyltimetracker/templates/account/password_reset.html:24
 msgid "Please contact us if you have any trouble resetting your password."
-msgstr "Por favor, contáctenos si tiene algún problema restableciendo su contraseña."
+msgstr ""
+"Por favor, contáctenos si tiene algún problema restableciendo su contraseña."
 
 #: sabyltimetracker/templates/account/password_reset_done.html:15
 msgid ""
@@ -231,8 +235,9 @@ msgid ""
 "used.  Please request a <a href=\"%(passwd_reset_url)s\">new password reset</"
 "a>."
 msgstr ""
-"El enlace de restablecimiento de contraseña era inválido, posiblemente porque ya se haya "
-"utilizado. Por favor, <a href=\"%(passwd_reset_url)s\">solicite uno nuevo.</a>."
+"El enlace de restablecimiento de contraseña era inválido, posiblemente "
+"porque ya se haya utilizado. Por favor, <a href=\"%(passwd_reset_url)s"
+"\">solicite uno nuevo.</a>."
 
 #: sabyltimetracker/templates/account/password_reset_from_key.html:18
 msgid "change password"
@@ -286,9 +291,9 @@ msgid ""
 "finalize the signup process. Please contact us if you do not receive it "
 "within a few minutes."
 msgstr ""
-"Le hemos enviado un correo electrónico de verificación. Haga clic en el enlace "
-"en él para finalizar el procesod e registro. Por favor, contáctenos si no lo recibe "
-"dentro de unos minutos."
+"Le hemos enviado un correo electrónico de verificación. Haga clic en el "
+"enlace en él para finalizar el procesod e registro. Por favor, contáctenos "
+"si no lo recibe dentro de unos minutos."
 
 #: sabyltimetracker/templates/account/verified_email_required.html:12
 msgid ""
@@ -296,8 +301,8 @@ msgid ""
 "    you are who you claim to be. For this purpose, we require that you\n"
 "    verify ownership of your e-mail address. "
 msgstr ""
-"Esta sección del sitio requiere confirmación de identidad. Para esto, se requiere que "
-"se verifique el correo electrónico."
+"Esta sección del sitio requiere confirmación de identidad. Para esto, se "
+"requiere que se verifique el correo electrónico."
 
 #: sabyltimetracker/templates/account/verified_email_required.html:16
 msgid ""
@@ -305,8 +310,9 @@ msgid ""
 "    verification. Please click on the link inside this e-mail. Please\n"
 "    contact us if you do not receive it within a few minutes."
 msgstr ""
-"Le hemos enviado un correo electrónico de verificación. Por favor haga clic en el enlace "
-"en ese correo. Por favor contáctenos si no lo recibe dentro de unos minutos."
+"Le hemos enviado un correo electrónico de verificación. Por favor haga clic "
+"en el enlace en ese correo. Por favor contáctenos si no lo recibe dentro de "
+"unos minutos."
 
 #: sabyltimetracker/templates/account/verified_email_required.html:20
 #, python-format
@@ -314,10 +320,11 @@ msgid ""
 "<strong>Note:</strong> you can still <a href=\"%(email_url)s\">change your e-"
 "mail address</a>."
 msgstr ""
-"<strong>Nota:</strong> aún puede <a href=\"%(email_url)s\">cambiar su correo electrónico</a>"
+"<strong>Nota:</strong> aún puede <a href=\"%(email_url)s\">cambiar su correo "
+"electrónico</a>"
 
 #: sabyltimetracker/templates/admin/building_reports.html:10
-#: tracker/models.py:77
+#: tracker/models.py:81
 msgid "Month"
 msgstr "Mes"
 
@@ -370,7 +377,7 @@ msgid "December"
 msgstr "Diciembre"
 
 #: sabyltimetracker/templates/admin/building_reports.html:27
-#: tracker/models.py:77
+#: tracker/models.py:81
 msgid "Year"
 msgstr "Año"
 
@@ -390,8 +397,9 @@ msgstr "Mostrar/Ocultar navegación"
 #: sabyltimetracker/templates/tracker/log_hours.html:23
 #: sabyltimetracker/templates/tracker/start_day.html:15
 msgid "Dashboard"
-msgstr "Tablero"  #not convinced with this translation.
+msgstr "Tablero"
 
+# not convinced with this translation.
 #: sabyltimetracker/templates/base.html:71
 msgid "Menu"
 msgstr "Menú"
@@ -402,6 +410,12 @@ msgstr "Menú"
 #: sabyltimetracker/templates/tracker/past_days_edit.html:23
 msgid "Past Days"
 msgstr "Días Anteriores"
+
+#: sabyltimetracker/templates/tracker/dashboard.html:39
+#, fuzzy
+#| msgid "workers missing logs."
+msgid "Workers with logs"
+msgstr "trabajadores necesitan registros."
 
 #: sabyltimetracker/templates/tracker/dashboard.html:56
 #: sabyltimetracker/templates/tracker/day_review.html:60
@@ -429,8 +443,8 @@ msgid ""
 "All workers have enough logs. When you are sure everything is done, you can "
 "end the day."
 msgstr ""
-"Todos los trabajadores tienen suficientes registros. Cuando esté seguro que todo es correcto, puede "
-"terminar el día."
+"Todos los trabajadores tienen suficientes registros. Cuando esté seguro que "
+"todo es correcto, puede terminar el día."
 
 #: sabyltimetracker/templates/tracker/dashboard.html:107
 #: sabyltimetracker/templates/tracker/log_hours.html:15
@@ -471,7 +485,7 @@ msgstr "Revisión de Registros"
 #: sabyltimetracker/templates/tracker/day_review.html:91
 #: sabyltimetracker/templates/tracker/log_hours.html:114
 #: sabyltimetracker/templates/tracker/past_days_edit.html:98
-#: tracker/models.py:82 tracker/models.py:307
+#: tracker/models.py:86 tracker/models.py:321
 msgid "Full Name"
 msgstr "Nombre Completo"
 
@@ -518,8 +532,8 @@ msgid ""
 "To end a day without all workers having their required hours logged, a "
 "written comment is mandatory."
 msgstr ""
-"Para finalizar un día sin que todos los trabajadores tengan todos los registros necesarios, se "
-"requiere un comentario escrito."
+"Para finalizar un día sin que todos los trabajadores tengan todos los "
+"registros necesarios, se requiere un comentario escrito."
 
 #: sabyltimetracker/templates/tracker/day_review.html:146
 msgid "Comment (required)"
@@ -710,6 +724,16 @@ msgstr "Se espera que cada trabajador haya trabajado"
 msgid "Make Reports"
 msgstr "Hacer Reportes"
 
+#: tracker/admin.py:35 tracker/admin.py:357
+msgid "Monthly Reports"
+msgstr "Reportes Mensuales"
+
+#: tracker/admin.py:67
+#, fuzzy
+#| msgid "Daily Report"
+msgid "Daily Reports"
+msgstr "Reporte Diario"
+
 #: tracker/admin.py:123
 msgid "Union Assembly"
 msgstr "Asamblea Sindical"
@@ -751,7 +775,9 @@ msgstr "Falta con Aviso"
 msgid ""
 "Auto-generated task that designates worker absence for a day, with previous "
 "notice."
-msgstr "Tarea autogenerada que designa un trabajador ausente por el día, con aviso previo."
+msgstr ""
+"Tarea autogenerada que designa un trabajador ausente por el día, con aviso "
+"previo."
 
 #: tracker/admin.py:177
 msgid "Bereavement Leave"
@@ -777,7 +803,9 @@ msgstr "Licencia por Hijo Discapacitado"
 msgid ""
 "Auto-generated task that designates a worker on leave for having a disabled "
 "child."
-msgstr "Tarea autogenerada que designa un trabajador en licencia por hijo discapacitado."
+msgstr ""
+"Tarea autogenerada que designa un trabajador en licencia por hijo "
+"discapacitado."
 
 #: tracker/admin.py:210
 msgid "Marriage Leave"
@@ -785,7 +813,8 @@ msgstr "Licencia por Matrimonio"
 
 #: tracker/admin.py:212
 msgid "Auto-generated task that designates a worker on marriage leave."
-msgstr "Tarea autogenerada que designa un trabajador en licencia por matrimonio"
+msgstr ""
+"Tarea autogenerada que designa un trabajador en licencia por matrimonio"
 
 #: tracker/admin.py:222
 msgid "Paternity Leave"
@@ -841,7 +870,8 @@ msgstr "Capacitación de la Empresa"
 
 #: tracker/admin.py:286
 msgid "Auto-generated task that designates a worker on training."
-msgstr "Tarea autogenerada que designa un trabajador en capacitación de la empresa."
+msgstr ""
+"Tarea autogenerada que designa un trabajador en capacitación de la empresa."
 
 #: tracker/admin.py:293
 msgid "Antiquity leave"
@@ -849,7 +879,8 @@ msgstr "Licencia Antigüedad"
 
 #: tracker/admin.py:295
 msgid "Auto-generated task that designates a worker on antiquity leave."
-msgstr "Tarea autogenerada que designa un trabajador en licencia por antigüedad"
+msgstr ""
+"Tarea autogenerada que designa un trabajador en licencia por antigüedad"
 
 #: tracker/admin.py:304
 msgid "Suspended"
@@ -881,110 +912,246 @@ msgstr "Tarea general para la categoría %s"
 msgid "Monthly Report"
 msgstr "Reporte Mensual"
 
-#: tracker/admin.py:357
-msgid "Monthly Reports"
-msgstr "Reportes Mensuales"
-
-#: tracker/admin.py:370 tracker/views_api.py:106
+#: tracker/admin.py:370 tracker/views_api.py:108
 msgid "Daily_Report"
 msgstr "Reporte_Diario"
 
-#: tracker/models.py:67 tracker/models.py:287 tracker/models.py:295
+#: tracker/models.py:31
+#, fuzzy
+#| msgid "Building"
+msgid "building"
+msgstr "Obra"
+
+#: tracker/models.py:32
+#, fuzzy
+#| msgid "Building"
+msgid "buildings"
+msgstr "Obra"
+
+#: tracker/models.py:34 tracker/models.py:483 tracker/models.py:522
+msgid "code"
+msgstr ""
+
+#: tracker/models.py:35
+#, fuzzy
+#| msgid "E-mail Addresses"
+msgid "address"
+msgstr "Correos electrónicos"
+
+#: tracker/models.py:71 tracker/models.py:301 tracker/models.py:309
 msgid "Daily Report"
 msgstr "Reporte Diario"
 
-#: tracker/models.py:74
+#: tracker/models.py:78
 msgid "Worked Hours Detail"
 msgstr "Detalle de Horas Trabajadas"
 
-#: tracker/models.py:75 tracker/models.py:296
+#: tracker/models.py:79 tracker/models.py:310
 msgid "Building"
 msgstr "Obra"
 
-#: tracker/models.py:81 tracker/models.py:306
+#: tracker/models.py:85 tracker/models.py:320
 msgid "Code"
 msgstr "Código"
 
-#: tracker/models.py:83
+#: tracker/models.py:87
 msgid "VL"
 msgstr "VL"
 
-#: tracker/models.py:85 tracker/models.py:308
+#: tracker/models.py:89 tracker/models.py:322
 msgid "Cat"
 msgstr "Cat"
 
-#: tracker/models.py:86
+#: tracker/models.py:90
 msgid "Holiday"
 msgstr "Feriado"
 
-#: tracker/models.py:88
+#: tracker/models.py:92
 msgid "Worked Hours"
 msgstr "Horas Trabajadas"
 
-#: tracker/models.py:89 tracker/models.py:96 tracker/models.py:115
+#: tracker/models.py:93 tracker/models.py:100 tracker/models.py:119
 msgid "1ºQ"
 msgstr "1ºQ"
 
-#: tracker/models.py:91 tracker/models.py:98 tracker/models.py:117
+#: tracker/models.py:95 tracker/models.py:102 tracker/models.py:121
 msgid "2ºQ"
 msgstr "2ºQ"
 
-#: tracker/models.py:93 tracker/models.py:100
+#: tracker/models.py:97 tracker/models.py:104
 msgid "Total"
 msgstr "Total"
 
-#: tracker/models.py:95
+#: tracker/models.py:99
 msgid "Incentive Hours"
 msgstr "Horas Incentivo"
 
-#: tracker/models.py:102
+#: tracker/models.py:106
 msgid "Days"
 msgstr "Días"
 
-#: tracker/models.py:114
+#: tracker/models.py:118
 msgid "Ad 1/2 Hour"
 msgstr "1/2 Hora Ad"
 
-#: tracker/models.py:298
+#: tracker/models.py:192
+#, fuzzy
+#| msgid "Old workday"
+msgid "workday"
+msgstr "Día de trabajo anterior"
+
+#: tracker/models.py:193
+#, fuzzy
+#| msgid "Old workday"
+msgid "workdays"
+msgstr "Día de trabajo anterior"
+
+#: tracker/models.py:196
+#, fuzzy
+#| msgid "Update"
+msgid "date"
+msgstr "Actualizar"
+
+#: tracker/models.py:197
+#, fuzzy
+#| msgid "Day unfinished."
+msgid "finished"
+msgstr "Día no finalizado."
+
+#: tracker/models.py:199 tracker/models.py:413
+#, fuzzy
+#| msgid "Comment"
+msgid "comment"
+msgstr "Comentario"
+
+#: tracker/models.py:200
+#, fuzzy
+#| msgid "Day unfinished."
+msgid "force finished"
+msgstr "Día no finalizado."
+
+#: tracker/models.py:201
+#, fuzzy
+#| msgid "Holiday"
+msgid "holiday"
+msgstr "Feriado"
+
+#: tracker/models.py:312
 msgid "Date"
 msgstr "Fecha"
 
-#: tracker/models.py:302
+#: tracker/models.py:316
 msgid "Workers"
 msgstr "Trabajadores"
 
-#: tracker/models.py:303
+#: tracker/models.py:317
 msgid "Tasks"
 msgstr "Tareas"
 
-#: tracker/models.py:354
+#: tracker/models.py:368
 msgid "Extra Information"
 msgstr "Información Adicional"
 
-#: tracker/models.py:357
+#: tracker/models.py:371
 msgid "Day force-finished without controls."
 msgstr "Día finalizado forzosamente sin controles."
 
-#: tracker/models.py:360
+#: tracker/models.py:374
 msgid "Day unfinished."
 msgstr "Día no finalizado."
 
-#: tracker/models.py:363
+#: tracker/models.py:377
 msgid "Day is a holiday."
 msgstr "Día es feriado."
 
-#: tracker/models.py:366
+#: tracker/models.py:380
 msgid "Workday comment"
 msgstr "Comentario del día de trabajo:"
 
-#: tracker/models.py:370
+#: tracker/models.py:384
 msgid "Notes"
 msgstr "Notas"
 
-#: tracker/models.py:447
+#: tracker/models.py:405
+#, fuzzy
+#| msgid "Log hours"
+msgid "log hour"
+msgstr "Registrar horas"
+
+#: tracker/models.py:406
+#, fuzzy
+#| msgid "Log hours"
+msgid "log hours"
+msgstr "Registrar horas"
+
+#: tracker/models.py:411
+#, fuzzy
+#| msgid "Account"
+msgid "amount"
+msgstr "Cuenta"
+
+#: tracker/models.py:465
 msgid "of"
 msgstr "de"
 
-#: tracker/models.py:447
+#: tracker/models.py:465
 msgid "in task"
 msgstr "en tarea"
+
+#: tracker/models.py:480
+#, fuzzy
+#| msgid "in task"
+msgid "task"
+msgstr "en tarea"
+
+#: tracker/models.py:481
+#, fuzzy
+#| msgid "Tasks"
+msgid "tasks"
+msgstr "Tareas"
+
+#: tracker/models.py:484
+msgid "name"
+msgstr ""
+
+#: tracker/models.py:485
+msgid "description"
+msgstr ""
+
+#: tracker/models.py:487
+msgid "requires comment"
+msgstr ""
+
+#: tracker/models.py:488
+msgid "is boolean"
+msgstr ""
+
+#: tracker/models.py:489
+msgid "whole day"
+msgstr ""
+
+#: tracker/models.py:490
+#, fuzzy
+#| msgid "Monthly Report"
+msgid "in monthly report"
+msgstr "Reporte Mensual"
+
+#: tracker/models.py:519
+#, fuzzy
+#| msgid "Workers"
+msgid "worker"
+msgstr "Trabajadores"
+
+#: tracker/models.py:520
+#, fuzzy
+#| msgid "Workers"
+msgid "workers"
+msgstr "Trabajadores"
+
+#: tracker/models.py:523
+msgid "first name"
+msgstr ""
+
+#: tracker/models.py:524
+msgid "last name"
+msgstr ""
