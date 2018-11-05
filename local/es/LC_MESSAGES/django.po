@@ -1,0 +1,990 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-10-30 10:17-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+#: config/messages.py:3
+msgid "There was a problem obtaining work day. Maybe it was finished."
+msgstr "Hubo un problema al obtener el día de trabajo. Quizás ya fue finalizado."
+
+#: config/messages.py:4
+msgid "There was a problem obtaining work day."
+msgstr "Hubo un problema al obtener el día de trabajo."
+
+#: config/messages.py:5
+msgid "There was a problem obtaining building."
+msgstr "Hubo un problema al obtener la obra."
+
+#: config/messages.py:6
+msgid "There was a problem obtaining task."
+msgstr "Hubo un problema al obtener la tarea."
+
+#: config/messages.py:7
+msgid "Something went wrong."
+msgstr "Algo salió mal."
+
+#: config/messages.py:8
+msgid "There was a problem obtaining month and year data."
+msgstr "Hubo un problema obteniendo la información de mes y año."
+
+#: config/messages.py:9
+msgid "Logs updated correctly."
+msgstr "Registros actualizados con éxito."
+
+#: config/messages.py:10
+msgid "You do not have permission to edit this workday."
+msgstr "No tiene permiso para editar este día de trabajo."
+
+#: config/messages.py:11
+msgid "Day successfully ended."
+msgstr "Día finalizado con éxito."
+
+#: config/messages.py:12
+msgid "Hours were missing. Fix it to end the day."
+msgstr "Faltan registros. Arréglelo para finalizar el día."
+
+#: config/messages.py:13 sabyltimetracker/templates/tracker/dashboard.html:81
+msgid "This is an old unfinished workday."
+msgstr "Este es un día de trabajo anterior no finalizado."
+
+#: sabyltimetracker/templates/account/account_inactive.html:5
+#: sabyltimetracker/templates/account/account_inactive.html:8
+msgid "Account Inactive"
+msgstr "Cuenta inactiva"
+
+#: sabyltimetracker/templates/account/account_inactive.html:10
+msgid "This account is inactive."
+msgstr "Esta cuenta está inactiva."
+
+#: sabyltimetracker/templates/account/base.html:60
+#: sabyltimetracker/templates/base.html:254
+msgid "Message"
+msgstr "Mensaje"
+
+#: sabyltimetracker/templates/account/email.html:7
+msgid "Account"
+msgstr "Cuenta"
+
+#: sabyltimetracker/templates/account/email.html:10
+msgid "E-mail Addresses"
+msgstr "Correos electrónicos"
+
+#: sabyltimetracker/templates/account/email.html:13
+msgid "The following e-mail addresses are associated with your account:"
+msgstr "Los siguientes correos electrónicos están asociados con su cuenta:"
+
+#: sabyltimetracker/templates/account/email.html:27
+msgid "Verified"
+msgstr "Verificado"
+
+#: sabyltimetracker/templates/account/email.html:29
+msgid "Unverified"
+msgstr "No verificado"
+
+#: sabyltimetracker/templates/account/email.html:31
+msgid "Primary"
+msgstr "Primario"
+
+#: sabyltimetracker/templates/account/email.html:37
+msgid "Make Primary"
+msgstr "Hacer primario"
+
+#: sabyltimetracker/templates/account/email.html:38
+msgid "Re-send Verification"
+msgstr "Reenviar Verificación"
+
+#: sabyltimetracker/templates/account/email.html:39
+msgid "Remove"
+msgstr "Quitar"
+
+#: sabyltimetracker/templates/account/email.html:46
+msgid "Warning:"
+msgstr "Advertencia:"
+
+#: sabyltimetracker/templates/account/email.html:46
+msgid ""
+"You currently do not have any e-mail address set up. You should really add "
+"an e-mail address so you can receive notifications, reset your password, etc."
+msgstr ""
+"Actualmente no tienes ningún correo electrónico asociado."
+" Se recomienda agregar uno para recibir notificaciones, restaurar tu contraseña, etc."
+
+#: sabyltimetracker/templates/account/email.html:51
+msgid "Add E-mail Address"
+msgstr "Agregar Dirección de Correo Electrónico"
+
+#: sabyltimetracker/templates/account/email.html:56
+msgid "Add E-mail"
+msgstr "Agregar Correo Electrónico"
+
+#: sabyltimetracker/templates/account/email.html:66
+msgid "Do you really want to remove the selected e-mail address?"
+msgstr "¿Realmente quiere quitar el correo electrónico seleccionado?"
+
+#: sabyltimetracker/templates/account/email_confirm.html:6
+#: sabyltimetracker/templates/account/email_confirm.html:10
+msgid "Confirm E-mail Address"
+msgstr "Confirmar Dirección de Correo Electrónico"
+
+#: sabyltimetracker/templates/account/email_confirm.html:16
+#, python-format
+msgid ""
+"Please confirm that <a href=\"mailto:%(email)s\">%(email)s</a> is an e-mail "
+"address for user %(user_display)s."
+msgstr ""
+"Por favor, confirme que <a href=\"mailto:%(email)s\">%(email)s</a> es un correo"
+"electrónico para el usuario %(user_display)s."
+
+#: sabyltimetracker/templates/account/email_confirm.html:20
+msgid "Confirm"
+msgstr "Confirmar"
+
+#: sabyltimetracker/templates/account/email_confirm.html:27
+#, python-format
+msgid ""
+"This e-mail confirmation link expired or is invalid. Please <a href="
+"\"%(email_url)s\">issue a new e-mail confirmation request</a>."
+msgstr ""
+"Este vínculo de confirmación de correo electrónico expiró o es inválido. Por favor "
+"<a href=\"%(email_url)s\">solicite un nuevo correo electrónico de confirmación</a>."
+
+#: sabyltimetracker/templates/account/login.html:7
+#: sabyltimetracker/templates/account/login.html:24
+#: sabyltimetracker/templates/base.html:240
+msgid "Sign In"
+msgstr "Iniciar Sesión"
+
+#: sabyltimetracker/templates/account/logout.html:5
+#: sabyltimetracker/templates/account/logout.html:12
+#: sabyltimetracker/templates/account/logout.html:19
+#: sabyltimetracker/templates/base.html:238
+msgid "Sign Out"
+msgstr "Cerrar Sesión"
+
+#: sabyltimetracker/templates/account/logout.html:13
+msgid "Are you sure you want to sign out?"
+msgstr "¿Está seguro que deseas cerrar sesión?"
+
+#: sabyltimetracker/templates/account/password_change.html:6
+#: sabyltimetracker/templates/account/password_change.html:9
+#: sabyltimetracker/templates/account/password_change.html:14
+#: sabyltimetracker/templates/account/password_reset_from_key.html:5
+#: sabyltimetracker/templates/account/password_reset_from_key.html:8
+#: sabyltimetracker/templates/account/password_reset_from_key_done.html:4
+#: sabyltimetracker/templates/account/password_reset_from_key_done.html:7
+msgid "Change Password"
+msgstr "Cambiar Contraseña"
+
+#: sabyltimetracker/templates/account/password_reset.html:7
+#: sabyltimetracker/templates/account/password_reset.html:11
+#: sabyltimetracker/templates/account/password_reset_done.html:6
+#: sabyltimetracker/templates/account/password_reset_done.html:9
+msgid "Password Reset"
+msgstr "Restablecer Contraseña"
+
+#: sabyltimetracker/templates/account/password_reset.html:16
+msgid ""
+"Forgotten your password? Enter your e-mail address below, and we'll send you "
+"an e-mail allowing you to reset it."
+msgstr ""
+"¿Olvidó su contraseña? Ingrese su correo electrónico debajo, y le enviaremos un "
+"correo electrónico permitiéndole restablecerla."
+
+#: sabyltimetracker/templates/account/password_reset.html:21
+msgid "Reset My Password"
+msgstr "Restablecer Mi Contraseña"
+
+#: sabyltimetracker/templates/account/password_reset.html:24
+msgid "Please contact us if you have any trouble resetting your password."
+msgstr "Por favor, contáctenos si tiene algún problema restableciendo su contraseña."
+
+#: sabyltimetracker/templates/account/password_reset_done.html:15
+msgid ""
+"We have sent you an e-mail. Please contact us if you do not receive it "
+"within a few minutes."
+msgstr ""
+"Le enviamos un correo electrónico. Por favor, contáctenos si no lo recibe "
+"dentro de unos minutos."
+
+#: sabyltimetracker/templates/account/password_reset_from_key.html:8
+msgid "Bad Token"
+msgstr "Token Incorrecto"
+
+#: sabyltimetracker/templates/account/password_reset_from_key.html:12
+#, python-format
+msgid ""
+"The password reset link was invalid, possibly because it has already been "
+"used.  Please request a <a href=\"%(passwd_reset_url)s\">new password reset</"
+"a>."
+msgstr ""
+"El enlace de restablecimiento de contraseña era inválido, posiblemente porque ya se haya "
+"utilizado. Por favor, <a href=\"%(passwd_reset_url)s\">solicite uno nuevo.</a>."
+
+#: sabyltimetracker/templates/account/password_reset_from_key.html:18
+msgid "change password"
+msgstr "cambiar contraseña"
+
+#: sabyltimetracker/templates/account/password_reset_from_key.html:21
+#: sabyltimetracker/templates/account/password_reset_from_key_done.html:8
+msgid "Your password is now changed."
+msgstr "Su contraseña fue cambiada."
+
+#: sabyltimetracker/templates/account/password_set.html:6
+#: sabyltimetracker/templates/account/password_set.html:9
+#: sabyltimetracker/templates/account/password_set.html:14
+msgid "Set Password"
+msgstr "Establecer Contraseña"
+
+#: sabyltimetracker/templates/account/signup.html:6
+msgid "Signup"
+msgstr "Registro"
+
+#: sabyltimetracker/templates/account/signup.html:9
+#: sabyltimetracker/templates/account/signup.html:19
+msgid "Sign Up"
+msgstr "Registrarse"
+
+#: sabyltimetracker/templates/account/signup.html:11
+#, python-format
+msgid ""
+"Already have an account? Then please <a href=\"%(login_url)s\">sign in</a>."
+msgstr "¿Ya tiene una cuenta? <a href=\"%(login_url)s\">Inicie sesión</a>."
+
+#: sabyltimetracker/templates/account/signup_closed.html:5
+#: sabyltimetracker/templates/account/signup_closed.html:8
+msgid "Sign Up Closed"
+msgstr "Registro Cerrado"
+
+#: sabyltimetracker/templates/account/signup_closed.html:10
+msgid "We are sorry, but the sign up is currently closed."
+msgstr "Lo lamentamos, el registro se encuentra cerrado."
+
+#: sabyltimetracker/templates/account/verification_sent.html:5
+#: sabyltimetracker/templates/account/verification_sent.html:8
+#: sabyltimetracker/templates/account/verified_email_required.html:5
+#: sabyltimetracker/templates/account/verified_email_required.html:8
+msgid "Verify Your E-mail Address"
+msgstr "Verifique su Correo Electrónico"
+
+#: sabyltimetracker/templates/account/verification_sent.html:10
+msgid ""
+"We have sent an e-mail to you for verification. Follow the link provided to "
+"finalize the signup process. Please contact us if you do not receive it "
+"within a few minutes."
+msgstr ""
+"Le hemos enviado un correo electrónico de verificación. Haga clic en el enlace "
+"en él para finalizar el procesod e registro. Por favor, contáctenos si no lo recibe "
+"dentro de unos minutos."
+
+#: sabyltimetracker/templates/account/verified_email_required.html:12
+msgid ""
+"This part of the site requires us to verify that\n"
+"    you are who you claim to be. For this purpose, we require that you\n"
+"    verify ownership of your e-mail address. "
+msgstr ""
+"Esta sección del sitio requiere confirmación de identidad. Para esto, se requiere que "
+"se verifique el correo electrónico."
+
+#: sabyltimetracker/templates/account/verified_email_required.html:16
+msgid ""
+"We have sent an e-mail to you for\n"
+"    verification. Please click on the link inside this e-mail. Please\n"
+"    contact us if you do not receive it within a few minutes."
+msgstr ""
+"Le hemos enviado un correo electrónico de verificación. Por favor haga clic en el enlace "
+"en ese correo. Por favor contáctenos si no lo recibe dentro de unos minutos."
+
+#: sabyltimetracker/templates/account/verified_email_required.html:20
+#, python-format
+msgid ""
+"<strong>Note:</strong> you can still <a href=\"%(email_url)s\">change your e-"
+"mail address</a>."
+msgstr ""
+"<strong>Nota:</strong> aún puede <a href=\"%(email_url)s\">cambiar su correo electrónico</a>"
+
+#: sabyltimetracker/templates/admin/building_reports.html:10
+#: tracker/models.py:77
+msgid "Month"
+msgstr "Mes"
+
+#: sabyltimetracker/templates/admin/building_reports.html:12
+msgid "January"
+msgstr "Enero"
+
+#: sabyltimetracker/templates/admin/building_reports.html:13
+msgid "February"
+msgstr "Febrero"
+
+#: sabyltimetracker/templates/admin/building_reports.html:14
+msgid "March"
+msgstr "Marzo"
+
+#: sabyltimetracker/templates/admin/building_reports.html:15
+msgid "April"
+msgstr "Abril"
+
+#: sabyltimetracker/templates/admin/building_reports.html:16
+msgid "May"
+msgstr "Mayo"
+
+#: sabyltimetracker/templates/admin/building_reports.html:17
+msgid "June"
+msgstr "Junio"
+
+#: sabyltimetracker/templates/admin/building_reports.html:18
+msgid "July"
+msgstr "Julio"
+
+#: sabyltimetracker/templates/admin/building_reports.html:19
+msgid "August"
+msgstr "Agosto"
+
+#: sabyltimetracker/templates/admin/building_reports.html:20
+msgid "September"
+msgstr "Setiembre"
+
+#: sabyltimetracker/templates/admin/building_reports.html:21
+msgid "October"
+msgstr "Octubre"
+
+#: sabyltimetracker/templates/admin/building_reports.html:22
+msgid "November"
+msgstr "Noviembre"
+
+#: sabyltimetracker/templates/admin/building_reports.html:23
+msgid "December"
+msgstr "Diciembre"
+
+#: sabyltimetracker/templates/admin/building_reports.html:27
+#: tracker/models.py:77
+msgid "Year"
+msgstr "Año"
+
+#: sabyltimetracker/templates/admin/building_reports.html:36
+#: sabyltimetracker/templates/tracker/past_days.html:69 tracker/admin.py:65
+msgid "Download Report"
+msgstr "Descargar Reporte"
+
+#: sabyltimetracker/templates/base.html:59
+msgid "Toggle navigation"
+msgstr "Mostrar/Ocultar navegación"
+
+#: sabyltimetracker/templates/base.html:69
+#: sabyltimetracker/templates/tracker/dashboard.html:15
+#: sabyltimetracker/templates/tracker/dashboard.html:23
+#: sabyltimetracker/templates/tracker/day_review.html:23
+#: sabyltimetracker/templates/tracker/log_hours.html:23
+#: sabyltimetracker/templates/tracker/start_day.html:15
+msgid "Dashboard"
+msgstr "Tablero"  #not convinced with this translation.
+
+#: sabyltimetracker/templates/base.html:71
+msgid "Menu"
+msgstr "Menú"
+
+#: sabyltimetracker/templates/base.html:72
+#: sabyltimetracker/templates/tracker/past_days.html:15
+#: sabyltimetracker/templates/tracker/past_days.html:23
+#: sabyltimetracker/templates/tracker/past_days_edit.html:23
+msgid "Past Days"
+msgstr "Días Anteriores"
+
+#: sabyltimetracker/templates/tracker/dashboard.html:56
+#: sabyltimetracker/templates/tracker/day_review.html:60
+msgid " needs more logs."
+msgstr " necesita más registros."
+
+#: sabyltimetracker/templates/tracker/dashboard.html:58
+#: sabyltimetracker/templates/tracker/day_review.html:62
+msgid "1 worker missing logs."
+msgstr "1 trabajador necesita más registros."
+
+#: sabyltimetracker/templates/tracker/dashboard.html:61
+#: sabyltimetracker/templates/tracker/day_review.html:65
+msgid " need more logs."
+msgstr " necesitan más registros."
+
+#: sabyltimetracker/templates/tracker/dashboard.html:63
+#: sabyltimetracker/templates/tracker/day_review.html:67
+msgid "workers missing logs."
+msgstr "trabajadores necesitan registros."
+
+#: sabyltimetracker/templates/tracker/dashboard.html:67
+#: sabyltimetracker/templates/tracker/day_review.html:71
+msgid ""
+"All workers have enough logs. When you are sure everything is done, you can "
+"end the day."
+msgstr ""
+"Todos los trabajadores tienen suficientes registros. Cuando esté seguro que todo es correcto, puede "
+"terminar el día."
+
+#: sabyltimetracker/templates/tracker/dashboard.html:107
+#: sabyltimetracker/templates/tracker/log_hours.html:15
+#: sabyltimetracker/templates/tracker/log_hours.html:24
+#: sabyltimetracker/templates/tracker/log_hours.html:217
+#: sabyltimetracker/templates/tracker/past_days_edit.html:204
+msgid "Log Hours"
+msgstr "Registrar Horas"
+
+#: sabyltimetracker/templates/tracker/dashboard.html:112
+msgid "End Day"
+msgstr "Finalizar Día"
+
+#: sabyltimetracker/templates/tracker/dashboard.html:114
+#: sabyltimetracker/templates/tracker/start_day.html:24
+#: sabyltimetracker/templates/tracker/start_day.html:60
+msgid "Start Day"
+msgstr "Empezar Día"
+
+#: sabyltimetracker/templates/tracker/day_review.html:15
+#: sabyltimetracker/templates/tracker/day_review.html:24
+msgid "Day Review"
+msgstr "Revisión del Día"
+
+#: sabyltimetracker/templates/tracker/day_review.html:38
+#: sabyltimetracker/templates/tracker/log_hours.html:61
+msgid "Old workday"
+msgstr "Día de trabajo anterior"
+
+#: sabyltimetracker/templates/tracker/day_review.html:52
+msgid "Overview for"
+msgstr "Resumen para"
+
+#: sabyltimetracker/templates/tracker/day_review.html:85
+msgid "Logs Review"
+msgstr "Revisión de Registros"
+
+#: sabyltimetracker/templates/tracker/day_review.html:91
+#: sabyltimetracker/templates/tracker/log_hours.html:114
+#: sabyltimetracker/templates/tracker/past_days_edit.html:98
+#: tracker/models.py:82 tracker/models.py:307
+msgid "Full Name"
+msgstr "Nombre Completo"
+
+#: sabyltimetracker/templates/tracker/day_review.html:92
+msgid "Task"
+msgstr "Tarea"
+
+#: sabyltimetracker/templates/tracker/day_review.html:93
+msgid "Hours Logged"
+msgstr "Horas Registradas"
+
+#: sabyltimetracker/templates/tracker/day_review.html:116
+msgid "Back to Edit Hours"
+msgstr "Volver a Editar Horas"
+
+#: sabyltimetracker/templates/tracker/day_review.html:124
+#: sabyltimetracker/templates/tracker/day_review.html:148
+msgid "Confirm and End Day"
+msgstr "Confirmar y Finalizar Día"
+
+#: sabyltimetracker/templates/tracker/day_review.html:129
+msgid "Ammend logs to correctly end the day."
+msgstr "Corrija los registros para finalizar correctamente el día."
+
+#: sabyltimetracker/templates/tracker/day_review.html:130
+msgid "End anyway?"
+msgstr "¿Finalizar de todas formas?"
+
+#: sabyltimetracker/templates/tracker/day_review.html:136
+msgid "End Day Without Validation"
+msgstr "Finalizar Día Sin Validación"
+
+#: sabyltimetracker/templates/tracker/day_review.html:137
+#: sabyltimetracker/templates/tracker/day_review.html:152
+#: sabyltimetracker/templates/tracker/log_hours.html:156
+#: sabyltimetracker/templates/tracker/log_hours.html:184
+#: sabyltimetracker/templates/tracker/past_days_edit.html:143
+#: sabyltimetracker/templates/tracker/past_days_edit.html:171
+msgid "Close"
+msgstr "Cerrar"
+
+#: sabyltimetracker/templates/tracker/day_review.html:143
+msgid ""
+"To end a day without all workers having their required hours logged, a "
+"written comment is mandatory."
+msgstr ""
+"Para finalizar un día sin que todos los trabajadores tengan todos los registros necesarios, se "
+"requiere un comentario escrito."
+
+#: sabyltimetracker/templates/tracker/day_review.html:146
+msgid "Comment (required)"
+msgstr "Comentario (requerido)"
+
+#: sabyltimetracker/templates/tracker/log_hours.html:39
+#: sabyltimetracker/templates/tracker/log_hours.html:116
+#: sabyltimetracker/templates/tracker/past_days_edit.html:39
+#: sabyltimetracker/templates/tracker/past_days_edit.html:101
+msgid "Select a task"
+msgstr "Elija una tarea"
+
+#: sabyltimetracker/templates/tracker/log_hours.html:40
+#: sabyltimetracker/templates/tracker/past_days_edit.html:40
+msgid "-"
+msgstr "-"
+
+#: sabyltimetracker/templates/tracker/log_hours.html:41
+#: sabyltimetracker/templates/tracker/past_days_edit.html:41
+msgid "Update hours for"
+msgstr "Actualizar horas para"
+
+#: sabyltimetracker/templates/tracker/log_hours.html:42
+#: sabyltimetracker/templates/tracker/past_days_edit.html:42
+msgid "Log hours for"
+msgstr "Registrar horas para"
+
+#: sabyltimetracker/templates/tracker/log_hours.html:43
+#: sabyltimetracker/templates/tracker/past_days_edit.html:43
+msgid "Update"
+msgstr "Actualizar"
+
+#: sabyltimetracker/templates/tracker/log_hours.html:44
+#: sabyltimetracker/templates/tracker/past_days_edit.html:44
+msgid "Log"
+msgstr "Registro"
+
+#: sabyltimetracker/templates/tracker/log_hours.html:45
+#: sabyltimetracker/templates/tracker/past_days_edit.html:45
+msgid "Hours for"
+msgstr "Horas para"
+
+#: sabyltimetracker/templates/tracker/log_hours.html:46
+#: sabyltimetracker/templates/tracker/past_days_edit.html:46
+msgid "Log hours"
+msgstr "Registrar horas"
+
+#: sabyltimetracker/templates/tracker/log_hours.html:47
+#: sabyltimetracker/templates/tracker/past_days_edit.html:47
+msgid "Hours for other tasks"
+msgstr "Horas para otras tareas"
+
+#: sabyltimetracker/templates/tracker/log_hours.html:48
+#: sabyltimetracker/templates/tracker/log_hours.html:119
+#: sabyltimetracker/templates/tracker/past_days_edit.html:48
+#: sabyltimetracker/templates/tracker/past_days_edit.html:105
+msgid "Total hours logged"
+msgstr "Total de horas registradas"
+
+#: sabyltimetracker/templates/tracker/log_hours.html:49
+#: sabyltimetracker/templates/tracker/past_days_edit.html:49
+msgid "All hours must be whole or half hours."
+msgstr "Todos los registros deben ser horas completas o medias horas."
+
+#: sabyltimetracker/templates/tracker/log_hours.html:50
+#: sabyltimetracker/templates/tracker/past_days_edit.html:50
+msgid "Comment is mandatory for this task."
+msgstr "Un comentario es obligatorio para esta tarea."
+
+#: sabyltimetracker/templates/tracker/log_hours.html:51
+#: sabyltimetracker/templates/tracker/log_hours.html:206
+#: sabyltimetracker/templates/tracker/past_days_edit.html:51
+#: sabyltimetracker/templates/tracker/past_days_edit.html:193
+msgid "Comment (optional)"
+msgstr "Comentario (opcional)"
+
+#: sabyltimetracker/templates/tracker/log_hours.html:75
+msgid "Task selection"
+msgstr "Selección de tarea"
+
+#: sabyltimetracker/templates/tracker/log_hours.html:79
+msgid "Task category:"
+msgstr "Categoría de tarea:"
+
+#: sabyltimetracker/templates/tracker/log_hours.html:82
+#: sabyltimetracker/templates/tracker/past_days_edit.html:67
+msgid "-Select a category-"
+msgstr "-Elija una categoría-"
+
+#: sabyltimetracker/templates/tracker/log_hours.html:90
+msgid "Task:"
+msgstr "Tarea:"
+
+#: sabyltimetracker/templates/tracker/log_hours.html:93
+#: sabyltimetracker/templates/tracker/past_days_edit.html:78
+msgid "---"
+msgstr "---"
+
+#: sabyltimetracker/templates/tracker/log_hours.html:106
+#: sabyltimetracker/templates/tracker/past_days_edit.html:91
+msgid "Hours per worker"
+msgstr "Horas por trabajador"
+
+#: sabyltimetracker/templates/tracker/log_hours.html:109
+msgid "Each worker is expected to work"
+msgstr "Se espera que cada trabajador trabaje"
+
+#: sabyltimetracker/templates/tracker/log_hours.html:109
+#: sabyltimetracker/templates/tracker/past_days_edit.html:94
+msgid "hours."
+msgstr "horas."
+
+#: sabyltimetracker/templates/tracker/log_hours.html:113
+#: sabyltimetracker/templates/tracker/past_days_edit.html:99
+msgid "Category"
+msgstr "Categoría"
+
+#: sabyltimetracker/templates/tracker/log_hours.html:155
+#: sabyltimetracker/templates/tracker/past_days_edit.html:142
+msgid "Detail for"
+msgstr "Detalle para"
+
+#: sabyltimetracker/templates/tracker/log_hours.html:167
+#: sabyltimetracker/templates/tracker/log_hours.html:173
+#: sabyltimetracker/templates/tracker/past_days_edit.html:154
+#: sabyltimetracker/templates/tracker/past_days_edit.html:160
+msgid "with comment: \""
+msgstr "con comentario: \""
+
+#: sabyltimetracker/templates/tracker/log_hours.html:173
+#: sabyltimetracker/templates/tracker/log_hours.html:175
+#: sabyltimetracker/templates/tracker/past_days_edit.html:160
+#: sabyltimetracker/templates/tracker/past_days_edit.html:162
+msgid "hours in"
+msgstr "horas en"
+
+#: sabyltimetracker/templates/tracker/log_hours.html:202
+#: sabyltimetracker/templates/tracker/past_days_edit.html:189
+msgid "Comment"
+msgstr "Comentario"
+
+#: sabyltimetracker/templates/tracker/past_days.html:37
+msgid "Select Day"
+msgstr "Elegir Día"
+
+#: sabyltimetracker/templates/tracker/past_days.html:40
+msgid "Workdays among the past"
+msgstr "Días de trabajo dentro de los últimos"
+
+#: sabyltimetracker/templates/tracker/past_days.html:40
+msgid "days can be edited."
+msgstr "días pueden ser editados."
+
+#: sabyltimetracker/templates/tracker/past_days.html:43
+msgid "-Select a workday-"
+msgstr "-Seleccionar día de trabajo-"
+
+#: sabyltimetracker/templates/tracker/past_days.html:44
+msgid "Editable"
+msgstr "Editable"
+
+#: sabyltimetracker/templates/tracker/past_days.html:46
+#: sabyltimetracker/templates/tracker/past_days.html:51
+msgid "at"
+msgstr "en"
+
+#: sabyltimetracker/templates/tracker/past_days.html:49
+msgid "Non-editable"
+msgstr "No editable"
+
+#: sabyltimetracker/templates/tracker/past_days.html:66
+msgid "Edit Day"
+msgstr "Editar Día"
+
+#: sabyltimetracker/templates/tracker/past_days_edit.html:60
+msgid "Select task"
+msgstr "Seleccionar tarea"
+
+#: sabyltimetracker/templates/tracker/past_days_edit.html:94
+msgid "The day you are editing was a "
+msgstr "El día que está editando fue un "
+
+#: sabyltimetracker/templates/tracker/past_days_edit.html:94
+msgid "Each worker is expected to have worked"
+msgstr "Se espera que cada trabajador haya trabajado"
+
+#: tracker/admin.py:33
+msgid "Make Reports"
+msgstr "Hacer Reportes"
+
+#: tracker/admin.py:123
+msgid "Union Assembly"
+msgstr "Asamblea Sindical"
+
+#: tracker/admin.py:125
+msgid "Auto-generated task that designates a worker in an union assembly."
+msgstr "Tarea autogenerada que designa un trabajador en una asamblea sindical."
+
+#: tracker/admin.py:134
+msgid "Blood Donation"
+msgstr "Donación de Sangre"
+
+#: tracker/admin.py:136
+msgid ""
+"Auto-generated task that designates a worker on leave for blood donation."
+msgstr "Tarea autogenerada que designa un trabajador en donación de sangre."
+
+#: tracker/admin.py:146
+msgid "Sick"
+msgstr "Enfermo"
+
+#: tracker/admin.py:147
+msgid "Auto-generated task that designates a sick worker."
+msgstr "Tarea autogenerada que designa un trabajador enfermo."
+
+#: tracker/admin.py:156
+msgid "Absence"
+msgstr "Falta"
+
+#: tracker/admin.py:157
+msgid "Auto-generated task that designates worker absence for a day."
+msgstr "Tarea autogenerada que designa un trabajador ausente por el día."
+
+#: tracker/admin.py:167
+msgid "Notified Absence"
+msgstr "Falta con Aviso"
+
+#: tracker/admin.py:168
+msgid ""
+"Auto-generated task that designates worker absence for a day, with previous "
+"notice."
+msgstr "Tarea autogenerada que designa un trabajador ausente por el día, con aviso previo."
+
+#: tracker/admin.py:177
+msgid "Bereavement Leave"
+msgstr "Licencia por Duelo"
+
+#: tracker/admin.py:178
+msgid "Auto-generated task that designates a worker on bereavement leave."
+msgstr "Tarea autogenerada que designa un trabajador en licencia por duelo."
+
+#: tracker/admin.py:188
+msgid "Study Leave"
+msgstr "Licencia por Estudio"
+
+#: tracker/admin.py:189
+msgid "Auto-generated task that designates a worker on study leave."
+msgstr "Tarea autogenerada que designa un trabajador en licencia por estudio."
+
+#: tracker/admin.py:199
+msgid "Disabled Child Leave"
+msgstr "Licencia por Hijo Discapacitado"
+
+#: tracker/admin.py:201
+msgid ""
+"Auto-generated task that designates a worker on leave for having a disabled "
+"child."
+msgstr "Tarea autogenerada que designa un trabajador en licencia por hijo discapacitado."
+
+#: tracker/admin.py:210
+msgid "Marriage Leave"
+msgstr "Licencia por Matrimonio"
+
+#: tracker/admin.py:212
+msgid "Auto-generated task that designates a worker on marriage leave."
+msgstr "Tarea autogenerada que designa un trabajador en licencia por matrimonio"
+
+#: tracker/admin.py:222
+msgid "Paternity Leave"
+msgstr "Licencia Paternal"
+
+#: tracker/admin.py:224
+msgid "Auto-generated task that designates a worker on paternity leave."
+msgstr "Tarea autogenerada que designa un trabajador en licencia paternal."
+
+#: tracker/admin.py:234
+msgid "Union Leave"
+msgstr "Licencia Sindical"
+
+#: tracker/admin.py:236
+msgid "Auto-generated task that designates a worker on syndical leave."
+msgstr "Tarea autogenerada que designa un trabajador en licencia sindical."
+
+#: tracker/admin.py:243
+msgid "Strike"
+msgstr "Paro"
+
+#: tracker/admin.py:244
+msgid "Auto-generated task that designates a worker on strike."
+msgstr "Tarea autogenerada que designa un trabajador haciendo paro."
+
+#: tracker/admin.py:252
+msgid "General strike"
+msgstr "Paro General"
+
+#: tracker/admin.py:254
+msgid "Auto-generated task that designates a worker on general strike."
+msgstr "Tarea autogenerada que designa un trabajador haciendo paro general."
+
+#: tracker/admin.py:264
+msgid "Leaving Early"
+msgstr "Salida antes de hora"
+
+#: tracker/admin.py:266
+msgid "Auto-generated task that designates a worker that left early."
+msgstr "Tarea autogenerada que designa un trabajador que salió antes de hora."
+
+#: tracker/admin.py:275
+msgid "FOCAP Training"
+msgstr "Salida por capacitación FOCAP"
+
+#: tracker/admin.py:277
+msgid "Auto-generated task that designates a worker on FOCAP training."
+msgstr "Tarea autogenerada que designa un trabajador en capacitación de FOCAP"
+
+#: tracker/admin.py:284
+msgid "Training"
+msgstr "Capacitación de la Empresa"
+
+#: tracker/admin.py:286
+msgid "Auto-generated task that designates a worker on training."
+msgstr "Tarea autogenerada que designa un trabajador en capacitación de la empresa."
+
+#: tracker/admin.py:293
+msgid "Antiquity leave"
+msgstr "Licencia Antigüedad"
+
+#: tracker/admin.py:295
+msgid "Auto-generated task that designates a worker on antiquity leave."
+msgstr "Tarea autogenerada que designa un trabajador en licencia por antigüedad"
+
+#: tracker/admin.py:304
+msgid "Suspended"
+msgstr "Suspendido"
+
+#: tracker/admin.py:306
+msgid "Auto-generated task that designates a suspended worker."
+msgstr "Tarea autogenerada que designa un trabajador suspendido."
+
+#: tracker/admin.py:315
+msgid "Postobra"
+msgstr "Postobra"
+
+#: tracker/admin.py:317
+msgid "Auto-generated task that designates a worker on post-obra."
+msgstr "Tarea autogenerada que designa un trabajador en postobra."
+
+#: tracker/admin.py:327
+#, python-format
+msgid "%s/General"
+msgstr "%s/General"
+
+#: tracker/admin.py:328
+#, python-format
+msgid "General task for the %s category"
+msgstr "Tarea general para la categoría %s"
+
+#: tracker/admin.py:349
+msgid "Monthly Report"
+msgstr "Reporte Mensual"
+
+#: tracker/admin.py:357
+msgid "Monthly Reports"
+msgstr "Reportes Mensuales"
+
+#: tracker/admin.py:370 tracker/views_api.py:106
+msgid "Daily_Report"
+msgstr "Reporte_Diario"
+
+#: tracker/models.py:67 tracker/models.py:287 tracker/models.py:295
+msgid "Daily Report"
+msgstr "Reporte Diario"
+
+#: tracker/models.py:74
+msgid "Worked Hours Detail"
+msgstr "Detalle de Horas Trabajadas"
+
+#: tracker/models.py:75 tracker/models.py:296
+msgid "Building"
+msgstr "Obra"
+
+#: tracker/models.py:81 tracker/models.py:306
+msgid "Code"
+msgstr "Código"
+
+#: tracker/models.py:83
+msgid "VL"
+msgstr "VL"
+
+#: tracker/models.py:85 tracker/models.py:308
+msgid "Cat"
+msgstr "Cat"
+
+#: tracker/models.py:86
+msgid "Holiday"
+msgstr "Feriado"
+
+#: tracker/models.py:88
+msgid "Worked Hours"
+msgstr "Horas Trabajadas"
+
+#: tracker/models.py:89 tracker/models.py:96 tracker/models.py:115
+msgid "1ºQ"
+msgstr "1ºQ"
+
+#: tracker/models.py:91 tracker/models.py:98 tracker/models.py:117
+msgid "2ºQ"
+msgstr "2ºQ"
+
+#: tracker/models.py:93 tracker/models.py:100
+msgid "Total"
+msgstr "Total"
+
+#: tracker/models.py:95
+msgid "Incentive Hours"
+msgstr "Horas Incentivo"
+
+#: tracker/models.py:102
+msgid "Days"
+msgstr "Días"
+
+#: tracker/models.py:114
+msgid "Ad 1/2 Hour"
+msgstr "1/2 Hora Ad"
+
+#: tracker/models.py:298
+msgid "Date"
+msgstr "Fecha"
+
+#: tracker/models.py:302
+msgid "Workers"
+msgstr "Trabajadores"
+
+#: tracker/models.py:303
+msgid "Tasks"
+msgstr "Tareas"
+
+#: tracker/models.py:354
+msgid "Extra Information"
+msgstr "Información Adicional"
+
+#: tracker/models.py:357
+msgid "Day force-finished without controls."
+msgstr "Día finalizado forzosamente sin controles."
+
+#: tracker/models.py:360
+msgid "Day unfinished."
+msgstr "Día no finalizado."
+
+#: tracker/models.py:363
+msgid "Day is a holiday."
+msgstr "Día es feriado."
+
+#: tracker/models.py:366
+msgid "Workday comment"
+msgstr "Comentario del día de trabajo:"
+
+#: tracker/models.py:370
+msgid "Notes"
+msgstr "Notas"
+
+#: tracker/models.py:447
+msgid "of"
+msgstr "de"
+
+#: tracker/models.py:447
+msgid "in task"
+msgstr "en tarea"

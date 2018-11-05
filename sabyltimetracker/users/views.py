@@ -20,10 +20,9 @@ class UserRedirectView(LoginRequiredMixin, RedirectView):
         user = self.request.user
         if user.is_superuser or user.is_staff:
             return reverse('admin:index')
-        elif user.user_type is User.OVERSEER:
+        else:
             return reverse('tracker:dashboard',
                            kwargs={'username': self.request.user.username})
-        raise PermissionDenied
 
 
 class UserUpdateView(LoginRequiredMixin, UpdateView):

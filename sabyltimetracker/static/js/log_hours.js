@@ -2,33 +2,57 @@
 //the datatable. Only the rows with amount greater than 0 are added.
 function get_datatable_info(table){
     let hours_list = [];
+    let error = false;
     table.$('input').each(function (i, el) {
         let htmlElement = $(el);
         let hours = parseFloat(htmlElement.val());
-        if (htmlElement.attr('type') === 'checkbox')
-            hours = (htmlElement.prop('checked') ? 1 : 0);
-        let userId = htmlElement.attr('name');
-        hours_list.push({'user': userId, 'amount': hours});
+        if (hours*2%1!==0) {
+            error = true;
+        } else {
+            if (htmlElement.attr('type') === 'checkbox')
+                hours = (htmlElement.prop('checked') ? 1 : 0);
+            let userId = htmlElement.attr('name');
+            hours_list.push({'user': userId, 'amount': hours});
+        }
     });
-
-    return hours_list;
+    if (!error)
+        return hours_list;
+    return false;
 }
 
 $(document).ready(function() {
+    const $select_all = $('#select-all');
+    const $task = $('#task');
+    const $task_category = $('#task-category');
+    const $hours_label = $('.hours-label');
+    const $hours_input = $('.hours-input');
+    const $submit_hours = $('#submit-hours');
+    const $comment_group = $('#comment-group');
+    const $comment = $('#comment');
+
+    $select_all.hide();
+    //$comment_group.hide();
     $('[data-toggle="tooltip"]').tooltip();
     let table = $('#hours_per_user').DataTable();
 
     update_logged_hours(null);
 
-    $('#submit-hours').click( function() {
-        let taskId = $('#task').val();
+    $submit_hours.click( function() {
+        let taskId = parseInt($task.val());
         let hoursList = get_datatable_info(table);
+        let comment = $comment.val();
 
-        let data = {'task': taskId, 'hours_list': hoursList};
+        let task = find_task(taskId);
+        if (task.requires_comment && !comment) {
+            alert(COMMENT_REQUIRED_TXT);
+            return false;
+        }
+
+        let data = {'task': taskId, 'hours_list': hoursList, 'comment': comment};
 
         // csrf and post_url are rendered in server side and
         // are defined in log_hours.html javascript_header section
-        if (typeof data.hours_list !== 'undefined' && data.hours_list.length > 0) {
+        if (data.hours_list && data.hours_list.length > 0) {
             $.ajaxSetup({
                 headers: { "X-CSRFToken": csrf }
             });
@@ -49,48 +73,81 @@ $(document).ready(function() {
                 }
             });
         } else {
-            alert("No information to send.");
+            alert(WRONG_PRECISION_TXT);
             return false;
         }
 
         return true;
-    } );
-    $('#task').change( () => {
-        let option = $(this).find(":selected");
+    });
+
+    $task_category.change( () => {
+        let option = $task_category.find(':selected');
+        let cat_name = $(option).val();
+        if (cat_name) {
+            let cat = null;
+            let i = 0;
+            while (!cat) {
+                if (grouped_tasks[i].name === cat_name)
+                    cat = grouped_tasks[i];
+                i++;
+            }
+            $task.html('');
+            $task.append('<option value="">-' + SELECT_TASK_TXT + '-</option>');
+            for (let j in cat.tasks) {
+                let task = cat.tasks[j];
+                $task.append('<option value="' + task.id + '">' + task.code + ': ' + task.name + '</option>');
+            }
+            $task.prop('disabled', false);
+        } else {
+            $task.html('');
+            $task.append('<option value="">-' + SELECT_CAT_FIRST_TXT + '-</option>');
+            $task.prop('disabled', true);
+        }
+        $task.change();
+    });
+
+    $task.change( () => {
+        let option = $('#task').find(":selected");
         let id = parseInt($(option).val());
         let task = find_task(id);
-        const $hours_label = $('.hours-label');
-        const $hours_input = $('.hours-input');
-        const $submit_hours = $('#submit-hours');
-        $hours_input.attr('type', 'text');
+        $hours_input.attr('type', 'number');
+        $select_all.hide();
         $hours_input.val(0);
         $hours_input.prop('checked', false);
-        if(task) {
+        if (task) {
             $hours_input.prop('disabled', false);
             $submit_hours.prop('disabled', false);
-            if(task.code !== absence_code) {
+            if(task.is_boolean) {
+                $hours_input.attr('type', 'checkbox');
+                $select_all.show();
                 if (task.logs) {
                     for (let i in task.logs) {
                         let log = task.logs[i];
-                        $('#'+log.user.id+'-hours').val(log.amount);
+                        $('#'+log.worker.code+'-hours').prop('checked', true);
+                    }
+                    $submit_hours.text(UPDATE_BOOLEAN_TASK_TXT+ ' '+ task.name);
+                } else {
+                    $submit_hours.text(LOG_BOOLEAN_TASK_TXT+ ' '+ task.name);
+                }
+                $hours_label.text(task.name);
+            } else {
+                if (task.logs) {
+                    for (let i in task.logs) {
+                        let log = task.logs[i];
+                        $('#'+log.worker.code+'-hours').val(log.amount);
                     }
                     $submit_hours.text(UPDATE_HOURS_FOR_TXT+ ' ' + task.name);
                 } else {
                     $submit_hours.text(LOG_HOURS_FOR_TXT +' '+ task.name);
                 }
                 $hours_label.text(HOURS_FOR_TXT + ' ' + task.name);
+            }
+            if (task.requires_comment) {
+                //$comment_group.show();
+                $comment.attr('placeholder', COMMENT_REQUIRED_TXT);
             } else {
-                $hours_input.attr('type', 'checkbox');
-                if (task.logs) {
-                    for (let i in task.logs) {
-                        let log = task.logs[i];
-                        $('#'+log.user.id+'-hours').prop('checked', true);
-                    }
-                    $submit_hours.text(UPDATE_ABSENCES_TXT);
-                } else {
-                    $submit_hours.text(LOG_ABSENCES_TXT);
-                }
-                $hours_label.text(ABSENCES_TXT);
+                //$comment_group.hide();
+                $comment.attr('placeholder', COMMENT_NOT_REQUIRED_TXT);
             }
             update_logged_hours(task.id);
         } else {
@@ -100,6 +157,10 @@ $(document).ready(function() {
             $submit_hours.text(LOG_HOURS_TXT);
             update_logged_hours(null);
         }
+    });
+
+    $select_all.change( () => {
+        $hours_input.prop('checked', $select_all.prop('checked'));
     });
 } );
 
@@ -122,10 +183,10 @@ function update_logged_hours(excluded_task_id) {
         let sum = 0;
         for (j in worker.logs) {
             let log = worker.logs[j];
-            if (log.task.id !== excluded_task_id && log.task.code !== absence_code)
+            if (log.task.id !== excluded_task_id && !log.task.is_boolean)
                 sum += log.amount;
         }
-        $('#'+worker.id+'-logged-hours').text(sum);
+        $('#'+worker.code+'-logged-hours').text(sum);
     }
     let $logged_hours_label = $('.logged-hours-label');
     if(excluded_task_id)

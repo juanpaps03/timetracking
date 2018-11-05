@@ -754,7 +754,7 @@ body {
   background: #f1f2f7;
   display: table;
   font-family: 'Open Sans' sans-serif !important;
-  font-size: 16px;
+  font-size: 17px;
   width: 100%; }
 
 div[class*="col-"] {
@@ -2238,3 +2238,23 @@ header .form-inline {
           padding: 5px; } }
 
 /*# sourceMappingURL=style.css.map */
+
+input[type='checkbox'].checkbox-lg {
+    -webkit-appearance:none;
+    -moz-appearance:none;
+    appearance:none;
+    width:30px;
+    height:30px;
+    background:white;
+    border-radius:5px;
+    border:1px solid #dfe2e6;
+}
+input[type='checkbox'].checkbox-lg:checked {
+    /*background: rgba(83,164,61,1);*/
+    background-image: url('../images/check.png');
+}
+
+.card-danger {
+  border-color: #dc3545;
+}
+
