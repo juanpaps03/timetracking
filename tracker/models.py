@@ -497,8 +497,9 @@ class Task(models.Model):
 
 class TaskCategory(models.Model):
     class Meta:
-        verbose_name_plural = "task categories"
-    name = models.CharField(primary_key=True, max_length=40, blank=False)
+        verbose_name = _('task category')
+        verbose_name_plural = _("task categories")
+    name = models.CharField(_('name'), primary_key=True, max_length=40, blank=False)
 
     def __str__(self):
         return str(self.name)
@@ -506,9 +507,10 @@ class TaskCategory(models.Model):
 
 class WorkerCategory(models.Model):
     class Meta:
-        verbose_name_plural = "worker categories"
+        verbose_name = _('worker category')
+        verbose_name_plural = _("worker categories")
 
-    name = models.CharField(primary_key=True, max_length=40, blank=False)
+    name = models.CharField(_('name'), primary_key=True, max_length=40, blank=False)
 
     def __str__(self):
         return str(self.name)
