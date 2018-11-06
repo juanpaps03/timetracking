@@ -1101,26 +1101,20 @@ msgid "in monthly report"
 msgstr "en reporte mensual"
 
 #: tracker/models.py:500
-#, fuzzy
-#| msgid "Task category:"
 msgid "task category"
-msgstr "Categoría de tarea:"
+msgstr "categoría de tarea"
 
 #: tracker/models.py:501
-#, fuzzy
-#| msgid "Task category:"
 msgid "task categories"
-msgstr "Categoría de tarea:"
+msgstr "categorías de tareas"
 
 #: tracker/models.py:510
-#, fuzzy
-#| msgid "Task category:"
 msgid "worker category"
-msgstr "Categoría de tarea:"
+msgstr "categoría de trabajador"
 
 #: tracker/models.py:511
 msgid "worker categories"
-msgstr ""
+msgstr "categorías de trabajadores"
 
 #: tracker/models.py:521
 msgid "worker"
