@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-05 12:35-0300\n"
+"POT-Creation-Date: 2018-11-06 10:16-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -412,7 +412,6 @@ msgid "Past Days"
 msgstr "Días Anteriores"
 
 #: sabyltimetracker/templates/tracker/dashboard.html:39
-#| msgid "workers missing logs."
 msgid "Workers with logs"
 msgstr "Trabajadores con registros"
 
@@ -921,7 +920,7 @@ msgstr "obra"
 msgid "buildings"
 msgstr "obras"
 
-#: tracker/models.py:34 tracker/models.py:483 tracker/models.py:522
+#: tracker/models.py:34 tracker/models.py:483 tracker/models.py:524
 msgid "code"
 msgstr "código"
 
@@ -1077,7 +1076,7 @@ msgstr "tarea"
 msgid "tasks"
 msgstr "tareas"
 
-#: tracker/models.py:484
+#: tracker/models.py:484 tracker/models.py:502 tracker/models.py:513
 msgid "name"
 msgstr "nombre"
 
@@ -1101,18 +1100,40 @@ msgstr "todo el día"
 msgid "in monthly report"
 msgstr "en reporte mensual"
 
-#: tracker/models.py:519
+#: tracker/models.py:500
+#, fuzzy
+#| msgid "Task category:"
+msgid "task category"
+msgstr "Categoría de tarea:"
+
+#: tracker/models.py:501
+#, fuzzy
+#| msgid "Task category:"
+msgid "task categories"
+msgstr "Categoría de tarea:"
+
+#: tracker/models.py:510
+#, fuzzy
+#| msgid "Task category:"
+msgid "worker category"
+msgstr "Categoría de tarea:"
+
+#: tracker/models.py:511
+msgid "worker categories"
+msgstr ""
+
+#: tracker/models.py:521
 msgid "worker"
 msgstr "trabajador"
 
-#: tracker/models.py:520
+#: tracker/models.py:522
 msgid "workers"
 msgstr "trabajadores"
 
-#: tracker/models.py:523
+#: tracker/models.py:525
 msgid "first name"
 msgstr "nombre"
 
-#: tracker/models.py:524
+#: tracker/models.py:526
 msgid "last name"
 msgstr "apellido"
