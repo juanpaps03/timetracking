@@ -15,6 +15,13 @@ from rest_framework.decorators import api_view
 from config import constants, messages
 from tracker.models import Building, Workday, LogHour, Task, TaskCategory, Worker, WorkerCategory
 from .models import User
+from django.db import IntegrityError
+
+# Admin Site Config
+admin.sites.AdminSite.site_header = _('Sabyl TimeTracker')
+admin.sites.AdminSite.site_title = _('Sabyl TimeTracker')
+admin.sites.AdminSite.index_title = _('Home')
+
 
 admin.site.register(LogHour)
 admin.site.register(Task)
@@ -82,7 +89,7 @@ class WorkdayAdmin(admin.ModelAdmin):
 
 def create_manager_group():
     # Creating manager group and permissions
-    manager_group, created = Group.objects.get_or_create(name='Manager')
+    manager_group, created = Group.objects.get_or_create(name=_('Manager'))
 
     content_type = ContentType.objects.get_for_model(Building)
     permissions = Permission.objects.filter(content_type=content_type)
@@ -104,6 +111,21 @@ def create_manager_group():
     for p in permissions:
         manager_group.permissions.add(p)
 
+    content_type = ContentType.objects.get_for_model(TaskCategory)
+    permissions = Permission.objects.filter(content_type=content_type)
+    for p in permissions:
+        manager_group.permissions.add(p)
+
+    content_type = ContentType.objects.get_for_model(WorkerCategory)
+    permissions = Permission.objects.filter(content_type=content_type)
+    for p in permissions:
+        manager_group.permissions.add(p)
+
+    content_type = ContentType.objects.get_for_model(Worker)
+    permissions = Permission.objects.filter(content_type=content_type)
+    for p in permissions:
+        manager_group.permissions.add(p)
+
     content_type = ContentType.objects.get_for_model(User)
     permissions = Permission.objects.filter(content_type=content_type)
     for p in permissions:
@@ -118,207 +140,263 @@ def create_default_tasks():
     special_category, created = TaskCategory.objects.get_or_create(name=constants.SPECIAL_CATEGORY_NAME)
     special_category.save()
 
-    # union assembly task creation.
-    union_assembly_task, created = Task.objects.get_or_create(code=constants.UNION_ASSEMBLY_CODE,
-                                                         name=_('Union Assembly'),
-                                                         description=_(
-                                                         'Auto-generated task that designates a worker in an union assembly.'),
-                                                         category=special_category,
-                                                         in_monthly_report=False)
-    union_assembly_task.buildings = Building.objects.all()
-    union_assembly_task.save()
-    # NO DHT
+    try:
+        # union assembly task creation.
+        union_assembly_task, created = Task.objects.get_or_create(code=constants.UNION_ASSEMBLY_CODE,
+                                                             name=_('Union Assembly'),
+                                                             description=_(
+                                                             'Auto-generated task that designates a worker in an union assembly.'),
+                                                             category=special_category,
+                                                             in_monthly_report=False)
+        union_assembly_task.buildings = Building.objects.all()
+        union_assembly_task.save()
+    except IntegrityError:
+        pass
 
-    # blood donation task creation.
-    blood_donation_task, created = Task.objects.get_or_create(code=constants.BLOOD_DONATION_CODE,
-                                                         name=_('Blood Donation'),
-                                                         description=_(
-                                                         'Auto-generated task that designates a worker on leave for blood donation.'),
-                                                         category=special_category,
-                                                         is_boolean=True,
-                                                         whole_day=True,
-                                                         in_monthly_report=False)
-    blood_donation_task.buildings = Building.objects.all()
-    blood_donation_task.save()
+    try:
+        # blood donation task creation.
+        blood_donation_task, created = Task.objects.get_or_create(code=constants.BLOOD_DONATION_CODE,
+                                                             name=_('Blood Donation'),
+                                                             description=_(
+                                                             'Auto-generated task that designates a worker on leave for blood donation.'),
+                                                             category=special_category,
+                                                             is_boolean=True,
+                                                             whole_day=True,
+                                                             in_monthly_report=False)
+        blood_donation_task.buildings = Building.objects.all()
+        blood_donation_task.save()
+    except IntegrityError:
+        pass
 
-    # sick task creation.
-    sick_task, created = Task.objects.get_or_create(code=constants.SICK_CODE,
-                                                    name=_('Sick'),
-                                                    description=_('Auto-generated task that designates a sick worker.'),
-                                                    category=special_category,
-                                                    is_boolean=True,
-                                                    in_monthly_report=False)
-    sick_task.buildings = Building.objects.all()
-    sick_task.save()
+    try:
+        # sick task creation.
+        sick_task, created = Task.objects.get_or_create(code=constants.SICK_CODE,
+                                                        name=_('Sick'),
+                                                        description=_('Auto-generated task that designates a sick worker.'),
+                                                        category=special_category,
+                                                        is_boolean=True,
+                                                        in_monthly_report=False)
+        sick_task.buildings = Building.objects.all()
+        sick_task.save()
+    except IntegrityError:
+        pass
 
-    # absence task creation.
-    absence_task, created = Task.objects.get_or_create(code=constants.ABSENCE_CODE,
-                                                       name=_('Absence'),
-                                                       description=_('Auto-generated task that designates worker absence for a day.'),
-                                                       category=special_category,
-                                                       is_boolean=True,
-                                                       whole_day=True,
-                                                       in_monthly_report=False)
-    absence_task.buildings = Building.objects.all()
-    absence_task.save()
-
-    # notified absence task creation.
-    notified_absence_task, created = Task.objects.get_or_create(code=constants.NOTICED_ABSENCE_CODE,
-                                                       name=_('Notified Absence'),
-                                                       description=_('Auto-generated task that designates worker absence for a day, with previous notice.'),
-                                                       category=special_category,
-                                                       is_boolean=True,
-                                                       whole_day=True)
-    notified_absence_task.buildings = Building.objects.all()
-    notified_absence_task.save()
-
-    # bereavement leave task creation.
-    bereavement_task, created = Task.objects.get_or_create(code=constants.BEREAVEMENT_LEAVE_CODE,
-                                                           name=_('Bereavement Leave'),
-                                                           description=_('Auto-generated task that designates a worker on bereavement leave.'),
+    try:
+        # absence task creation.
+        absence_task, created = Task.objects.get_or_create(code=constants.ABSENCE_CODE,
+                                                           name=_('Absence'),
+                                                           description=_('Auto-generated task that designates worker absence for a day.'),
                                                            category=special_category,
                                                            is_boolean=True,
                                                            whole_day=True,
                                                            in_monthly_report=False)
-    bereavement_task.buildings = Building.objects.all()
-    bereavement_task.save()
+        absence_task.buildings = Building.objects.all()
+        absence_task.save()
+    except IntegrityError:
+        pass
 
-    # study leave task creation.
-    study_task, created = Task.objects.get_or_create(code=constants.STUDY_LEAVE_CODE,
-                                                     name=_('Study Leave'),
-                                                     description=_('Auto-generated task that designates a worker on study leave.'),
-                                                     category=special_category,
-                                                     is_boolean=True,
-                                                     whole_day=True,
-                                                     in_monthly_report=False)
-    study_task.buildings = Building.objects.all()
-    study_task.save()
+    try:
+        # notified absence task creation.
+        notified_absence_task, created = Task.objects.get_or_create(code=constants.NOTICED_ABSENCE_CODE,
+                                                           name=_('Notified Absence'),
+                                                           description=_('Auto-generated task that designates worker absence for a day, with previous notice.'),
+                                                           category=special_category,
+                                                           is_boolean=True,
+                                                           whole_day=True)
+        notified_absence_task.buildings = Building.objects.all()
+        notified_absence_task.save()
+    except IntegrityError:
+        pass
 
-    # disabled child leave task creation.
-    disabled_child_leave_task, created = Task.objects.get_or_create(code=constants.DISABLED_CHILD_LEAVE_CODE,
-                                                              name=_('Disabled Child Leave'),
-                                                              description=_(
-                                                                  'Auto-generated task that designates a worker on leave for having a disabled child.'),
-                                                              category=special_category,
-                                                              is_boolean=True,
-                                                              whole_day=True)
-    disabled_child_leave_task.buildings = Building.objects.all()
-    disabled_child_leave_task.save()
+    try:
+        # bereavement leave task creation.
+        bereavement_task, created = Task.objects.get_or_create(code=constants.BEREAVEMENT_LEAVE_CODE,
+                                                               name=_('Bereavement Leave'),
+                                                               description=_('Auto-generated task that designates a worker on bereavement leave.'),
+                                                               category=special_category,
+                                                               is_boolean=True,
+                                                               whole_day=True,
+                                                               in_monthly_report=False)
+        bereavement_task.buildings = Building.objects.all()
+        bereavement_task.save()
+    except IntegrityError:
+        pass
 
-    # marriage leave task creation.
-    marriage_leave_task, created = Task.objects.get_or_create(code=constants.MARRIAGE_LEAVE_CODE,
-                                                              name=_('Marriage Leave'),
-                                                              description=_(
-                                                                  'Auto-generated task that designates a worker on marriage leave.'),
-                                                              category=special_category,
-                                                              is_boolean=True,
-                                                              whole_day=True,
-                                                              in_monthly_report=False)
-    marriage_leave_task.buildings = Building.objects.all()
-    marriage_leave_task.save()
-
-    # paternity leave task creation.
-    paternity_leave_task, created = Task.objects.get_or_create(code=constants.PATERNITY_LEAVE_CODE,
-                                                              name=_('Paternity Leave'),
-                                                              description=_(
-                                                                  'Auto-generated task that designates a worker on paternity leave.'),
-                                                              category=special_category,
-                                                              is_boolean=True,
-                                                              whole_day=True,
-                                                              in_monthly_report=False)
-    paternity_leave_task.buildings = Building.objects.all()
-    paternity_leave_task.save()
-
-    # union leave task creation.
-    union_leave_task, created = Task.objects.get_or_create(code=constants.UNION_LEAVE_CODE,
-                                                              name=_('Union Leave'),
-                                                              description=_(
-                                                                  'Auto-generated task that designates a worker on syndical leave.'),
-                                                              category=special_category)
-    union_leave_task.buildings = Building.objects.all()
-    union_leave_task.save()
-
-    # strike task creation.
-    strike_task, created = Task.objects.get_or_create(code=constants.STRIKE_CODE,
-                                                      name=_('Strike'),
-                                                      description=_('Auto-generated task that designates a worker on strike.'),
-                                                      category=special_category,
-                                                      in_monthly_report=False)
-    strike_task.buildings = Building.objects.all()
-    strike_task.save()
-
-    # general strike task creation.
-    general_strike_task, created = Task.objects.get_or_create(code=constants.GENERAL_STRIKE_CODE,
-                                                      name=_('General strike'),
-                                                      description=_(
-                                                          'Auto-generated task that designates a worker on general strike.'),
-                                                      category=special_category,
-                                                      is_boolean=True,
-                                                      whole_day=True,
-                                                      in_monthly_report=False)
-    general_strike_task.buildings = Building.objects.all()
-    general_strike_task.save()
-
-    # early leave task creation.
-    early_leave_task, created = Task.objects.get_or_create(code=constants.EARLY_LEAVE_CODE,
-                                                      name=_('Leaving Early'),
-                                                      description=_(
-                                                          'Auto-generated task that designates a worker that left early.'),
-                                                      category=special_category,
-                                                      is_boolean=True,
-                                                      in_monthly_report=False)
-    early_leave_task.buildings = Building.objects.all()
-    early_leave_task.save()
-
-    # FOCAP training task
-    focap_task, created = Task.objects.get_or_create(code=constants.FOCAP_TRAINING_CODE,
-                                                      name=_('FOCAP Training'),
-                                                      description=_(
-                                                          'Auto-generated task that designates a worker on FOCAP training.'),
-                                                      category=special_category)
-    focap_task.buildings = Building.objects.all()
-    focap_task.save()
-
-    # training task
-    training_task, created = Task.objects.get_or_create(code=constants.TRAINING_CODE,
-                                                      name=_('Training'),
-                                                      description=_(
-                                                          'Auto-generated task that designates a worker on training.'),
-                                                      category=special_category)
-    training_task.buildings = Building.objects.all()
-    training_task.save()
-
-    # antiquity leave task
-    antiquity_task, created = Task.objects.get_or_create(code=constants.ANTIQUITY_LEAVE_CODE,
-                                                      name=_('Antiquity leave'),
-                                                      description=_(
-                                                          'Auto-generated task that designates a worker on antiquity leave.'),
-                                                      category=special_category,
-                                                      is_boolean=True,
-                                                      in_monthly_report=False)
-    antiquity_task.buildings = Building.objects.all()
-    antiquity_task.save()
-
-    # suspended task creation.
-    suspended_task, created = Task.objects.get_or_create(code=constants.SUSPENDED_CODE,
-                                                         name=_('Suspended'),
-                                                         description=_(
-                                                         'Auto-generated task that designates a suspended worker.'),
+    try:
+        # study leave task creation.
+        study_task, created = Task.objects.get_or_create(code=constants.STUDY_LEAVE_CODE,
+                                                         name=_('Study Leave'),
+                                                         description=_('Auto-generated task that designates a worker on study leave.'),
                                                          category=special_category,
                                                          is_boolean=True,
+                                                         whole_day=True,
                                                          in_monthly_report=False)
-    suspended_task.buildings = Building.objects.all()
-    suspended_task.save()
+        study_task.buildings = Building.objects.all()
+        study_task.save()
+    except IntegrityError:
+        pass
 
-    # post_obra task creation.
-    post_obra_task, created = Task.objects.get_or_create(code=constants.POST_OBRA_CODE,
-                                                         name=_('Postobra'),
-                                                         description=_(
-                                                         'Auto-generated task that designates a worker on post-obra.'),
-                                                         category=special_category,
-                                                         in_monthly_report=False)
-    post_obra_task.buildings = Building.objects.all()
-    post_obra_task.save()
+    try:
+        # disabled child leave task creation.
+        disabled_child_leave_task, created = Task.objects.get_or_create(code=constants.DISABLED_CHILD_LEAVE_CODE,
+                                                                  name=_('Disabled Child Leave'),
+                                                                  description=_(
+                                                                      'Auto-generated task that designates a worker on leave for having a disabled child.'),
+                                                                  category=special_category,
+                                                                  is_boolean=True,
+                                                                  whole_day=True)
+        disabled_child_leave_task.buildings = Building.objects.all()
+        disabled_child_leave_task.save()
+    except IntegrityError:
+        pass
+
+    try:
+        # marriage leave task creation.
+        marriage_leave_task, created = Task.objects.get_or_create(code=constants.MARRIAGE_LEAVE_CODE,
+                                                                  name=_('Marriage Leave'),
+                                                                  description=_(
+                                                                      'Auto-generated task that designates a worker on marriage leave.'),
+                                                                  category=special_category,
+                                                                  is_boolean=True,
+                                                                  whole_day=True,
+                                                                  in_monthly_report=False)
+        marriage_leave_task.buildings = Building.objects.all()
+        marriage_leave_task.save()
+    except IntegrityError:
+        pass
+
+    try:
+        # paternity leave task creation.
+        paternity_leave_task, created = Task.objects.get_or_create(code=constants.PATERNITY_LEAVE_CODE,
+                                                                  name=_('Paternity Leave'),
+                                                                  description=_(
+                                                                      'Auto-generated task that designates a worker on paternity leave.'),
+                                                                  category=special_category,
+                                                                  is_boolean=True,
+                                                                  whole_day=True,
+                                                                  in_monthly_report=False)
+        paternity_leave_task.buildings = Building.objects.all()
+        paternity_leave_task.save()
+    except IntegrityError:
+        pass
+
+    try:
+        # union leave task creation.
+        union_leave_task, created = Task.objects.get_or_create(code=constants.UNION_LEAVE_CODE,
+                                                                  name=_('Union Leave'),
+                                                                  description=_(
+                                                                      'Auto-generated task that designates a worker on syndical leave.'),
+                                                                  category=special_category)
+        union_leave_task.buildings = Building.objects.all()
+        union_leave_task.save()
+    except IntegrityError:
+        pass
+
+    try:
+        # strike task creation.
+        strike_task, created = Task.objects.get_or_create(code=constants.STRIKE_CODE,
+                                                          name=_('Strike'),
+                                                          description=_('Auto-generated task that designates a worker on strike.'),
+                                                          category=special_category,
+                                                          in_monthly_report=False)
+        strike_task.buildings = Building.objects.all()
+        strike_task.save()
+    except IntegrityError:
+        pass
+
+    try:
+        # general strike task creation.
+        general_strike_task, created = Task.objects.get_or_create(code=constants.GENERAL_STRIKE_CODE,
+                                                          name=_('General strike'),
+                                                          description=_(
+                                                              'Auto-generated task that designates a worker on general strike.'),
+                                                          category=special_category,
+                                                          is_boolean=True,
+                                                          whole_day=True,
+                                                          in_monthly_report=False)
+        general_strike_task.buildings = Building.objects.all()
+        general_strike_task.save()
+    except IntegrityError:
+        pass
+
+    try:
+        # early leave task creation.
+        early_leave_task, created = Task.objects.get_or_create(code=constants.EARLY_LEAVE_CODE,
+                                                          name=_('Leaving Early'),
+                                                          description=_(
+                                                              'Auto-generated task that designates a worker that left early.'),
+                                                          category=special_category,
+                                                          is_boolean=True,
+                                                          in_monthly_report=False)
+        early_leave_task.buildings = Building.objects.all()
+        early_leave_task.save()
+    except IntegrityError:
+        pass
+
+    try:
+        # FOCAP training task
+        focap_task, created = Task.objects.get_or_create(code=constants.FOCAP_TRAINING_CODE,
+                                                          name=_('FOCAP Training'),
+                                                          description=_(
+                                                              'Auto-generated task that designates a worker on FOCAP training.'),
+                                                          category=special_category)
+        focap_task.buildings = Building.objects.all()
+        focap_task.save()
+    except IntegrityError:
+        pass
+
+    try:
+        # training task
+        training_task, created = Task.objects.get_or_create(code=constants.TRAINING_CODE,
+                                                          name=_('Training'),
+                                                          description=_(
+                                                              'Auto-generated task that designates a worker on training.'),
+                                                          category=special_category)
+        training_task.buildings = Building.objects.all()
+        training_task.save()
+    except IntegrityError:
+        pass
+
+    try:
+        # antiquity leave task
+        antiquity_task, created = Task.objects.get_or_create(code=constants.ANTIQUITY_LEAVE_CODE,
+                                                          name=_('Antiquity leave'),
+                                                          description=_(
+                                                              'Auto-generated task that designates a worker on antiquity leave.'),
+                                                          category=special_category,
+                                                          is_boolean=True,
+                                                          in_monthly_report=False)
+        antiquity_task.buildings = Building.objects.all()
+        antiquity_task.save()
+    except IntegrityError:
+        pass
+
+    try:
+        # suspended task creation.
+        suspended_task, created = Task.objects.get_or_create(code=constants.SUSPENDED_CODE,
+                                                             name=_('Suspended'),
+                                                             description=_(
+                                                             'Auto-generated task that designates a suspended worker.'),
+                                                             category=special_category,
+                                                             is_boolean=True,
+                                                             in_monthly_report=False)
+        suspended_task.buildings = Building.objects.all()
+        suspended_task.save()
+    except IntegrityError:
+        pass
+
+    try:
+        # post_obra task creation.
+        post_obra_task, created = Task.objects.get_or_create(code=constants.POST_OBRA_CODE,
+                                                             name=_('Postobra'),
+                                                             description=_(
+                                                             'Auto-generated task that designates a worker on post-obra.'),
+                                                             category=special_category,
+                                                             in_monthly_report=False)
+        post_obra_task.buildings = Building.objects.all()
+        post_obra_task.save()
+    except IntegrityError:
+        pass
 
     # 'General' task creation for each non-special category
     standard_categories = TaskCategory.objects.exclude(name=constants.SPECIAL_CATEGORY_NAME)
@@ -326,13 +404,16 @@ def create_default_tasks():
         code = '%s-%s' % (category.name, constants.GENERAL_CODE_SUFFIX)
         name = _('%s/General') % category.name
         description = _('General task for the %s category') % category.name
-        task, created = Task.objects.get_or_create(code=code,
-                                                   name=name,
-                                                   description=description,
-                                                   category=category,
-                                                   requires_comment=True)
-        task.buildings = Building.objects.all()
-        task.save()
+        try:
+            task, created = Task.objects.get_or_create(code=code,
+                                                       name=name,
+                                                       description=description,
+                                                       category=category,
+                                                       requires_comment=True)
+            task.buildings = Building.objects.all()
+            task.save()
+        except IntegrityError:
+            pass
 
 
 # custom views
@@ -365,7 +446,7 @@ def monthly_reports(request, building):
 
 def daily_report_download(request, building, date):
     try:
-        workday = Workday.objects.get(building=building, date=date)
+        workday = Workday.objects.get(date=date, building__code=building)
         response = HttpResponse(content_type='application/vnd.ms-excel')
         response['Content-Disposition'] = 'attachment; filename=%s_%s_%s.xlsx' % (_('Daily_Report'), building, date)
         xlsx_data = workday.get_report()

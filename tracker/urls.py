@@ -15,4 +15,3 @@ urlpatterns = [
     url(regex=r'^api/daily_report/$', view=views_api.DailyReport.as_view(), name='api_daily_report'),
 ]
 
-
