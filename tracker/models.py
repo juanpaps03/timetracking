@@ -7,6 +7,8 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext as __
+
 
 from config import constants
 from sabyltimetracker.users.models import User
@@ -33,9 +35,9 @@ class Building(models.Model):
 
     code = models.PositiveIntegerField(_('code'), null=False, blank=False)
     address = models.CharField(_('address'), blank=True, max_length=255)
-    overseer = models.OneToOneField(User, on_delete=models.SET_NULL, null=True, blank=True)
-    workers = models.ManyToManyField('Worker', related_name="buildings")
-    tasks = models.ManyToManyField('Task', related_name="buildings")
+    overseer = models.OneToOneField(User, on_delete=models.SET_NULL, null=True, blank=True, verbose_name=_('Capataz'))
+    workers = models.ManyToManyField('Worker', related_name="buildings", verbose_name=_('Workers'))
+    tasks = models.ManyToManyField('Task', related_name="buildings", verbose_name=_('Tasks'))
     assigned = models.DateTimeField(auto_now=False, auto_now_add=True)
 
     objects = BuildingManager()
@@ -68,42 +70,42 @@ class Building(models.Model):
         workbook = xlsxwriter.Workbook(output)
 
         # Here we will adding the code to add data
-        r = workbook.add_worksheet(_("Daily Report"))
+        r = workbook.add_worksheet(__("Daily Report"))
         title = workbook.add_format({ 'bold': True, 'font_size': 14, 'align': 'center' })
         header = workbook.add_format({ 'bg_color': '#F7F7F7', 'color': 'black', 'align': 'center', 'border': 1 })
 
         # title row
         r.merge_range('A1:C3', config.COMPANY_NAME, title)
         r.insert_image('A1', 'static:images:logo.png')
-        r.merge_range('D1:AR1', _('Worked Hours Detail'), title)
-        building_info = '%s: %s' % (_('Building'), str(self))
+        r.merge_range('D1:AR1', __('Worked Hours Detail'), title)
+        building_info = '%s: %s' % (__('Building'), str(self))
         r.merge_range('D2:AR2', building_info, title)
-        date_info = '%s: %s, %s: %s' % (_('Month'), str(month), _('Year'), str(year))
+        date_info = '%s: %s, %s: %s' % (__('Month'), str(month), __('Year'), str(year))
         r.merge_range('D3:AR3', date_info, title)
 
         # headers row
-        r.merge_range('A4:A5', _('Code'), header)
-        r.merge_range('B4:B5', _('Full Name'), header)
-        r.merge_range('C4:C5', _('VL'), header)
+        r.merge_range('A4:A5', __('Code'), header)
+        r.merge_range('B4:B5', __('Full Name'), header)
+        r.merge_range('C4:C5', __('VL'), header)
         r.set_column('C:C', 2)
-        r.merge_range('D4:D5', _('Cat'), header)
-        r.merge_range('E4:E5', _('Holiday'), header)
+        r.merge_range('D4:D5', __('Cat'), header)
+        r.merge_range('E4:E5', __('Holiday'), header)
         r.set_column('E:E', 7)
-        r.merge_range('F4:H4', _('Worked Hours'), header)
-        r.write('F5', _(u'1ºQ'), header)
+        r.merge_range('F4:H4', __('Worked Hours'), header)
+        r.write('F5', __(u'1ºQ'), header)
         r.set_column('F:F', 4)
-        r.write('G5', _(u'2ºQ'), header)
+        r.write('G5', __(u'2ºQ'), header)
         r.set_column('G:G', 4)
-        r.write('H5', _('Total'), header)
+        r.write('H5', __('Total'), header)
         r.set_column('H:H', 4)
-        r.merge_range('I4:K4', _('Incentive Hours'), header)
-        r.write('I5', _(u'1ºQ'), header)
+        r.merge_range('I4:K4', __('Incentive Hours'), header)
+        r.write('I5', __(u'1ºQ'), header)
         r.set_column('I:I', 4)
-        r.write('J5', _(u'2ºQ'), header)
+        r.write('J5', __(u'2ºQ'), header)
         r.set_column('J:J', 4)
-        r.write('K5', _('Total'), header)
+        r.write('K5', __('Total'), header)
         r.set_column('K:K', 4)
-        r.merge_range('L4:AP4', _('Days'), header)
+        r.merge_range('L4:AP4', __('Days'), header)
         i = 1
         for c in range(ord('L'), ord('Z') + 1):
             col = chr(c)
@@ -115,10 +117,10 @@ class Building(models.Model):
             r.write('A%s5' % col, i, header)
             r.set_column('A%s:A%s' % (col, col), 2)
             i += 1
-        r.merge_range('AQ4:AR4', _('Ad 1/2 Hour'), header)
-        r.write('AQ5', _(u'1ºQ'), header)
+        r.merge_range('AQ4:AR4', __('Ad 1/2 Hour'), header)
+        r.write('AQ5', __(u'1ºQ'), header)
         r.set_column('AQ:AQ', 5)
-        r.write('AR5', _(u'2ºQ'), header)
+        r.write('AR5', __(u'2ºQ'), header)
         r.set_column('AR:AR', 5)
 
         # holiday hours
@@ -192,7 +194,7 @@ class Workday(models.Model):
         verbose_name = _('workday')
         verbose_name_plural = _('workdays')
 
-    building = models.ForeignKey(Building)
+    building = models.ForeignKey(Building, verbose_name=_('Building'))
     date = models.DateField(_('date'), auto_now=False, default=datetime.date.today)
     finished = models.BooleanField(_('finished'), default=False)
     overseer = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True)
@@ -228,11 +230,14 @@ class Workday(models.Model):
         winter_start, winter_end = constants.WINTER_PERIOD[index]
         winter_start = datetime.datetime.strptime(winter_start, "%Y-%m-%d").date()
         winter_end = datetime.datetime.strptime(winter_end, "%Y-%m-%d").date()
-        today = datetime.date(year, month, day)
-        if winter_start <= today <= winter_end:
-            return config.WINTER_TIME_THRESHOLD
-        else:
-            return config.SUMMER_TIME_THRESHOLD
+        try:
+            today = datetime.date(year, month, day)
+            if winter_start <= today <= winter_end:
+                return config.WINTER_TIME_THRESHOLD
+            else:
+                return config.SUMMER_TIME_THRESHOLD
+        except ValueError:
+            return 25  # threshold is more than hours of day if day doesn't exist.
 
     @staticmethod
     def calculate_incentive(day, month, year, building, worker):
@@ -251,14 +256,14 @@ class Workday(models.Model):
 
     @staticmethod
     def start(building):
-        workday = Workday.objects.filter(building=building).order_by('-date')[0]
         date = timezone.localdate(timezone.now())
-        if workday.date != date:
+        workdays = Workday.objects.filter(building=building).order_by('-date')
+        if workdays and workdays[0].date == date:
+            return False
+        else:
             workday = Workday(building=building, overseer=building.overseer)
             workday.save()
             return True
-        else:
-            return False
 
     def assign_logs(self, task_id, list_hours_per_user, comment=None):
         task = self.building.tasks.get(pk=task_id)
@@ -298,30 +303,30 @@ class Workday(models.Model):
         workbook = xlsxwriter.Workbook(output)
 
         # Here we will adding the code to add data
-        r = workbook.add_worksheet(_("Daily Report"))
-        title = workbook.add_format({ 'bold': True, 'font_size': 14, 'align': 'center' })
-        header = workbook.add_format({ 'bg_color': '#F7F7F7', 'color': 'black', 'align': 'center', 'border': 1 })
+        r = workbook.add_worksheet(__("Daily Report"))
+        title = workbook.add_format({'bold': True, 'font_size': 14, 'align': 'center'})
+        header = workbook.add_format({'bg_color': '#F7F7F7', 'color': 'black', 'align': 'center', 'border': 1})
 
         # title row
 
         r.merge_range('A1:C3', config.COMPANY_NAME, title)
         r.insert_image('A1', 'static:images:logo.png')
-        r.merge_range('D1:%s1' % max_column, _('Daily Report'), title)
-        building_info = '%s: %s' % (_('Building'), str(workday.building))
+        r.merge_range('D1:%s1' % max_column, __('Daily Report'), title)
+        building_info = '%s: %s' % (__('Building'), str(workday.building))
         r.merge_range('D2:%s2' % max_column, building_info, title)
-        date_info = '%s: %s' % (_('Date'), str(workday.date))
+        date_info = '%s: %s' % (__('Date'), str(workday.date))
         r.merge_range('D3:%s3' % max_column, date_info, title)
 
         # general headers row
-        r.merge_range('A4:C4', _('Workers'), header)
-        r.merge_range('D4:%s4' % max_column, _('Tasks'), header)
+        r.merge_range('A4:C4', __('Workers'), header)
+        r.merge_range('D4:%s4' % max_column, __('Tasks'), header)
 
         # specific headers row
-        r.write('A5', _('Code'), header)
-        r.write('B5', _('Full Name'), header)
-        r.write('C5', _('Cat'), header)
+        r.write('A5', __('Code'), header)
+        r.write('B5', __('Full Name'), header)
+        r.write('C5', __('Cat'), header)
 
-        col = 3 # starting column is D
+        col = 3  # starting column is D
         for task in tasks:
             letter = utils.column_letter(col)
             r.write('%s5' % letter, str(task.name), header)
@@ -365,23 +370,23 @@ class Workday(models.Model):
         r.set_column('B:B', full_name_width)
         r.set_column('C:C', category_width)
 
-        r.merge_range('A%d:%s%d' % (row, max_column, row), _('Extra Information'), title)
+        r.merge_range('A%d:%s%d' % (row, max_column, row), __('Extra Information'), title)
         row += 1
         if self.force_finished:
-            r.merge_range('A%d:%s%d' % (row, max_column, row), _('Day force-finished without controls.'))
+            r.merge_range('A%d:%s%d' % (row, max_column, row), __('Day force-finished without controls.'))
             row += 1
         if not self.finished:
-            r.merge_range('A%d:%s%d' % (row, max_column, row), _('Day unfinished.'))
+            r.merge_range('A%d:%s%d' % (row, max_column, row), __('Day unfinished.'))
             row += 1
         if self.holiday:
-            r.merge_range('A%d:%s%d' % (row, max_column, row), _('Day is a holiday.'))
+            r.merge_range('A%d:%s%d' % (row, max_column, row), __('Day is a holiday.'))
             row += 1
         if self.comment:
-            r.merge_range('A%d:C%d' % (row, row), _('Workday comment'), header)
+            r.merge_range('A%d:C%d' % (row, row), __('Workday comment'), header)
             r.merge_range('D%d:%s%d' % (row, max_column, row), workday.comment)
             row += 1
         if notes:
-            r.merge_range('A%d:%s%d' % (row, max_column, row), _('Notes'), header)
+            r.merge_range('A%d:%s%d' % (row, max_column, row), __('Notes'), header)
             row += 1
             for code, (task, comment) in notes.items():
                 r.merge_range('A%d:C%d' % (row, row), task.name, header)
@@ -405,9 +410,9 @@ class LogHour(models.Model):
         verbose_name = _('log hour')
         verbose_name_plural = _('log hours')
 
-    workday = models.ForeignKey('Workday', on_delete=models.CASCADE, related_name='logs')
-    worker = models.ForeignKey('Worker')
-    task = models.ForeignKey('Task')
+    workday = models.ForeignKey('Workday', on_delete=models.CASCADE, related_name='logs', verbose_name=_('workday'))
+    worker = models.ForeignKey('Worker', verbose_name=_('worker'))
+    task = models.ForeignKey('Task', verbose_name=_('task'))
     amount = models.DecimalField(_('amount'), max_digits=2, decimal_places=1, null=False, blank=False, default=1,
                                  validators=[MaxValueValidator(24), MinValueValidator(1)])
     comment = models.CharField(_('comment'), null=True, blank=True, max_length=255, default=None)
@@ -483,7 +488,7 @@ class Task(models.Model):
     code = models.CharField(_('code'), null=False, blank=False, max_length=20, unique=True)
     name = models.CharField(_('name'), null=False, blank=True, max_length=255, unique=True)
     description = models.TextField(_('description'))
-    category = models.ForeignKey('TaskCategory')
+    category = models.ForeignKey('TaskCategory', verbose_name=_('Category'))
     requires_comment = models.BooleanField(_('requires comment'), default=False)
     is_boolean = models.BooleanField(_('is boolean'), default=False)
     whole_day = models.BooleanField(_('whole day'), default=False)
@@ -524,7 +529,7 @@ class Worker(models.Model):
     code = models.CharField(_('code'), primary_key=True, max_length=10)
     first_name = models.CharField(_('first name'), max_length=100)
     last_name = models.CharField(_('last name'), max_length=100)
-    category = models.ForeignKey('WorkerCategory')
+    category = models.ForeignKey('WorkerCategory', verbose_name=_('Category'))
 
     def full_name(self):
         return '%s, %s' % (self.last_name, self.first_name)
