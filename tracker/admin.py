@@ -89,56 +89,62 @@ class WorkdayAdmin(admin.ModelAdmin):
 
 def create_manager_group():
     # Creating manager group and permissions
-    manager_group, created = Group.objects.get_or_create(name=_('Manager'))
+    try:
+        manager_group, created = Group.objects.get_or_create(name=_('Manager'))
 
-    content_type = ContentType.objects.get_for_model(Building)
-    permissions = Permission.objects.filter(content_type=content_type)
-    for p in permissions:
-        manager_group.permissions.add(p)
-
-    content_type = ContentType.objects.get_for_model(Workday)
-    permissions = Permission.objects.filter(content_type=content_type)
-    for p in permissions:
-        manager_group.permissions.add(p)
-
-    content_type = ContentType.objects.get_for_model(LogHour)
-    permissions = Permission.objects.filter(content_type=content_type)
-    for p in permissions:
-        manager_group.permissions.add(p)
-
-    content_type = ContentType.objects.get_for_model(Task)
-    permissions = Permission.objects.filter(content_type=content_type)
-    for p in permissions:
-        manager_group.permissions.add(p)
-
-    content_type = ContentType.objects.get_for_model(TaskCategory)
-    permissions = Permission.objects.filter(content_type=content_type)
-    for p in permissions:
-        manager_group.permissions.add(p)
-
-    content_type = ContentType.objects.get_for_model(WorkerCategory)
-    permissions = Permission.objects.filter(content_type=content_type)
-    for p in permissions:
-        manager_group.permissions.add(p)
-
-    content_type = ContentType.objects.get_for_model(Worker)
-    permissions = Permission.objects.filter(content_type=content_type)
-    for p in permissions:
-        manager_group.permissions.add(p)
-
-    content_type = ContentType.objects.get_for_model(User)
-    permissions = Permission.objects.filter(content_type=content_type)
-    for p in permissions:
-        if p.codename != "delete_user":
+        content_type = ContentType.objects.get_for_model(Building)
+        permissions = Permission.objects.filter(content_type=content_type)
+        for p in permissions:
             manager_group.permissions.add(p)
 
-    manager_group.save()
+        content_type = ContentType.objects.get_for_model(Workday)
+        permissions = Permission.objects.filter(content_type=content_type)
+        for p in permissions:
+            manager_group.permissions.add(p)
+
+        content_type = ContentType.objects.get_for_model(LogHour)
+        permissions = Permission.objects.filter(content_type=content_type)
+        for p in permissions:
+            manager_group.permissions.add(p)
+
+        content_type = ContentType.objects.get_for_model(Task)
+        permissions = Permission.objects.filter(content_type=content_type)
+        for p in permissions:
+            manager_group.permissions.add(p)
+
+        content_type = ContentType.objects.get_for_model(TaskCategory)
+        permissions = Permission.objects.filter(content_type=content_type)
+        for p in permissions:
+            manager_group.permissions.add(p)
+
+        content_type = ContentType.objects.get_for_model(WorkerCategory)
+        permissions = Permission.objects.filter(content_type=content_type)
+        for p in permissions:
+            manager_group.permissions.add(p)
+
+        content_type = ContentType.objects.get_for_model(Worker)
+        permissions = Permission.objects.filter(content_type=content_type)
+        for p in permissions:
+            manager_group.permissions.add(p)
+
+        content_type = ContentType.objects.get_for_model(User)
+        permissions = Permission.objects.filter(content_type=content_type)
+        for p in permissions:
+            if p.codename != "delete_user":
+                manager_group.permissions.add(p)
+
+        manager_group.save()
+    except:
+        pass
 
 
 def create_default_tasks():
     # special category creation.
-    special_category, created = TaskCategory.objects.get_or_create(name=constants.SPECIAL_CATEGORY_NAME)
-    special_category.save()
+    try:
+        special_category, created = TaskCategory.objects.get_or_create(name=constants.SPECIAL_CATEGORY_NAME)
+        special_category.save()
+    except:
+        pass
 
     try:
         # union assembly task creation.
