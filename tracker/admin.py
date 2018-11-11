@@ -465,5 +465,3 @@ def create_defaults():
     create_manager_group()
     create_default_tasks()
 
-
-create_defaults()
