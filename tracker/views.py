@@ -30,7 +30,8 @@ class Dashboard(View):
             workers = building.workers.all()
             date = timezone.localdate(timezone.now())
             try:
-                workday = Workday.objects.filter(building=building, finished=False).order_by('-date')[0]
+                workdays = Workday.objects.filter(building=building, finished=False).order_by('-date')
+                workday = workdays[0]
                 if workday.date != date:
                     django_messages.warning(request, messages.OLD_UNFINISHED_WORKDAY)
                     is_old_workday = True
@@ -55,8 +56,8 @@ class Dashboard(View):
                 }
                 return render(request, 'tracker/dashboard.html', context)
             except IndexError:
-                workday = Workday.objects.filter(building=building, finished=True).order_by('-date')[0]
-                able_to_start = workday.date != date
+                workdays = Workday.objects.filter(building=building, finished=True).order_by('-date')
+                able_to_start = not workdays or workdays[0].date != date
                 context = {'building': building, 'able_to_start': able_to_start}
                 return render(request, 'tracker/start_day.html', context)
         else:

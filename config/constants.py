@@ -87,27 +87,26 @@ WINTER_PERIOD = [
 
 # DYNAMIC CONSTANTS DEFAULTS:
 DYNAMIC_CONSTANTS = {
-    'COMPANY_NAME': ('Sabyl Constructora', 'Name of the company'),
-    'DAYS_ABLE_TO_EDIT': (7, 'time period in days for which the overseer can edit previous workdays'),
-    'DAYS_ABLE_TO_VIEW': (36500, 'time period in days for which the overseer can view previous workdays'
-                                 '(default 100 years)'),
-    'MONDAY_HOURS': (9, 'hours expected for mondays'),
-    'TUESDAY_HOURS': (9, 'hours expected for tuesdays'),
-    'WEDNESDAY_HOURS': (9, 'hours expected for wednesdays'),
-    'THURSDAY_HOURS': (9, 'hours expected for thursdays'),
-    'FRIDAY_HOURS': (8, 'hours expected for fridays'),
-    'SATURDAY_HOURS': (0, 'hours expected for saturdays'),
-    'SUNDAY_HOURS': (0, 'hours expected for sundays'),
-    'INCENTIVE_THRESHOLD': (44, 'amount of hours worked needed in a week to get incentive'),
-    'INCENTIVE_PERCENT': (10.42, 'bonus percent for reaching the threshold of hours needed in a week'),
-    'WINTER_TIME_THRESHOLD': (4.5, 'additional half hour threshold for winter time.'),
-    'SUMMER_TIME_THRESHOLD': (5, 'additional half hour threshold for summer time.'),
+    'COMPANY_NAME': ('Sabyl Constructora', 'Nombre de la empresa'),
+    'DAYS_ABLE_TO_EDIT': (7, 'Cantidad de días pasados que un capataz puede editar.'),
+    'DAYS_ABLE_TO_VIEW': (36500, 'Cantidad de días pasados que un capataz puede ver (por defecto 100 años).'),
+    'MONDAY_HOURS': (9, 'Horas de trabajo esperadas los días lunes.'),
+    'TUESDAY_HOURS': (9, 'Horas de trabajo esperadas los días martes.'),
+    'WEDNESDAY_HOURS': (9, 'Horas de trabajo esperadas los días miércoles.'),
+    'THURSDAY_HOURS': (9, 'Horas de trabajo esperadas los días jueves.'),
+    'FRIDAY_HOURS': (8, 'Horas de trabajo esperadas los días viernes.'),
+    'SATURDAY_HOURS': (0, 'Horas de trabajo esperadas los días sábado.'),
+    'SUNDAY_HOURS': (0, 'Horas de trabajo esperadas los días domingo.'),
+    'INCENTIVE_THRESHOLD': (44, 'Cantidad de horas de trabajo semanales necesarias para cobrar incentivo.'),
+    'INCENTIVE_PERCENT': (10.42, 'Porcentaje de incentivo sobre las horas semanales trabajadas.'),
+    'WINTER_TIME_THRESHOLD': (4.5, 'Cantidad de horas de trabajo para cobrar media hora adicional en invierno.'),
+    'SUMMER_TIME_THRESHOLD': (5, 'Cantidad de horas de trabajo para cobrar media hora adicional en verano.'),
 
 }
 
 DYNAMIC_CONSTANT_FIELDSETS = OrderedDict([
-    ('General Options', ('COMPANY_NAME', 'DAYS_ABLE_TO_EDIT', 'DAYS_ABLE_TO_VIEW')),
-    ('Expected hours', ('MONDAY_HOURS', 'TUESDAY_HOURS', 'WEDNESDAY_HOURS', 'THURSDAY_HOURS', 'FRIDAY_HOURS',
+    ('Opciones Generales', ('COMPANY_NAME', 'DAYS_ABLE_TO_EDIT', 'DAYS_ABLE_TO_VIEW')),
+    ('Horas esperadas', ('MONDAY_HOURS', 'TUESDAY_HOURS', 'WEDNESDAY_HOURS', 'THURSDAY_HOURS', 'FRIDAY_HOURS',
                         'SATURDAY_HOURS', 'SUNDAY_HOURS')),
-    ('Bonus hours', ('INCENTIVE_THRESHOLD', 'INCENTIVE_PERCENT', 'WINTER_TIME_THRESHOLD', 'SUMMER_TIME_THRESHOLD')),
+    ('Adicionales', ('INCENTIVE_THRESHOLD', 'INCENTIVE_PERCENT', 'WINTER_TIME_THRESHOLD', 'SUMMER_TIME_THRESHOLD')),
 ])
