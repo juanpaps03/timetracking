@@ -1,4 +1,4 @@
-{% load static i18n %}<!DOCTYPE html>
+{% load static i18n compress%}<!DOCTYPE html>
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=""> <![endif]-->
 <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" lang=""> <![endif]-->
 <!--[if IE 8]>         <html class="no-js lt-ie9" lang=""> <![endif]-->
@@ -40,11 +40,12 @@
 
 
     <!-- Your stuff: Third-party CSS libraries go here -->
-
+    {% compress css %}
       <!-- This file stores project-specific CSS -->
 
       <link href="{% static 'css/project.css' %}" rel="stylesheet">
 
+    {% endcompress %}
   {% endblock %}
 
 </head>
@@ -297,6 +298,8 @@
   {#      <script src="assets/js/lib/vector-map/country/jquery.vmap.world.js"></script>#}
 
   <!-- place project specific Javascript in this file -->
+  {% compress js %}
+  {% endcompress %}
 
 {% endblock javascript %}
 
