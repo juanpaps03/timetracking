@@ -106,7 +106,7 @@ MEDIA_URL="media/"
 #STATIC_URL = 'https://s3.amazonaws.com/%s/static/' % AWS_STORAGE_BUCKET_NAME
 #BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+#STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 #STATIC_URL = "/static/"
 #STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
@@ -124,8 +124,8 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 # COMPRESSOR
 # ------------------------------------------------------------------------------
 #COMPRESS_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-COMPRESS_STORAGE="compressor.storage.CompressorFileStorage"
-COMPRESS_ENABLED = env.bool('COMPRESS_ENABLED', default=True)
+#COMPRESS_STORAGE="compressor.storage.CompressorFileStorage"
+#COMPRESS_ENABLED = env.bool('COMPRESS_ENABLED', default=True)
 # EMAIL
 # ------------------------------------------------------------------------------
 #DEFAULT_FROM_EMAIL = env('DJANGO_DEFAULT_FROM_EMAIL',
