@@ -48,3 +48,33 @@ django-compressor==2.2
 
 # Django REST framework
 djangorestframework==3.7.7
+
+certifi==2018.8.24
+cffi==1.11.5
+chardet==3.0.4
+convertapi==1.1.0
+defusedxml==0.5.0
+django-appconf==1.0.2
+greenlet==0.4.14
+idna==2.7
+jmespath==0.9.3
+oauthlib==2.1.0
+pycparser==2.18
+python-dateutil==2.7.3
+python3-openid==3.1.0
+requests==2.19.1
+requests-oauthlib==1.0.0
+
+django-constance==2.3.1
+django-extensions==2.1.2
+django-picklefield==1.1.0
+
+docutils==0.14
+regex==2018.8.29
+rjsmin==1.0.12
+s3transfer==0.1.13
+six==1.11.0
+sqlparse==0.2.4
+Unidecode==0.4.21
+urllib3==1.23
+XlsxWriter==1.1.1
