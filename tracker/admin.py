@@ -139,28 +139,11 @@ def create_manager_group():
 
 
 def create_default_tasks():
-    # 'General' task creation for each non-special category
-    standard_categories = TaskCategory.objects.exclude(name=constants.SPECIAL_CATEGORY_NAME)
-    for category in standard_categories:
-        code = '%s-%s' % (category.name, constants.GENERAL_CODE_SUFFIX)
-        name = _('%s/General') % category.name
-        description = _('General task for the %s category') % category.name
-        try:
-            task, created = Task.objects.get_or_create(code=code,
-                                                       name=name,
-                                                       description=description,
-                                                       category=category,
-                                                       requires_comment=True)
-            task.buildings = Building.objects.all()
-            task.save()
-        except IntegrityError:
-            pass
-    # special category creation.
     try:
         special_category, created = TaskCategory.objects.get_or_create(name=constants.SPECIAL_CATEGORY_NAME)
         special_category.save()
     except:
-        return # If we can't create the special_category, we can't create any special task
+        return  # If we can't create the special_category, we can't create any special task
 
     try:
         # union assembly task creation.

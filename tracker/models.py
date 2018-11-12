@@ -14,6 +14,7 @@ from config import constants
 from sabyltimetracker.users.models import User
 from tracker import utils
 from django.utils.dateparse import parse_datetime
+from django.db import IntegrityError
 
 from constance import config
 
@@ -35,7 +36,7 @@ class Building(models.Model):
 
     code = models.PositiveIntegerField(_('code'), null=False, blank=False)
     address = models.CharField(_('address'), blank=True, max_length=255)
-    overseer = models.OneToOneField(User, on_delete=models.SET_NULL, null=True, blank=True, verbose_name=_('Capataz'))
+    overseer = models.OneToOneField(User, on_delete=models.SET_NULL, null=True, blank=True, verbose_name=_('Overseer'))
     workers = models.ManyToManyField('Worker', related_name="buildings", verbose_name=_('Workers'))
     tasks = models.ManyToManyField('Task', related_name="buildings", verbose_name=_('Tasks'))
     assigned = models.DateTimeField(auto_now=False, auto_now_add=True)
@@ -505,6 +506,21 @@ class TaskCategory(models.Model):
         verbose_name = _('task category')
         verbose_name_plural = _("task categories")
     name = models.CharField(_('name'), primary_key=True, max_length=40, blank=False)
+
+    def save(self, *args, **kwargs):
+        code = '%s-%s' % (self.name, constants.GENERAL_CODE_SUFFIX)
+        name = _('%s/General') % self.name
+        description = _('General task for the %s category') % self.name
+        try:
+            task, created = Task.objects.get_or_create(code=code,
+                                                       name=name,
+                                                       description=description,
+                                                       category=self,
+                                                       requires_comment=True)
+            task.save()
+        except IntegrityError:
+            pass
+        super(TaskCategory, self).save(*args, **kwargs)
 
     def __str__(self):
         return str(self.name)
