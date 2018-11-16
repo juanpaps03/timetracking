@@ -16,6 +16,8 @@ from config import constants, messages
 from tracker.models import Building, Workday, LogHour, Task, TaskCategory, Worker, WorkerCategory
 from .models import User
 from django.db import IntegrityError
+from import_export import resources
+from tracker.models import TaskCategory
 
 # Admin Site Config
 admin.sites.AdminSite.site_header = _('Sabyl TimeTracker')
@@ -33,6 +35,7 @@ admin.site.register(Worker)
 @admin.register(Building)
 class BuildingAdmin(admin.ModelAdmin):
     list_display = ('code', 'address', 'report_buttons')
+    filter_horizontal = ('workers', 'tasks')
 
     def report_buttons(self, obj):
         return format_html('<a class="button" target="_blank" href="{}">{}</a>',
@@ -447,4 +450,3 @@ def daily_report_download(request, building, date):
 def create_defaults():
     create_manager_group()
     create_default_tasks()
-

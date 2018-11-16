@@ -10,3 +10,4 @@ def column_number(letter):
         return ord(letter) - ord('A')
     else:
         return 26 + column_number(letter[1:])
+
