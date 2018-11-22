@@ -486,7 +486,7 @@ class Task(models.Model):
         verbose_name = _('task')
         verbose_name_plural = _('tasks')
 
-    code = models.CharField(_('code'), null=False, blank=False, max_length=20, unique=True)
+    code = models.CharField(_('code'), null=False, blank=False, max_length=60, unique=True)
     name = models.CharField(_('name'), null=False, blank=True, max_length=255, unique=True)
     description = models.TextField(_('description'))
     category = models.ForeignKey('TaskCategory', verbose_name=_('Category'))
@@ -505,7 +505,7 @@ class TaskCategory(models.Model):
     class Meta:
         verbose_name = _('task category')
         verbose_name_plural = _("task categories")
-    name = models.CharField(_('name'), primary_key=True, max_length=40, blank=False)
+    name = models.CharField(_('name'), primary_key=True, max_length=60, blank=False)
 
     def save(self, *args, **kwargs):
         code = '%s-%s' % (self.name, constants.GENERAL_CODE_SUFFIX)
