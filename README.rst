@@ -91,4 +91,24 @@ See detailed `cookiecutter-django Docker documentation`_.
 .. _`cookiecutter-django Docker documentation`: http://cookiecutter-django.readthedocs.io/en/latest/deployment-with-docker.html
 
 
+Mass Data Entry
+^^^^^^^^^^^^^^^
+
+For mass data entry from a CSV file, place the filename.csv file at the same level of manage.py.
+
+Then, from the Django shell:
+
+    >>> from tracker.helpers import *
+    >>> add_worker_categories('filename.csv')
+
+add_worker_categories can be substituted for add_task_categories, add_workers or add_tasks accordingly.
+
+Format for worker and task categories is just the names, one per line.
+
+For workers: code, first name, last name, category name
+
+For tasks: code, name, description, category name, requires_comment, is_boolean, whole_day, in_monthly_report.
+
+Remember to use capitalized boolean values (TRUE, FALSE).
+
 
