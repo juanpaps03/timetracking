@@ -61,7 +61,9 @@ class Dashboard(View):
                 context = {'building': building, 'able_to_start': able_to_start}
                 return render(request, 'tracker/start_day.html', context)
         else:
-            return JsonResponse({'message': messages.BUILDING_NOT_FOUND}, status=400)
+            context = {'building': None, 'able_to_start': False}
+            django_messages.warning(request, messages.NO_BUILDING)
+            return render(request, 'tracker/start_day.html', context)
 
 
 class LogHours(View):

@@ -16,6 +16,8 @@ from config import constants, messages
 from tracker.models import Building, Workday, LogHour, Task, TaskCategory, Worker, WorkerCategory
 from .models import User
 from django.db import IntegrityError
+from import_export import resources
+from tracker.models import TaskCategory
 
 # Admin Site Config
 admin.sites.AdminSite.site_header = _('Sabyl TimeTracker')
@@ -33,6 +35,7 @@ admin.site.register(Worker)
 @admin.register(Building)
 class BuildingAdmin(admin.ModelAdmin):
     list_display = ('code', 'address', 'report_buttons')
+    filter_horizontal = ('workers', 'tasks')
 
     def report_buttons(self, obj):
         return format_html('<a class="button" target="_blank" href="{}">{}</a>',
@@ -139,28 +142,11 @@ def create_manager_group():
 
 
 def create_default_tasks():
-    # 'General' task creation for each non-special category
-    standard_categories = TaskCategory.objects.exclude(name=constants.SPECIAL_CATEGORY_NAME)
-    for category in standard_categories:
-        code = '%s-%s' % (category.name, constants.GENERAL_CODE_SUFFIX)
-        name = _('%s/General') % category.name
-        description = _('General task for the %s category') % category.name
-        try:
-            task, created = Task.objects.get_or_create(code=code,
-                                                       name=name,
-                                                       description=description,
-                                                       category=category,
-                                                       requires_comment=True)
-            task.buildings = Building.objects.all()
-            task.save()
-        except IntegrityError:
-            pass
-    # special category creation.
     try:
         special_category, created = TaskCategory.objects.get_or_create(name=constants.SPECIAL_CATEGORY_NAME)
         special_category.save()
     except:
-        return # If we can't create the special_category, we can't create any special task
+        return  # If we can't create the special_category, we can't create any special task
 
     try:
         # union assembly task creation.
@@ -464,4 +450,3 @@ def daily_report_download(request, building, date):
 def create_defaults():
     create_manager_group()
     create_default_tasks()
-

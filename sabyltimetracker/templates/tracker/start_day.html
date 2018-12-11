@@ -20,8 +20,12 @@
       <div class="page-header float-right">
         <div class="page-title">
           <ol class="breadcrumb text-right">
-            <li>Dashboard</li>
-            <li class="active">{% trans 'Start Day' %}</li>
+            {% if able_to_start %}
+              <li>{% trans 'Dashboard' %}</li>
+              <li class="active">{% trans 'Start Day' %}</li>
+            {% else %}
+              <li class="active">{% trans 'Dashboard' %}</li>
+            {% endif %}
           </ol>
         </div>
       </div>
