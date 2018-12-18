@@ -487,7 +487,7 @@ class Task(models.Model):
         verbose_name_plural = _('tasks')
 
     code = models.CharField(_('code'), null=False, blank=False, max_length=60, unique=True)
-    name = models.CharField(_('name'), null=False, blank=True, max_length=255, unique=True)
+    name = models.CharField(_('name'), null=False, blank=True, max_length=255)
     description = models.TextField(_('description'))
     category = models.ForeignKey('TaskCategory', verbose_name=_('Category'))
     requires_comment = models.BooleanField(_('requires comment'), default=False)
