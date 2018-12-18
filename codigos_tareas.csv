@@ -75,7 +75,7 @@ D31,Ciclópeo para dados,,Llenado HORMIGON,TRUE,TRUE,TRUE,TRUE
 D 311,Ciclópeo para muro de contención,,Llenado HORMIGON,TRUE,TRUE,TRUE,TRUE
 D312,Ciclópeo para recimentación,,Llenado HORMIGON,TRUE,TRUE,TRUE,TRUE
 D32,De patines,,Llenado HORMIGON,TRUE,TRUE,TRUE,TRUE
-D33,De cabezales de pilotes,,Llenado HORMIGON,TRUE,TRUE,TRUE,TRUE
+D33,De cabezales de pilotes- hormigon,,Llenado HORMIGON,TRUE,TRUE,TRUE,TRUE
 D34,De muros de contención,,Llenado HORMIGON,TRUE,TRUE,TRUE,TRUE
 D351,De pilares de fundación,,Llenado HORMIGON,TRUE,TRUE,TRUE,TRUE
 D352,De pilares y pantallas,,Llenado HORMIGON,TRUE,TRUE,TRUE,TRUE
