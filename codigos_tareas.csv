@@ -1,225 +1,225 @@
-A21,Desagote a mano y extracción de barros,Desagotes
-A22,Atención de bombas y cañerías,Desagotes
-A40,Limpieza diaria de obra,Limpieza de Obra
-A41,Limpieza final de obra,Limpieza de Obra
-A47,Carga de volqueta,Limpieza de Obra
-A1,Descarga de materiales y su carga para retiro,Transportes internos
-A51,Movimiento vertical y horizontal de materiales,Transportes internos
-A54,Montaje y desmontaje de Guinches,Transportes internos
-A55,Fletes implantación y retiro,Transportes internos
-A61,Serenos,"Vigilancia de Obras, etc."
-A64,Soldador,"Vigilancia de Obras, etc."
-A65,Pañolero,"Vigilancia de Obras, etc."
-A71,"De mampostería (agujeros, canaletas, sacar marcos)",Demolición
-A72,de hormigón armado (descabezado de pilotes),Demolición
-A73,Transporte interno y carga material demolido,Demolición
-A74,Picado revoques de paredes y techos,Demolición
-A75,Levantar pisos y contrapisos,Demolición
-A92,Para muros y cielorrasos a más de 3 m. altura,Andamios y protecciones
-A93,Andamios colgantes (balancines),Andamios y protecciones
-A94,Protecciones,Andamios y protecciones
-A96,Andamios tubulares,Andamios y protecciones
-B11,Limpieza previa del terreno,Implantación
-B12,Cercos y barreras,Implantación
-B13,Instalación eléctrica provisoria,Implantación
-B14,Instalación de agua provisoria,Implantación
-B15,Replanteo general,Implantación
-B16,"Construcciones provisorias (Casillas, depósitos, baños)",Implantación
-B17,Cartelera de Obra,Implantación
-B19,Extracción de árboles chicos y grandes,Implantación
-B21,"Montaje, desmontaje, REPARACIÓN de maquinaria, ETC",Maquinaria y herramientas
-C111,Excavación 2.5-5m. mano /tosca,Excavaciones
-C121,Excavación a  mano/tierra,Excavaciones
-C15,Descalce de vigas,Excavaciones
-C20,"Base balasto plateas, calles y sendas BALASTRO E=015m",Rellenos (incluso compactación)
-C21,De pozos,Rellenos (incluso compactación)
-C22,De zanjas,Rellenos (incluso compactación)
-C23V,RELLENO entre vigas,Rellenos (incluso compactación)
-C31,"Apuntalamiento y desapuntalamiento de pozos y zanjas                hasta 2,5 m",Protección de excavaciones
-C32,"Apuntalamiento y desapuntalamiento de pozos y zanjas de más de 2,5m",Protección de excavaciones
-C41,Carga sobre camión,Alejamiento de tierras
-D11,De bases prismáticas (dados),"Encofrado, apuntalamiento y desencofrado"
-D12,De bases piramidales (patines),"Encofrado, apuntalamiento y desencofrado"
-D13,De cabezales de pilotes,"Encofrado, apuntalamiento y desencofrado"
-D14,De muros de contención,"Encofrado, apuntalamiento y desencofrado"
-D15,De pilares rectangulares y pantallas,"Encofrado, apuntalamiento y desencofrado"
-D15-1,De pilares circulares,"Encofrado, apuntalamiento y desencofrado"
-D15-2,De pilares de fundación,"Encofrado, apuntalamiento y desencofrado"
-D16,De vigas de fundación,"Encofrado, apuntalamiento y desencofrado"
-D17,De vigas rectangulares aisladas,"Encofrado, apuntalamiento y desencofrado"
-D18,"De losas macizas, incluso vigas","Encofrado, apuntalamiento y desencofrado"
-D18,"De losas macizas, incluso vigas","Encofrado, apuntalamiento y desencofrado"
-D111,"De losas de escaleras, incluso vigas ","Encofrado, apuntalamiento y desencofrado"
-D112,De tanques de agua,"Encofrado, apuntalamiento y desencofrado"
-D114,Armado y encofrado de taparrollo de cortinas,"Encofrado, apuntalamiento y desencofrado"
-D115,Encofrado de senda peatonal o vereda,"Encofrado, apuntalamiento y desencofrado"
-D116,Encofrado hormigón visto especial,"Encofrado, apuntalamiento y desencofrado"
-D117,Encofrado de platea de fundación,"Encofrado, apuntalamiento y desencofrado"
-D118,Encofrado hormigón visto,"Encofrado, apuntalamiento y desencofrado"
-D119,Encofrado carreras sobre muro,"Encofrado, apuntalamiento y desencofrado"
-D201,Hierro bases,Hierro
-D202,Hierro vigas y riostras de fundación,Hierro
-D203,Hierro vigas y pretiles,Hierro
-D204,Hierro pilares de fundación,Hierro
-D205,Hierro pilares y pantallas,Hierro
-D206,Hierro losas,Hierro
-D207,Hierro plateas de fundación,Hierro
-D208,Hierro muro de contención,Hierro
-D209,Hierro tanque de agua,Hierro
-D210 ,Hierro carreras sobre muro,Hierro
-D211,Hierro piso armado,Hierro
-D212,Hierro antepechos,Hierro
-D213,Hierro hormigón visto ,Hierro
-D214,Colocación de perfiles metálicos,Hierro
-D31,Ciclópeo para dados,Llenado HORMIGON
-D 311,Ciclópeo para muro de contención,Llenado HORMIGON
-D312,Ciclópeo para recimentación,Llenado HORMIGON
-D32,De patines,Llenado HORMIGON
-D33,De cabezales de pilotes,Llenado HORMIGON
-D34,De muros de contención,Llenado HORMIGON
-D351,De pilares de fundación,Llenado HORMIGON
-D352,De pilares y pantallas,Llenado HORMIGON
-D36,De vigas de fundación,Llenado HORMIGON
-D37,De vigas rectangulares aisladas,Llenado HORMIGON
-D38,"De losas macizas, incluso vigas",Llenado HORMIGON
-D381,"De losas de escaleras, incluso vigas",Llenado HORMIGON
-D39,De tanques de agua,Llenado HORMIGON
-D317,Senda peatonal,Llenado HORMIGON
-D318,De carreras sobre muro,Llenado HORMIGON
-D319,De plateas de fundación,Llenado HORMIGON
-D320,Hormigón visto,Llenado HORMIGON
-D321,Horm. pronto piso armado 10 cm,Llenado HORMIGON
-D322,Junta pavimento con SIKAFLEX 1A,Llenado HORMIGON
-E11,Muro de ladrillo para revocar,ELEVACIÓN DE MUROS
-E12,Muro de ladrillo bolseado,ELEVACIÓN DE MUROS
-E13,Muro de ladrillo visto,ELEVACIÓN DE MUROS
-E131,Muretes y bancos de ladrillo visto,ELEVACIÓN DE MUROS
-E132,Pintado de ladrillo visto con silicona,ELEVACIÓN DE MUROS
-E21,Muro de ticholo para revoque,ELEVACIÓN DE MUROS
-E22,Muro de ticholo visto,ELEVACIÓN DE MUROS
-E31,Muro de bloque para revoque,ELEVACIÓN DE MUROS
-E32,Muro de bloque visto,ELEVACIÓN DE MUROS
-E41,Muro de ladrillo de vidrio,ELEVACIÓN DE MUROS
-E51,"Tabique de yeso placa común, cementicia, verde, roja, etc.",ELEVACIÓN DE MUROS
-E52,Aplacado de yeso,ELEVACIÓN DE MUROS
-F12,Revoque grueso en muros,REVOQUES INTERIOR
-F121,Revoque grueso en techos,REVOQUES INTERIOR
-F13,Revoque grueso fretachado en muros,REVOQUES INTERIOR
-F131,Revoque grueso fretachado en techos,REVOQUES INTERIOR
-F14,Revoque fino en muros,REVOQUES INTERIOR
-F141,Revoque fino en techos,REVOQUES INTERIOR
-F15,Balai en muros,REVOQUES INTERIOR
-F151,Balai en techos,REVOQUES INTERIOR
-F16,Lustrado arena y portland en muros,REVOQUES INTERIOR
-F161,Lustrado arena y portland en tanque de agua,REVOQUES INTERIOR
-F18,Pasada de bolsa,REVOQUES INTERIOR
-F19,Terminaciones hormigón visto ,REVOQUES INTERIOR
-F20,Revoque seco con aplacado de placas de yeso,REVOQUES INTERIOR
-F22,Revoque grueso en muros,REVOQUES EXTERIOR
-F221,Revoque grueso en techos,REVOQUES EXTERIOR
-F23,Revoque grueso fretachado en muros,REVOQUES EXTERIOR
-F231,Revoque grueso fretachado en techos,REVOQUES EXTERIOR
-F24,Revoque fino en muros,REVOQUES EXTERIOR
-F241,Revoque fino en techos,REVOQUES EXTERIOR
-F25,Balai en muros,REVOQUES EXTERIOR
-F251,Balai en techos,REVOQUES EXTERIOR
-F27,Revoque imitación,REVOQUES EXTERIOR
-F28,Revoque mocheta,REVOQUES EXTERIOR
-F31,Revoque a la zaranda,REVOQUES EXTERIOR
-F32,Enduido en tabiques interiores,PINTURA
-F33,Enduido en tabiques exteriores,PINTURA
-F34,Enduido en cielorrasos y cenefas interiores,PINTURA
-F35,Enduido en cielorrasos y  cenefas exteriores,PINTURA
-G11,De hormigón de cascote o balasto sobre tierra,Contrapisos
-G12,De hormigón de cascote o balasto sobre losa,Contrapisos
-G13,De hormigón simple,Contrapisos
-G14,De hormigón armado,Contrapisos
-G15,Alisado de arena y portland,Contrapisos
-G16,"Alisado de arena y portland para parquet pegado, vinílico o pisos de plástico",Contrapisos
-G18,Empalomado de ladrillo,Contrapisos
-G112,Contrapiso de Placares,Contrapisos
-G21,De arena y portland ,Revestimiento de pisos
-G22,De baldosa de portland,Revestimiento de pisos
-G23,De baldosa monolítica ,Revestimiento de pisos
-G24,De piezas en grandes dimensiones,Revestimiento de pisos
-G25,De plaqueta de gres,Revestimiento de pisos
-G27,De piedra laja,Revestimiento de pisos
-G29,Cerámica con mortero,Revestimiento de pisos
-G291,Cerámica con pegamento,Revestimiento de pisos
-G31,De portland,Zócalos
-G32,De monolítico,Zócalos
-G33,De mármol,Zócalos
-G34,De madera,Zócalos
-G37,Zócalo de cerámica o gres,Zócalos
-G41,De baldosa de portland o monolítica,Escaleras y replanes
-G42,De pedregullín lavado,Escaleras y replanes
-G43,De portland lustrado,Escaleras y replanes
-G44,De plaqueta de gres o cerámica,Escaleras y replanes
-G45,De mármol,Escaleras y replanes
-G46,De piedra laja,Escaleras y replanes
-G47,Escalones prefabricados,Escaleras y replanes
-G51,Portland lustrado,Umbrales y antepechos
-G52,Baldosa de portland,Umbrales y antepechos
-G53,Baldosa monolítica,Umbrales y antepechos
-G54,Plaquetas de gres,Umbrales y antepechos
-G55,Mármol,Umbrales y antepechos
-G56,Antepechos hormigón prefabricado,Umbrales y antepechos
-G61,De baldosa de portland,Veredas
-G64,De ladrillo,Veredas
-G66,De pedregullín lavado,Veredas
-G67,De lajota,Veredas
-G68,Baldosas de monolítico lavado,Veredas
-H10,De ducheros,Impermeabilización de muros
-H11,Horizontal con mortero e hidrófugo,Impermeabilización de muros
-H12,Mortero cementicio impermeable (tipo sikatop seal),Impermeabilización de muros
-H13,Colocación de geodren y/o geotextil,Impermeabilización de muros
-H15,Antepechos,Impermeabilización de muros
-H17,Vertical A y P con hidrófugo,Impermeabilización de muros
-H18,Emulsión asfáltica c/velo vidrio s/muro,Impermeabilización de muros
-H21,Contrapiso de cascote,Impermeabilización de azotea
-H22,Alisado arena y portland sobre contrapisos o sobre impermeabilización,Impermeabilización de azotea
-H23,Colocación de espumaplast,Impermeabilización de azotea
-H24,Colocación de impermeabilización,Impermeabilización de azotea
-H25,Polietileno,Impermeabilización de azotea
-H26,Colocación de ladrillos o tejuelas,Impermeabilización de azotea
-H27,Puente de adherencia sobre hormigón,Impermeabilización de azotea
-H28,Acondicionamiento de pretiles,Impermeabilización de azotea
-H29,Ejecución losetas de hormigón,Impermeabilización de azotea
-H29,Colocación losetas de hormigón,Impermeabilización de azotea
-H30,Lechada de arena  y portland sobre losa,Impermeabilización de azotea
-H301,Techo chapa sobre correas y tirantes,Impermeabilización de azotea
-H31,Relleno de juntas en pisos y muros,Juntas de dilatación
-H43,Junta dilatación azotea,Juntas de dilatación
-I11,Colocación de azulejos y cerámica en pared,REVESTIMIENTOS Y AMURES
-I12,Colocación revestimiento grandes piezas,REVESTIMIENTOS Y AMURES
-I13,Escalón duchero,REVESTIMIENTOS Y AMURES
-I14,Mesada de mármol o granito,REVESTIMIENTOS Y AMURES
-I15,Frontalín de fibrocemento,REVESTIMIENTOS Y AMURES
-I16,Amure rollos y cajas cortinas,REVESTIMIENTOS Y AMURES
-I17,Amure guías ascensores y cantoneras,REVESTIMIENTOS Y AMURES
-I18,Amure marcos de chapa,REVESTIMIENTOS Y AMURES
-I19,Amure aberturas de aluminio,REVESTIMIENTOS Y AMURES
-I20,Amure barandas,REVESTIMIENTOS Y AMURES
-I21,Amure marcos de madera,REVESTIMIENTOS Y AMURES
-J,AYUDAS A SUBCONTRATISTAS,AYUDAS A SUBCONTRATISTAS
-K11,PAVIMENTO de hormigón CON JUNTA LADRILLO,"Sendas, cordonetas, etc."
-K12,Cordonetas de ladrillo o tejuela,"Sendas, cordonetas, etc."
-K15,Cuneta desagüe,"Sendas, cordonetas, etc."
-K16,Cordón cuneta de hormigón,"Sendas, cordonetas, etc."
-K17,Cordón hormigón o bloque,"Sendas, cordonetas, etc."
-K18,Pavimento exterior,"Sendas, cordonetas, etc."
-L11,Césped con tierra (en panes),Varios
-L12,Revestimiento con suelo pasto,Varios
-L13,Mantenimiento césped,Varios
-L14,Colocación  árboles y plantas,Varios
-L15,Cerco entre viviendas,Varios
-L15,Cerco entre viviendas,Varios
-L16,Colocación de equipo suministrados por el propietario,Varios
-L17,"HORMIGON MESITAS mesadas cocina, laboratorios",Varios
-L21,Pintura en muros,PINTURA
-L22,"Trabajos de herrería (soldaduras, cortes de perfiles/chapas, armado, colocación etc.)",HERRERIA
-L31,"Cielorraso de placa de yeso, tipo Amstrong, placa cementicia.",YESO
-L32,"Cenefas de placa de yeso, placa cementicia. ",YESO
-L33,Registros en yeso,YESO
-L34,Aplacando en cielorrasos de yeso,YESO
-R,"Retrabajos, reparaciones, regularizaciones (ESPECIFICAR)",RETRABAJOS
+A21,Desagote a mano y extracción de barros,Desagotes,TRUE,TRUE
+A22,Atención de bombas y cañerías,Desagotes,TRUE,TRUE
+A40,Limpieza diaria de obra,Limpieza de Obra,TRUE,TRUE
+A41,Limpieza final de obra,Limpieza de Obra,TRUE,TRUE
+A47,Carga de volqueta,Limpieza de Obra,TRUE,TRUE
+A1,Descarga de materiales y su carga para retiro,Transportes internos,TRUE,TRUE
+A51,Movimiento vertical y horizontal de materiales,Transportes internos,TRUE,TRUE
+A54,Montaje y desmontaje de Guinches,Transportes internos,TRUE,TRUE
+A55,Fletes implantación y retiro,Transportes internos,TRUE,TRUE
+A61,Serenos,"Vigilancia de Obras, etc.",TRUE,TRUE
+A64,Soldador,"Vigilancia de Obras, etc.",TRUE,TRUE
+A65,Pañolero,"Vigilancia de Obras, etc.",TRUE,TRUE
+A71,"De mampostería (agujeros, canaletas, sacar marcos)",Demolición,TRUE,TRUE
+A72,de hormigón armado (descabezado de pilotes),Demolición,TRUE,TRUE
+A73,Transporte interno y carga material demolido,Demolición,TRUE,TRUE
+A74,Picado revoques de paredes y techos,Demolición,TRUE,TRUE
+A75,Levantar pisos y contrapisos,Demolición,TRUE,TRUE
+A92,Para muros y cielorrasos a más de 3 m. altura,Andamios y protecciones,TRUE,TRUE
+A93,Andamios colgantes (balancines),Andamios y protecciones,TRUE,TRUE
+A94,Protecciones,Andamios y protecciones,TRUE,TRUE
+A96,Andamios tubulares,Andamios y protecciones,TRUE,TRUE
+B11,Limpieza previa del terreno,Implantación,TRUE,TRUE
+B12,Cercos y barreras,Implantación,TRUE,TRUE
+B13,Instalación eléctrica provisoria,Implantación,TRUE,TRUE
+B14,Instalación de agua provisoria,Implantación,TRUE,TRUE
+B15,Replanteo general,Implantación,TRUE,TRUE
+B16,"Construcciones provisorias (Casillas, depósitos, baños)",Implantación,TRUE,TRUE
+B17,Cartelera de Obra,Implantación,TRUE,TRUE
+B19,Extracción de árboles chicos y grandes,Implantación,TRUE,TRUE
+B21,"Montaje, desmontaje, REPARACIÓN de maquinaria, ETC",Maquinaria y herramientas,TRUE,TRUE
+C111,Excavación 2.5-5m. mano /tosca,Excavaciones,TRUE,TRUE
+C121,Excavación a  mano/tierra,Excavaciones,TRUE,TRUE
+C15,Descalce de vigas,Excavaciones,TRUE,TRUE
+C20,"Base balasto plateas, calles y sendas BALASTRO E=015m",Rellenos (incluso compactación),TRUE,TRUE
+C21,De pozos,Rellenos (incluso compactación),TRUE,TRUE
+C22,De zanjas,Rellenos (incluso compactación),TRUE,TRUE
+C23V,RELLENO entre vigas,Rellenos (incluso compactación),TRUE,TRUE
+C31,"Apuntalamiento y desapuntalamiento de pozos y zanjas                hasta 2,5 m",Protección de excavaciones,TRUE,TRUE
+C32,"Apuntalamiento y desapuntalamiento de pozos y zanjas de más de 2,5m",Protección de excavaciones,TRUE,TRUE
+C41,Carga sobre camión,Alejamiento de tierras,TRUE,TRUE
+D11,De bases prismáticas (dados),"Encofrado, apuntalamiento y desencofrado",TRUE,TRUE
+D12,De bases piramidales (patines),"Encofrado, apuntalamiento y desencofrado",TRUE,TRUE
+D13,De cabezales de pilotes,"Encofrado, apuntalamiento y desencofrado",TRUE,TRUE
+D14,De muros de contención,"Encofrado, apuntalamiento y desencofrado",TRUE,TRUE
+D15,De pilares rectangulares y pantallas,"Encofrado, apuntalamiento y desencofrado",TRUE,TRUE
+D15-1,De pilares circulares,"Encofrado, apuntalamiento y desencofrado",TRUE,TRUE
+D15-2,De pilares de fundación,"Encofrado, apuntalamiento y desencofrado",TRUE,TRUE
+D16,De vigas de fundación,"Encofrado, apuntalamiento y desencofrado",TRUE,TRUE
+D17,De vigas rectangulares aisladas,"Encofrado, apuntalamiento y desencofrado",TRUE,TRUE
+D18,"De losas macizas, incluso vigas","Encofrado, apuntalamiento y desencofrado",TRUE,TRUE
+D18,"De losas macizas, incluso vigas","Encofrado, apuntalamiento y desencofrado",TRUE,TRUE
+D111,"De losas de escaleras, incluso vigas ","Encofrado, apuntalamiento y desencofrado",TRUE,TRUE
+D112,De tanques de agua,"Encofrado, apuntalamiento y desencofrado",TRUE,TRUE
+D114,Armado y encofrado de taparrollo de cortinas,"Encofrado, apuntalamiento y desencofrado",TRUE,TRUE
+D115,Encofrado de senda peatonal o vereda,"Encofrado, apuntalamiento y desencofrado",TRUE,TRUE
+D116,Encofrado hormigón visto especial,"Encofrado, apuntalamiento y desencofrado",TRUE,TRUE
+D117,Encofrado de platea de fundación,"Encofrado, apuntalamiento y desencofrado",TRUE,TRUE
+D118,Encofrado hormigón visto,"Encofrado, apuntalamiento y desencofrado",TRUE,TRUE
+D119,Encofrado carreras sobre muro,"Encofrado, apuntalamiento y desencofrado",TRUE,TRUE
+D201,Hierro bases,Hierro,TRUE,TRUE
+D202,Hierro vigas y riostras de fundación,Hierro,TRUE,TRUE
+D203,Hierro vigas y pretiles,Hierro,TRUE,TRUE
+D204,Hierro pilares de fundación,Hierro,TRUE,TRUE
+D205,Hierro pilares y pantallas,Hierro,TRUE,TRUE
+D206,Hierro losas,Hierro,TRUE,TRUE
+D207,Hierro plateas de fundación,Hierro,TRUE,TRUE
+D208,Hierro muro de contención,Hierro,TRUE,TRUE
+D209,Hierro tanque de agua,Hierro,TRUE,TRUE
+D210 ,Hierro carreras sobre muro,Hierro,TRUE,TRUE
+D211,Hierro piso armado,Hierro,TRUE,TRUE
+D212,Hierro antepechos,Hierro,TRUE,TRUE
+D213,Hierro hormigón visto ,Hierro,TRUE,TRUE
+D214,Colocación de perfiles metálicos,Hierro,TRUE,TRUE
+D31,Ciclópeo para dados,Llenado HORMIGON,TRUE,TRUE
+D 311,Ciclópeo para muro de contención,Llenado HORMIGON,TRUE,TRUE
+D312,Ciclópeo para recimentación,Llenado HORMIGON,TRUE,TRUE
+D32,De patines,Llenado HORMIGON,TRUE,TRUE
+D33,De cabezales de pilotes,Llenado HORMIGON,TRUE,TRUE
+D34,De muros de contención,Llenado HORMIGON,TRUE,TRUE
+D351,De pilares de fundación,Llenado HORMIGON,TRUE,TRUE
+D352,De pilares y pantallas,Llenado HORMIGON,TRUE,TRUE
+D36,De vigas de fundación,Llenado HORMIGON,TRUE,TRUE
+D37,De vigas rectangulares aisladas,Llenado HORMIGON,TRUE,TRUE
+D38,"De losas macizas, incluso vigas",Llenado HORMIGON,TRUE,TRUE
+D381,"De losas de escaleras, incluso vigas",Llenado HORMIGON,TRUE,TRUE
+D39,De tanques de agua,Llenado HORMIGON,TRUE,TRUE
+D317,Senda peatonal,Llenado HORMIGON,TRUE,TRUE
+D318,De carreras sobre muro,Llenado HORMIGON,TRUE,TRUE
+D319,De plateas de fundación,Llenado HORMIGON,TRUE,TRUE
+D320,Hormigón visto,Llenado HORMIGON,TRUE,TRUE
+D321,Horm. pronto piso armado 10 cm,Llenado HORMIGON,TRUE,TRUE
+D322,Junta pavimento con SIKAFLEX 1A,Llenado HORMIGON,TRUE,TRUE
+E11,Muro de ladrillo para revocar,ELEVACIÓN DE MUROS,TRUE,TRUE
+E12,Muro de ladrillo bolseado,ELEVACIÓN DE MUROS,TRUE,TRUE
+E13,Muro de ladrillo visto,ELEVACIÓN DE MUROS,TRUE,TRUE
+E131,Muretes y bancos de ladrillo visto,ELEVACIÓN DE MUROS,TRUE,TRUE
+E132,Pintado de ladrillo visto con silicona,ELEVACIÓN DE MUROS,TRUE,TRUE
+E21,Muro de ticholo para revoque,ELEVACIÓN DE MUROS,TRUE,TRUE
+E22,Muro de ticholo visto,ELEVACIÓN DE MUROS,TRUE,TRUE
+E31,Muro de bloque para revoque,ELEVACIÓN DE MUROS,TRUE,TRUE
+E32,Muro de bloque visto,ELEVACIÓN DE MUROS,TRUE,TRUE
+E41,Muro de ladrillo de vidrio,ELEVACIÓN DE MUROS,TRUE,TRUE
+E51,"Tabique de yeso placa común, cementicia, verde, roja, etc.",ELEVACIÓN DE MUROS,TRUE,TRUE
+E52,Aplacado de yeso,ELEVACIÓN DE MUROS,TRUE,TRUE
+F12,Revoque grueso en muros,REVOQUES INTERIOR,TRUE,TRUE
+F121,Revoque grueso en techos,REVOQUES INTERIOR,TRUE,TRUE
+F13,Revoque grueso fretachado en muros,REVOQUES INTERIOR,TRUE,TRUE
+F131,Revoque grueso fretachado en techos,REVOQUES INTERIOR,TRUE,TRUE
+F14,Revoque fino en muros,REVOQUES INTERIOR,TRUE,TRUE
+F141,Revoque fino en techos,REVOQUES INTERIOR,TRUE,TRUE
+F15,Balai en muros,REVOQUES INTERIOR,TRUE,TRUE
+F151,Balai en techos,REVOQUES INTERIOR,TRUE,TRUE
+F16,Lustrado arena y portland en muros,REVOQUES INTERIOR,TRUE,TRUE
+F161,Lustrado arena y portland en tanque de agua,REVOQUES INTERIOR,TRUE,TRUE
+F18,Pasada de bolsa,REVOQUES INTERIOR,TRUE,TRUE
+F19,Terminaciones hormigón visto ,REVOQUES INTERIOR,TRUE,TRUE
+F20,Revoque seco con aplacado de placas de yeso,REVOQUES INTERIOR,TRUE,TRUE
+F22,Revoque grueso en muros,REVOQUES EXTERIOR,TRUE,TRUE
+F221,Revoque grueso en techos,REVOQUES EXTERIOR,TRUE,TRUE
+F23,Revoque grueso fretachado en muros,REVOQUES EXTERIOR,TRUE,TRUE
+F231,Revoque grueso fretachado en techos,REVOQUES EXTERIOR,TRUE,TRUE
+F24,Revoque fino en muros,REVOQUES EXTERIOR,TRUE,TRUE
+F241,Revoque fino en techos,REVOQUES EXTERIOR,TRUE,TRUE
+F25,Balai en muros,REVOQUES EXTERIOR,TRUE,TRUE
+F251,Balai en techos,REVOQUES EXTERIOR,TRUE,TRUE
+F27,Revoque imitación,REVOQUES EXTERIOR,TRUE,TRUE
+F28,Revoque mocheta,REVOQUES EXTERIOR,TRUE,TRUE
+F31,Revoque a la zaranda,REVOQUES EXTERIOR,TRUE,TRUE
+F32,Enduido en tabiques interiores,PINTURA,TRUE,TRUE
+F33,Enduido en tabiques exteriores,PINTURA,TRUE,TRUE
+F34,Enduido en cielorrasos y cenefas interiores,PINTURA,TRUE,TRUE
+F35,Enduido en cielorrasos y  cenefas exteriores,PINTURA,TRUE,TRUE
+G11,De hormigón de cascote o balasto sobre tierra,Contrapisos,TRUE,TRUE
+G12,De hormigón de cascote o balasto sobre losa,Contrapisos,TRUE,TRUE
+G13,De hormigón simple,Contrapisos,TRUE,TRUE
+G14,De hormigón armado,Contrapisos,TRUE,TRUE
+G15,Alisado de arena y portland,Contrapisos,TRUE,TRUE
+G16,"Alisado de arena y portland para parquet pegado, vinílico o pisos de plástico",Contrapisos,TRUE,TRUE
+G18,Empalomado de ladrillo,Contrapisos,TRUE,TRUE
+G112,Contrapiso de Placares,Contrapisos,TRUE,TRUE
+G21,De arena y portland ,Revestimiento de pisos,TRUE,TRUE
+G22,De baldosa de portland,Revestimiento de pisos,TRUE,TRUE
+G23,De baldosa monolítica ,Revestimiento de pisos,TRUE,TRUE
+G24,De piezas en grandes dimensiones,Revestimiento de pisos,TRUE,TRUE
+G25,De plaqueta de gres,Revestimiento de pisos,TRUE,TRUE
+G27,De piedra laja,Revestimiento de pisos,TRUE,TRUE
+G29,Cerámica con mortero,Revestimiento de pisos,TRUE,TRUE
+G291,Cerámica con pegamento,Revestimiento de pisos,TRUE,TRUE
+G31,De portland,Zócalos,TRUE,TRUE
+G32,De monolítico,Zócalos,TRUE,TRUE
+G33,De mármol,Zócalos,TRUE,TRUE
+G34,De madera,Zócalos,TRUE,TRUE
+G37,Zócalo de cerámica o gres,Zócalos,TRUE,TRUE
+G41,De baldosa de portland o monolítica,Escaleras y replanes,TRUE,TRUE
+G42,De pedregullín lavado,Escaleras y replanes,TRUE,TRUE
+G43,De portland lustrado,Escaleras y replanes,TRUE,TRUE
+G44,De plaqueta de gres o cerámica,Escaleras y replanes,TRUE,TRUE
+G45,De mármol,Escaleras y replanes,TRUE,TRUE
+G46,De piedra laja,Escaleras y replanes,TRUE,TRUE
+G47,Escalones prefabricados,Escaleras y replanes,TRUE,TRUE
+G51,Portland lustrado,Umbrales y antepechos,TRUE,TRUE
+G52,Baldosa de portland,Umbrales y antepechos,TRUE,TRUE
+G53,Baldosa monolítica,Umbrales y antepechos,TRUE,TRUE
+G54,Plaquetas de gres,Umbrales y antepechos,TRUE,TRUE
+G55,Mármol,Umbrales y antepechos,TRUE,TRUE
+G56,Antepechos hormigón prefabricado,Umbrales y antepechos,TRUE,TRUE
+G61,De baldosa de portland,Veredas,TRUE,TRUE
+G64,De ladrillo,Veredas,TRUE,TRUE
+G66,De pedregullín lavado,Veredas,TRUE,TRUE
+G67,De lajota,Veredas,TRUE,TRUE
+G68,Baldosas de monolítico lavado,Veredas,TRUE,TRUE
+H10,De ducheros,Impermeabilización de muros,TRUE,TRUE
+H11,Horizontal con mortero e hidrófugo,Impermeabilización de muros,TRUE,TRUE
+H12,Mortero cementicio impermeable (tipo sikatop seal),Impermeabilización de muros,TRUE,TRUE
+H13,Colocación de geodren y/o geotextil,Impermeabilización de muros,TRUE,TRUE
+H15,Antepechos,Impermeabilización de muros,TRUE,TRUE
+H17,Vertical A y P con hidrófugo,Impermeabilización de muros,TRUE,TRUE
+H18,Emulsión asfáltica c/velo vidrio s/muro,Impermeabilización de muros,TRUE,TRUE
+H21,Contrapiso de cascote,Impermeabilización de azotea,TRUE,TRUE
+H22,Alisado arena y portland sobre contrapisos o sobre impermeabilización,Impermeabilización de azotea,TRUE,TRUE
+H23,Colocación de espumaplast,Impermeabilización de azotea,TRUE,TRUE
+H24,Colocación de impermeabilización,Impermeabilización de azotea,TRUE,TRUE
+H25,Polietileno,Impermeabilización de azotea,TRUE,TRUE
+H26,Colocación de ladrillos o tejuelas,Impermeabilización de azotea,TRUE,TRUE
+H27,Puente de adherencia sobre hormigón,Impermeabilización de azotea,TRUE,TRUE
+H28,Acondicionamiento de pretiles,Impermeabilización de azotea,TRUE,TRUE
+H29,Ejecución losetas de hormigón,Impermeabilización de azotea,TRUE,TRUE
+H29,Colocación losetas de hormigón,Impermeabilización de azotea,TRUE,TRUE
+H30,Lechada de arena  y portland sobre losa,Impermeabilización de azotea,TRUE,TRUE
+H301,Techo chapa sobre correas y tirantes,Impermeabilización de azotea,TRUE,TRUE
+H31,Relleno de juntas en pisos y muros,Juntas de dilatación,TRUE,TRUE
+H43,Junta dilatación azotea,Juntas de dilatación,TRUE,TRUE
+I11,Colocación de azulejos y cerámica en pared,REVESTIMIENTOS Y AMURES,TRUE,TRUE
+I12,Colocación revestimiento grandes piezas,REVESTIMIENTOS Y AMURES,TRUE,TRUE
+I13,Escalón duchero,REVESTIMIENTOS Y AMURES,TRUE,TRUE
+I14,Mesada de mármol o granito,REVESTIMIENTOS Y AMURES,TRUE,TRUE
+I15,Frontalín de fibrocemento,REVESTIMIENTOS Y AMURES,TRUE,TRUE
+I16,Amure rollos y cajas cortinas,REVESTIMIENTOS Y AMURES,TRUE,TRUE
+I17,Amure guías ascensores y cantoneras,REVESTIMIENTOS Y AMURES,TRUE,TRUE
+I18,Amure marcos de chapa,REVESTIMIENTOS Y AMURES,TRUE,TRUE
+I19,Amure aberturas de aluminio,REVESTIMIENTOS Y AMURES,TRUE,TRUE
+I20,Amure barandas,REVESTIMIENTOS Y AMURES,TRUE,TRUE
+I21,Amure marcos de madera,REVESTIMIENTOS Y AMURES,TRUE,TRUE
+J,AYUDAS A SUBCONTRATISTAS,AYUDAS A SUBCONTRATISTAS,TRUE,TRUE
+K11,PAVIMENTO de hormigón CON JUNTA LADRILLO,"Sendas, cordonetas, etc.",TRUE,TRUE
+K12,Cordonetas de ladrillo o tejuela,"Sendas, cordonetas, etc.",TRUE,TRUE
+K15,Cuneta desagüe,"Sendas, cordonetas, etc.",TRUE,TRUE
+K16,Cordón cuneta de hormigón,"Sendas, cordonetas, etc.",TRUE,TRUE
+K17,Cordón hormigón o bloque,"Sendas, cordonetas, etc.",TRUE,TRUE
+K18,Pavimento exterior,"Sendas, cordonetas, etc.",TRUE,TRUE
+L11,Césped con tierra (en panes),Varios,TRUE,TRUE
+L12,Revestimiento con suelo pasto,Varios,TRUE,TRUE
+L13,Mantenimiento césped,Varios,TRUE,TRUE
+L14,Colocación  árboles y plantas,Varios,TRUE,TRUE
+L15,Cerco entre viviendas,Varios,TRUE,TRUE
+L15,Cerco entre viviendas,Varios,TRUE,TRUE
+L16,Colocación de equipo suministrados por el propietario,Varios,TRUE,TRUE
+L17,"HORMIGON MESITAS mesadas cocina, laboratorios",Varios,TRUE,TRUE
+L21,Pintura en muros,PINTURA,TRUE,TRUE
+L22,"Trabajos de herrería (soldaduras, cortes de perfiles/chapas, armado, colocación etc.)",HERRERIA,TRUE,TRUE
+L31,"Cielorraso de placa de yeso, tipo Amstrong, placa cementicia.",YESO,TRUE,TRUE
+L32,"Cenefas de placa de yeso, placa cementicia. ",YESO,TRUE,TRUE
+L33,Registros en yeso,YESO,TRUE,TRUE
+L34,Aplacando en cielorrasos de yeso,YESO,TRUE,TRUE
+R,"Retrabajos, reparaciones, regularizaciones (ESPECIFICAR)",RETRABAJOS,TRUE,TRUE
