@@ -78,3 +78,4 @@ sqlparse==0.2.4
 Unidecode==0.4.21
 urllib3==1.23
 XlsxWriter==1.1.1
+django-import-export==1.1.0
