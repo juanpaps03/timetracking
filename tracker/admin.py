@@ -450,3 +450,5 @@ def daily_report_download(request, building, date):
 def create_defaults():
     create_manager_group()
     create_default_tasks()
+
+# create_defaults()

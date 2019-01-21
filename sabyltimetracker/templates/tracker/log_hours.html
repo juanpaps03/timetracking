@@ -110,6 +110,7 @@
           <table id="hours_per_user" class="table table-striped table-bordered">
             <thead>
             <tr>
+              <th>{% trans "Nº" %}</th>
               <th>{% trans "Category" %}</th>
               <th>{% trans "Full Name" %}</th>
               <th>
@@ -122,6 +123,7 @@
             <tbody>
             {% for worker in workers %}
               <tr>
+                <td>{{ worker.code }}</td>
                 <td>{{ worker.category }}</td>
                 <td>{{ worker.last_name }}, {{ worker.first_name }}</td>
                 <td>
