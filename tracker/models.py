@@ -54,7 +54,7 @@ class Building(models.Model):
                 self.assigned = timezone.now()
         super(Building, self).save(*args, **kwargs)
 
-    def get_report(self, month, year):
+    def get_report(self, month, year, type='standard'):
         building = self
         workers = building.workers.all()
         workdays = []
@@ -71,14 +71,17 @@ class Building(models.Model):
         workbook = xlsxwriter.Workbook(output)
 
         # Here we will adding the code to add data
-        r = workbook.add_worksheet(__("Daily Report"))
-        title = workbook.add_format({ 'bold': True, 'font_size': 14, 'align': 'center' })
-        header = workbook.add_format({ 'bg_color': '#F7F7F7', 'color': 'black', 'align': 'center', 'border': 1 })
+        r = workbook.add_worksheet(__("Monthly Report"))
+        title = workbook.add_format({ 'bold': True, 'font_size': 14, 'align': 'left' })
+        header = workbook.add_format({ 'bg_color': '#F7F7F7', 'color': 'black', 'align': 'left', 'border': 1 })
 
         # title row
         r.merge_range('A1:C3', config.COMPANY_NAME, title)
         r.insert_image('A1', 'static:images:logo.png')
-        r.merge_range('D1:AR1', __('Worked Hours Detail'), title)
+        if type=='rain':
+            r.merge_range('D1:AR1', __('Worked Hours Detail - Rain'), title)
+        else:
+            r.merge_range('D1:AR1', __('Worked Hours Detail'), title)
         building_info = '%s: %s' % (__('Building'), str(self))
         r.merge_range('D2:AR2', building_info, title)
         date_info = '%s: %s, %s: %s' % (__('Month'), str(month), __('Year'), str(year))
@@ -140,15 +143,15 @@ class Building(models.Model):
         for worker in workers:
             r.write('A%d' % row, worker.code, header)
             r.write('B%d' % row, worker.full_name(), header)
-            r.write('D%d' % row, str(worker.category), header)
+            r.write('D%d' % row, str(worker.category.code), header)
             r.write('E%d' % row, holiday_hours)
             r.write_formula('F%d' % row, '=sum(L%s:Z%s)' % (row, row))  # 1ºQ hours
             r.write_formula('G%d' % row, '=sum(AA%s:AP%s)' % (row, row))  # 2ºQ hours
             r.write_formula('H%d' % row, '=sum(F%s:G%s)' % (row, row))  # total hours
             r.write_formula('K%d' % row, '=sum(I%s:J%s)' % (row, row))  # total incentive
 
-            if len(str(worker.category)) > category_width:
-                category_width = len(str(worker.category))
+            if len(str(worker.category.code)) > category_width:
+                category_width = len(str(worker.category.code))
             if len(worker.code) > code_width:
                 code_width = len(worker.code)
             if len(worker.full_name()) > full_name_width:
@@ -158,7 +161,10 @@ class Building(models.Model):
             first_incentive_hours = 0  # first fortnight
             second_incentive_hours = 0  # second fortnight
             for day in range(1, 32):
-                hours = LogHour.sum_hours(worker.logs.filter(workday__date__day=day, task__in_monthly_report=True))
+                if type == 'rain':
+                    hours = LogHour.sum_hours(worker.logs.filter(workday__date__day=day, task__code=constants.RAIN_CODE))
+                else:
+                    hours = LogHour.sum_hours(worker.logs.filter(workday__date__day=day, task__in_monthly_report=True))
                 r.write('%s%d' % (utils.column_letter(10 + day), row), hours)
                 # no half additional hours on strike days.
                 if hours >= Workday.additional_half_hour_threshold(day, month, year) and worker.logs.filter(task__code=constants.STRIKE_CODE).count == 0:
@@ -268,14 +274,17 @@ class Workday(models.Model):
 
     def assign_logs(self, task_id, list_hours_per_user, comment=None):
         task = self.building.tasks.get(pk=task_id)
-        if task.requires_comment and comment is None:  # redundant check, happens in frontend.
-            return False
-        else:
-            old_task_logs = self.logs.filter(task=task)
-            old_task_logs.delete()
-            logs = LogHour.create_log_hours(self, task, self.building, list_hours_per_user, comment)
-            self.logs.add(*logs)
-            return True
+        if task.requires_comment and comment is None:
+            s = 0
+            for x in list_hours_per_user:
+                s += float(x['amount'])
+            if s > 0:
+                return False
+        old_task_logs = self.logs.filter(task=task)
+        old_task_logs.delete()
+        logs = LogHour.create_log_hours(self, task, self.building, list_hours_per_user, comment)
+        self.logs.add(*logs)
+        return True
 
     def end(self, comment):
         expected = self.expected_hours()
@@ -305,8 +314,8 @@ class Workday(models.Model):
 
         # Here we will adding the code to add data
         r = workbook.add_worksheet(__("Daily Report"))
-        title = workbook.add_format({'bold': True, 'font_size': 14, 'align': 'center'})
-        header = workbook.add_format({'bg_color': '#F7F7F7', 'color': 'black', 'align': 'center', 'border': 1})
+        title = workbook.add_format({'bold': True, 'font_size': 14, 'align': 'left'})
+        header = workbook.add_format({'bg_color': '#F7F7F7', 'color': 'black', 'align': 'left', 'border': 1})
 
         # title row
 
@@ -330,8 +339,8 @@ class Workday(models.Model):
         col = 3  # starting column is D
         for task in tasks:
             letter = utils.column_letter(col)
-            r.write('%s5' % letter, str(task.name), header)
-            r.set_column('%s:%s' % (letter, letter), len(task.name))
+            r.write('%s5' % letter, str(task.code), header)
+            r.set_column('%s:%s' % (letter, letter), len(task.code))
             task.column = letter
             col += 1
 
@@ -349,9 +358,9 @@ class Workday(models.Model):
             r.write('B%d' % row, worker.full_name(), header)
             if len(worker.full_name()) > full_name_width:
                 full_name_width = len(worker.full_name())
-            r.write('C%d' % row, str(worker.category), header)
-            if len(str(worker.category)) > category_width:
-                category_width = len(str(worker.category))
+            r.write('C%d' % row, str(worker.category.code), header)
+            if len(str(worker.category.code)) > category_width:
+                category_width = len(str(worker.category.code))
             for log in worker.logs:
                 col = None
                 text = ''
@@ -531,10 +540,11 @@ class WorkerCategory(models.Model):
         verbose_name = _('worker category')
         verbose_name_plural = _("worker categories")
 
+    code = models.CharField(_('code'), max_length=10, unique=True)
     name = models.CharField(_('name'), primary_key=True, max_length=40, blank=False)
 
     def __str__(self):
-        return str(self.name)
+        return '%s - %s' % (str(self.code), str(self.name))
 
 
 class Worker(models.Model):

@@ -31,6 +31,13 @@
             {% endfor %}
           </select>
         </div>
+        <div class="form-row">
+          <label for="type">{% trans 'Report Type' %}</label>
+          <select id="type" name="type">
+              <option value="standard">{% trans 'Standard' %}</option>
+              <option value="rain">{% trans 'Rain' %}</option>
+          </select>
+        </div>
       </fieldset>
       <div class="submit-row">
         <input type="submit" class="default" value='{% trans 'Download Report' %}'>
