@@ -17,9 +17,18 @@
               <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
             {% endif %}
             <button class="btn btn-danger" type="submit">{% trans 'Sign Out' %}</button>
+            <br/>
+            <br/>
+            <button onclick="goBack()" class="btn btn-outline-secondary" type="button">{% trans 'Back' %}</button>
           </form>
         </div>
       </div>
     </div>
   </div>
+  <script>
+  function goBack() {
+    window.history.back();
+  }
+  </script>
 {% endblock inner %}
+

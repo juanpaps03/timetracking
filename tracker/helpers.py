@@ -31,7 +31,8 @@ def add_worker_categories(file_name):
         categories.append(row)
     counter = 0
     for category_data in categories:
-        category, created = WorkerCategory.objects.update_or_create(name=category_data[0])
+        category, created = WorkerCategory.objects.update_or_create(name=category_data[1],
+                                                                    defaults={'code': category_data[0]})
         if created:
             counter += 1
     print(counter, 'out of', len(categories), 'categories added.')

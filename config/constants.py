@@ -48,6 +48,8 @@ TRAINING_CODE = 'CAP'
 ANTIQUITY_LEAVE_CODE = 'LA'
 # postobra
 POST_OBRA_CODE = 'POST'
+# rain
+RAIN_CODE = 'LL'
 
 
 # for reports, minimum widths for some of the columns.

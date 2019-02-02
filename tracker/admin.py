@@ -406,6 +406,19 @@ def create_default_tasks():
     except IntegrityError:
         pass
 
+    try:
+        # rain task creation.
+        rain_task, created = Task.objects.get_or_create(code=constants.RAIN_CODE,
+                                                             name=_('Rain'),
+                                                             description=_(
+                                                             'Auto-generated task that designates rain.'),
+                                                             category=special_category,
+                                                             in_monthly_report=False)
+        rain_task.buildings = Building.objects.all()
+        rain_task.save()
+    except IntegrityError:
+        pass
+
 
 # custom views
 @api_view(['GET', 'POST'])
@@ -415,11 +428,12 @@ def monthly_reports(request, building):
         if request.method == 'POST':
             month = int(request.data.get('month', None))
             year = int(request.data.get('year', None))
+            type = str(request.data.get('type', 'standard'))
             if month and year:
                 response = HttpResponse(content_type='application/vnd.ms-excel')
                 response['Content-Disposition'] = 'attachment; filename=%s_%s_%s_%s.xlsx' % (
                     _('Monthly Report'), building, month, year)
-                xlsx_data = building.get_report(month, year)
+                xlsx_data = building.get_report(month, year, type)
                 response.write(xlsx_data)
                 return response
             else:
@@ -450,3 +464,6 @@ def daily_report_download(request, building, date):
 def create_defaults():
     create_manager_group()
     create_default_tasks()
+
+
+create_defaults()

@@ -30,6 +30,10 @@ $(document).ready(function() {
     const $comment_group = $('#comment-group');
     const $comment = $('#comment');
 
+    var require_prompt_on_task_change = false;
+    var current_category = '';
+    var current_task = '';
+
     $select_all.hide();
     //$comment_group.hide();
     $('[data-toggle="tooltip"]').tooltip();
@@ -43,16 +47,22 @@ $(document).ready(function() {
         let comment = $comment.val();
 
         let task = find_task(taskId);
-        if (task.requires_comment && !comment) {
-            alert(COMMENT_REQUIRED_TXT);
-            return false;
-        }
 
         let data = {'task': taskId, 'hours_list': hoursList, 'comment': comment};
 
         // csrf and post_url are rendered in server side and
         // are defined in log_hours.html javascript_header section
         if (data.hours_list && data.hours_list.length > 0) {
+            if (task.requires_comment && !comment) {
+                let hour_sum = 0;
+                for (i in data.hours_list) {
+                    hour_sum += data.hours_list[i].amount;
+                }
+                if (hour_sum > 0) {
+                    alert(COMMENT_REQUIRED_TXT);
+                    return false;
+                }
+            }
             $.ajaxSetup({
                 headers: { "X-CSRFToken": csrf }
             });
@@ -81,6 +91,14 @@ $(document).ready(function() {
     });
 
     $task_category.change( () => {
+        let change_confirmed = !require_prompt_on_task_change || confirm(TASK_CHANGE_PROMPT);
+        if (!change_confirmed) {
+            $task_category.val(current_category);
+            return
+        }
+        current_category = $task_category.val();
+        require_prompt_on_task_change = false;
+
         let option = $task_category.find(':selected');
         let cat_name = $(option).val();
         if (cat_name) {
@@ -95,18 +113,32 @@ $(document).ready(function() {
             $task.append('<option value="">-' + SELECT_TASK_TXT + '-</option>');
             for (let j in cat.tasks) {
                 let task = cat.tasks[j];
-                $task.append('<option value="' + task.id + '">' + task.code + ': ' + task.name + '</option>');
+                $task.append('<option value="' + task.id + '">' + task.code + ' - ' + task.name + '</option>');
             }
             $task.prop('disabled', false);
         } else {
             $task.html('');
-            $task.append('<option value="">-' + SELECT_CAT_FIRST_TXT + '-</option>');
-            $task.prop('disabled', true);
+            $task.append('<option value="">-' + SELECT_TASK_TXT + '-</option>');
+            for (let i in grouped_tasks) {
+                let cat = grouped_tasks[i];
+                for (let j in cat.tasks) {
+                    let task = cat.tasks[j];
+                    $task.append('<option value="' + task.id + '">' + task.code + ' - ' + task.name + '</option>');
+                }
+            }
         }
         $task.change();
     });
 
     $task.change( () => {
+        let change_confirmed = !require_prompt_on_task_change || confirm(TASK_CHANGE_PROMPT);
+        if (!change_confirmed) {
+            $('#task').val(current_task);
+            return
+        }
+        current_task = $('#task').val();
+        require_prompt_on_task_change = false;
+
         let option = $('#task').find(":selected");
         let id = parseInt($(option).val());
         let task = find_task(id);
@@ -161,6 +193,10 @@ $(document).ready(function() {
 
     $select_all.change( () => {
         $hours_input.prop('checked', $select_all.prop('checked'));
+    });
+
+    $hours_input.change( () => {
+        require_prompt_on_task_change = true;
     });
 } );
 
