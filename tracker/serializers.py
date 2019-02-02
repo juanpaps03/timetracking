@@ -25,7 +25,10 @@ def serialize_log(log, with_worker=False, with_task=False):
     if with_task:
         serialized_log['task'] = serialize_task(log.task)
     if with_worker:
-        serialized_log['worker'] = {'code': log.worker.code, 'first_name': log.worker.first_name, 'last_name': log.worker.last_name},
+        serialized_log['worker'] = {'code': log.worker.code,
+                                    'category': {'code': log.worker.category.code, 'name': log.worker.category.name},
+                                    'first_name': log.worker.first_name,
+                                    'last_name': log.worker.last_name}
     return serialized_log
 
 
@@ -38,7 +41,7 @@ def serialize_worker_with_logs(worker):
         'code': worker.code,
         'first_name': worker.first_name,
         'last_name': worker.last_name,
-        'category': worker.category.name,
+        'category': {'code': worker.category.code, 'name': worker.category.name},
         'logs': serialize_logs(worker.logs, with_tasks=True, with_workers=False),
         'passes_controls': worker.passes_controls,
         'hours_percent': worker.hours_percent

@@ -98,7 +98,7 @@ class DailyReport(APIView):
     def post(self, request, username):
         user = request.user
         building = Building.objects.get_by_overseer(user)
-        date_str = request.data.get('date', None)
+        date_str = request.data.get('date', datetime.datetime.today().strftime('%Y-%m-%d'))
         if date_str:
             date = datetime.datetime.strptime(date_str, "%Y-%m-%d").date()
             try:

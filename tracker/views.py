@@ -61,7 +61,9 @@ class Dashboard(View):
                 context = {'building': building, 'able_to_start': able_to_start}
                 return render(request, 'tracker/start_day.html', context)
         else:
-            return JsonResponse({'message': messages.BUILDING_NOT_FOUND}, status=400)
+            context = {'building': None, 'able_to_start': False}
+            django_messages.warning(request, messages.NO_BUILDING)
+            return render(request, 'tracker/start_day.html', context)
 
 
 class LogHours(View):
@@ -151,7 +153,7 @@ class PastDays(View):
         user = request.user
         view_threshold = timezone.localdate(timezone.now()) - timezone.timedelta(days=config.DAYS_ABLE_TO_VIEW)
         edit_threshold = timezone.localdate(timezone.now()) - timezone.timedelta(days=config.DAYS_ABLE_TO_EDIT)
-        workdays = Workday.objects.filter(overseer=user, date__lt=timezone.localdate(timezone.now()), date__gte=view_threshold)
+        workdays = Workday.objects.filter(overseer=user, date__lte=timezone.localdate(timezone.now()), date__gte=view_threshold)
         editable_workdays = workdays.filter(date__gte=edit_threshold).order_by('-date')
         workdays = workdays.difference(editable_workdays).order_by('-date')
 

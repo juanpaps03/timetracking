@@ -48,6 +48,8 @@ TRAINING_CODE = 'CAP'
 ANTIQUITY_LEAVE_CODE = 'LA'
 # postobra
 POST_OBRA_CODE = 'POST'
+# rain
+RAIN_CODE = 'LL'
 
 
 # for reports, minimum widths for some of the columns.
@@ -107,6 +109,6 @@ DYNAMIC_CONSTANTS = {
 DYNAMIC_CONSTANT_FIELDSETS = OrderedDict([
     ('Opciones Generales', ('COMPANY_NAME', 'DAYS_ABLE_TO_EDIT', 'DAYS_ABLE_TO_VIEW')),
     ('Horas esperadas', ('MONDAY_HOURS', 'TUESDAY_HOURS', 'WEDNESDAY_HOURS', 'THURSDAY_HOURS', 'FRIDAY_HOURS',
-                        'SATURDAY_HOURS', 'SUNDAY_HOURS')),
+                         'SATURDAY_HOURS', 'SUNDAY_HOURS')),
     ('Adicionales', ('INCENTIVE_THRESHOLD', 'INCENTIVE_PERCENT', 'WINTER_TIME_THRESHOLD', 'SUMMER_TIME_THRESHOLD')),
 ])
