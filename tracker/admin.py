@@ -25,6 +25,7 @@ admin.sites.AdminSite.site_title = _('Sabyl TimeTracker')
 admin.sites.AdminSite.index_title = _('Home')
 
 
+admin.site.unregister(Group)
 admin.site.register(LogHour)
 admin.site.register(Task)
 admin.site.register(TaskCategory)
