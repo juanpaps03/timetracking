@@ -13,7 +13,6 @@ from django.utils.translation import ugettext as __
 from config import constants
 from sabyltimetracker.users.models import User
 from tracker import utils
-from django.utils.dateparse import parse_datetime
 from django.db import IntegrityError
 
 from constance import config
@@ -316,6 +315,7 @@ class Workday(models.Model):
         r = workbook.add_worksheet(__("Daily Report"))
         title = workbook.add_format({'bold': True, 'font_size': 14, 'align': 'left'})
         header = workbook.add_format({'bg_color': '#F7F7F7', 'color': 'black', 'align': 'left', 'border': 1})
+        task_header = workbook.add_format({'bg_color': '#F7F7F7', 'color': 'black', 'align': 'center', 'border': 1})
 
         # title row
 
@@ -332,6 +332,7 @@ class Workday(models.Model):
         r.merge_range('D4:%s4' % max_column, __('Tasks'), header)
 
         # specific headers row
+        r.set_column('A', len(__('Code'))+0.6)
         r.write('A5', __('Code'), header)
         r.write('B5', __('Full Name'), header)
         r.write('C5', __('Cat'), header)
@@ -339,8 +340,8 @@ class Workday(models.Model):
         col = 3  # starting column is D
         for task in tasks:
             letter = utils.column_letter(col)
-            r.write('%s5' % letter, str(task.code), header)
-            r.set_column('%s:%s' % (letter, letter), len(task.code))
+            r.write('%s5' % letter, str(task.code), task_header)
+            r.set_column('%s:%s' % (letter, letter), len(task.code)+0.6)
             task.column = letter
             col += 1
 

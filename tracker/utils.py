@@ -1,8 +1,9 @@
 def column_letter(idx):
-    if idx < 26:
-        return chr(ord('A')+idx)
-    elif idx < 52:
-        return 'A%s' % column_letter(idx-26)
+    column_name = ""
+    while idx > 0:
+        idx, remainder = divmod(idx - 1, 26)
+        column_name = chr(65 + remainder) + column_name
+    return column_name
 
 
 def column_number(letter):
