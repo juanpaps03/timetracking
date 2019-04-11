@@ -318,7 +318,6 @@ class Workday(models.Model):
         task_header = workbook.add_format({'bg_color': '#F7F7F7', 'color': 'black', 'align': 'center', 'border': 1})
 
         # title row
-
         r.merge_range('A1:C3', config.COMPANY_NAME, title)
         r.insert_image('A1', 'static:images:logo.png')
         r.merge_range('D1:%s1' % max_column, __('Daily Report'), title)
@@ -332,7 +331,6 @@ class Workday(models.Model):
         r.merge_range('D4:%s4' % max_column, __('Tasks'), header)
 
         # specific headers row
-        r.set_column('A', len(__('Code'))+0.6)
         r.write('A5', __('Code'), header)
         r.write('B5', __('Full Name'), header)
         r.write('C5', __('Cat'), header)
@@ -352,6 +350,7 @@ class Workday(models.Model):
         code_width = constants.MIN_WORKER_CODE_WIDTH
         full_name_width = constants.MIN_FULL_NAME_WIDTH
         category_width = constants.MIN_WORKER_CATEGORY_WIDTH
+        title_rows_height = constants.MIN_TITLE_ROW_HEIGHT
         for worker in workers:
             r.write('A%d' % row, worker.code, header)
             if len(worker.code) > code_width:
@@ -380,6 +379,9 @@ class Workday(models.Model):
         r.set_column('A:A', code_width)
         r.set_column('B:B', full_name_width)
         r.set_column('C:C', category_width)
+        r.set_row(0, title_rows_height)
+        r.set_row(1, title_rows_height)
+        r.set_row(2, title_rows_height)
 
         r.merge_range('A%d:%s%d' % (row, max_column, row), __('Extra Information'), title)
         row += 1
