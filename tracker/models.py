@@ -357,15 +357,15 @@ class Workday(models.Model):
                 code_width = len(worker.code)
             r.write('B%d' % row, worker.full_name(), header)
             if len(worker.full_name()) > full_name_width:
-                full_name_width = len(worker.full_name())
+                full_name_width = len(worker.full_name()) + 5
             r.write('C%d' % row, str(worker.category.code), header)
             if len(str(worker.category.code)) > category_width:
                 category_width = len(str(worker.category.code))
             for log in worker.logs:
                 col = None
                 text = ''
-                if log.task.is_boolean:
-                    text = log.task.code
+                if log.task.whole_day:
+                    text = log.workday.expected_hours()
                 else:
                     text = log.amount
                 for task in tasks:
