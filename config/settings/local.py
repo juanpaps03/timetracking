@@ -25,6 +25,7 @@ TEMPLATES[0]['OPTIONS']['debug'] = DEBUG
 # Note: This key only used for development and testing.
 SECRET_KEY = env('DJANGO_SECRET_KEY', default='r!!l^,#ihh%#`gJ5I2Dq.=n.mOH)8(Jq<An-?#UCFL4g6:=])0')
 
+
 # Mail settings
 # ------------------------------------------------------------------------------
 
@@ -70,6 +71,22 @@ DEBUG_TOOLBAR_CONFIG = {
 # django-extensions
 # ------------------------------------------------------------------------------
 INSTALLED_APPS += ['django_extensions', ]
+
+
+# DATABASE CONFIGURATION
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'sabyltimetracker',
+        'USER': 'postgres',
+        'PASSWORD': 'admin123',
+        'HOST': '127.0.0.1',
+        'PORT': '5432',
+    }
+}
+
+DATABASES['default']['ATOMIC_REQUESTS'] = True
+
 
 # TESTING
 # ------------------------------------------------------------------------------
