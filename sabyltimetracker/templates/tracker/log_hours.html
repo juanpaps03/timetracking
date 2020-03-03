@@ -89,7 +89,7 @@
           <strong>{% trans "Task selection" %}</strong>
         </div>
         <div class="card-body card-block">
-          <div class="row form-group">
+          <!--<div class="row form-group">
             <div class="col-12 col-lg-3"><label for="task-category">{% trans 'Task category:' %}</label></div>
             <div class="col-12 col-lg-9">
               <select id="task-category" class="form-control">
@@ -99,7 +99,7 @@
                 {% endfor %}
               </select>
             </div>
-          </div>
+          </div> -->
           <div class="row form-group">
             <div class="col-12 col-lg-3"><label for="task">{% trans 'Task:' %}</label></div>
             <div class="col-12 col-lg-9">
@@ -165,7 +165,7 @@
                       </div>
                     {% else %}
                       <div class="progress-bar bg-danger" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">
-                        <u id="{{ worker.code }}-logged-hours" >{{ worker.total_hours }}</u>
+                        <u id="{{ worker.code }}-logged-hours">{{ worker.total_hours</u><u> }}</u>
                       </div>
                     {% endif %}
                   </div>
@@ -179,7 +179,7 @@
                           <span aria-hidden="true">&times;</span>
                         </button>
                       </div>
-                      <div class="modal-body">
+                      <div class="modal-body" style="margin-left: 4%;">
                         <ul>
                           {% for log in worker.logs %}
                             <li>

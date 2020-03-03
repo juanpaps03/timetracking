@@ -10,7 +10,7 @@ function get_datatable_info(table){
             error = true;
         } else {
             if (htmlElement.attr('type') === 'checkbox')
-                hours = (htmlElement.prop('checked') ? 1 : 0);
+                hours = (htmlElement.prop('checked') ? 9 : 0);
             let userId = htmlElement.attr('name');
             hours_list.push({'user': userId, 'amount': hours});
         }
@@ -37,7 +37,9 @@ $(document).ready(function() {
     $select_all.hide();
     //$comment_group.hide();
     $('[data-toggle="tooltip"]').tooltip();
-    let table = $('#hours_per_user').DataTable();
+    let table = $('#hours_per_user').DataTable( {
+        "pageLength": 10
+    });
 
     update_logged_hours(null);
 
@@ -219,7 +221,7 @@ function update_logged_hours(excluded_task_id) {
         let sum = 0;
         for (j in worker.logs) {
             let log = worker.logs[j];
-            if (log.task.id !== excluded_task_id && !log.task.is_boolean)
+            //if (log.task.id !== excluded_task_id && !log.task.is_boolean)
                 sum += log.amount;
         }
         $('#'+worker.code+'-logged-hours').text(sum);
