@@ -271,17 +271,17 @@ class Workday(models.Model):
             workday.save()
             return True
 
-    def assign_logs(self, task_id, list_hours_per_user, comment=None):
+    def assign_logs(self, task_id, list_hours_per_user):
         task = self.building.tasks.get(pk=task_id)
-        if task.requires_comment and comment is None:
-            s = 0
-            for x in list_hours_per_user:
-                s += float(x['amount'])
-            if s > 0:
-                return False
+        # if task.requires_comment and comment is None:
+        #     s = 0
+        #     for x in list_hours_per_user:
+        #         s += float(x['amount'])
+        #     if s > 0:
+        #         return False
         old_task_logs = self.logs.filter(task=task)
         old_task_logs.delete()
-        logs = LogHour.create_log_hours(self, task, self.building, list_hours_per_user, comment)
+        logs = LogHour.create_log_hours(self, task, self.building, list_hours_per_user)
         self.logs.add(*logs)
         return True
 
@@ -431,11 +431,12 @@ class LogHour(models.Model):
     comment = models.CharField(_('comment'), null=True, blank=True, max_length=255, default=None)
 
     @staticmethod
-    def create_log_hours(workday, task, building, list_hours_per_user, comment=None):
+    def create_log_hours(workday, task, building, list_hours_per_user):
         logs = []
         for item in list_hours_per_user:
             user_id = item.get('user', None)
             user_amount_hours = item.get('amount', 0)
+            comment = item.get('comment', None)
 
             if user_amount_hours > 0:  # no trivial logs
                 try:

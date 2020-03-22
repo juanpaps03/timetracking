@@ -9,7 +9,7 @@ def serialize_task(task, with_logs=False):
         'is_boolean': task.is_boolean
     }
     if with_logs:
-        serialized_task['logs'] = [{'worker': {'code': log.worker.code}, 'amount': float(log.amount)} for log in task.logs]
+        serialized_task['logs'] = [{'worker': {'code': log.worker.code}, 'amount': float(log.amount), 'comment': log.comment} for log in task.logs]
     return serialized_task
 
 

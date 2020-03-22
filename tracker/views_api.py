@@ -1,8 +1,10 @@
 from django.contrib import messages as django_messages
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import redirect
+from django.template.defaultfilters import wordcount
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
+from pip._vendor.pyparsing import unicode_set
 from rest_framework.views import APIView
 
 from tracker.models import Building, Workday, Task
@@ -16,17 +18,25 @@ convertapi.api_secret = 'OeuVcz0cyMNL9tTh'
 
 class CreateLogHours(APIView):
     def post(self, request, username):
+
         user = request.user
+        print("request.user: " + request.user.full_name())
         building = Building.objects.get_by_overseer(user)
+        print(f'building: {building.code}')
         task_id = request.data.get('task', None)
+        print(f'tarea: {task_id}')
         hours_per_user = request.data.get('hours_list', [])
-        comment = request.data.get('comment', None)
-        if comment == '':
-            comment = None
+
+        for x in hours_per_user:
+            print(float(x['amount']))
+
+        # comment = request.data.get('comment', None)
+        # if comment == '':
+        #     comment = None
 
         try:
             workday = Workday.objects.filter(building=building, finished=False).order_by('-date')[0]
-            if workday.assign_logs(task_id, hours_per_user, comment):
+            if workday.assign_logs(task_id, hours_per_user):
                 django_messages.success(request, messages.LOGS_UPDATED)
                 return JsonResponse({'message': messages.LOGS_UPDATED}, status=200)
             else:
@@ -96,16 +106,17 @@ class EndDay(APIView):
 
 class DailyReport(APIView):
     def post(self, request, username):
+        workdayDate = request.data.get('workdaydate')
+        x = workdayDate.split(" - ")
+        wkday = x[0]
         user = request.user
         building = Building.objects.get_by_overseer(user)
-        date_str = request.data.get('date', datetime.datetime.today().strftime('%Y-%m-%d'))
-        if date_str:
-            date = datetime.datetime.strptime(date_str, "%Y-%m-%d").date()
+        if wkday:
+            date = datetime.datetime.strptime(wkday, "%Y-%m-%d").date()
             try:
                 workday = Workday.objects.get(building=building, date=date)
                 response = HttpResponse(content_type='application/vnd.ms-excel')
-                response['Content-Disposition'] = 'attachment; filename=%s_%s_%s.xlsx' % (
-                _('Daily_Report'), building, date)
+                response['Content-Disposition'] = 'attachment; filename=%s_%s_%s.xlsx' % (_('Daily_Report'), building, date)
                 xlsx_data = workday.get_report()
                 response.write(xlsx_data)
                 return response

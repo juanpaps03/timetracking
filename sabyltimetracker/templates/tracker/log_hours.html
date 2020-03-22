@@ -89,7 +89,7 @@
           <strong>{% trans "Task selection" %}</strong>
         </div>
         <div class="card-body card-block">
-          <!--<div class="row form-group">
+          <div class="row form-group">
             <div class="col-12 col-lg-3"><label for="task-category">{% trans 'Task category:' %}</label></div>
             <div class="col-12 col-lg-9">
               <select id="task-category" class="form-control">
@@ -99,7 +99,7 @@
                 {% endfor %}
               </select>
             </div>
-          </div> -->
+          </div>
           <div class="row form-group">
             <div class="col-12 col-lg-3"><label for="task">{% trans 'Task:' %}</label></div>
             <div class="col-12 col-lg-9">
@@ -136,6 +136,7 @@
                 <span class="hours-label">{% trans "Select a task" %}</span>
                 <input id="select-all" type="checkbox" class="form-control checkbox-lg"/>
               </th>
+              <th>{% trans "Comment" %}</th>
               <th class="logged-hours-label">{% trans "Total hours logged" %}</th>
             </tr>
             </thead>
@@ -153,6 +154,44 @@
                          disabled
                   />
                 </td>
+
+
+
+
+                <td>
+                  <button data-toggle="modal" data-target="#{{ worker.code }}-comment-modal" type="button" class="btn btn-secondary">
+                          Agregar
+                  </button>
+                </td>
+                <div class="modal fade" id="{{ worker.code }}-comment-modal" tabindex="-1" role="dialog" aria-labelledby="{{ worker.code }}-label" aria-hidden="true">
+                  <div class="modal-dialog modal-md" role="document">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="{{ worker.code }}-label-comment">Comentario para {{ worker.last_name }}, {{ worker.first_name }}</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="{% trans 'Close' %}">
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                      </div>
+                      <div class="modal-body" style="margin-left: 4%;">
+                        <div id="comment-group" class="row">
+                          <div class="col-xs-6 col-lg-12">
+                              <div class="form-group">
+
+
+                                <textarea id="{{ worker.code }}-comment" name="comment" rows="2" placeholder="{% trans 'Comment (optional)' %}" class="form-control"></textarea>
+                              </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-lg btn-block btn-secondary" data-dismiss="modal">{% trans 'Close' %}</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+
+
                 <td data-toggle="modal" data-target="#{{ worker.code }}-detail">
                   <div class="progress">
                     {% if worker.passes_controls %}
@@ -165,7 +204,7 @@
                       </div>
                     {% else %}
                       <div class="progress-bar bg-danger" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">
-                        <u id="{{ worker.code }}-logged-hours">{{ worker.total_hours</u><u> }}</u>
+                        <u id="{{ worker.code }}-logged-hours">{{ worker.total_hours }}</u>
                       </div>
                     {% endif %}
                   </div>
@@ -183,7 +222,7 @@
                         <ul>
                           {% for log in worker.logs %}
                             <li>
-                              <p>
+                              <p id="{{ worker.code }}-comment-initial">
                                 {% if log.task.is_boolean %}
                                   {% if log.comment %}
                                     {{ log.task.name }} {% trans 'with comment: "' %}{{ log.comment }}".
@@ -217,20 +256,20 @@
     </div>
   </div>
 
-  <div id="comment-group" class="row">
-    <div class="col-xs-6 col-lg-12">
-      <div class="card">
-        <div class="card-header">
-          <strong><label for="comment">{% trans "Comment" %}</label></strong>
-        </div>
-        <div class="card-body card-block">
-          <div class="form-group">
-            <textarea id="comment" name="comment" rows="2" placeholder="{% trans 'Comment (optional)' %}" class="form-control"></textarea>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+<!--  <div id="comment-group" class="row">-->
+<!--    <div class="col-xs-6 col-lg-12">-->
+<!--      <div class="card">-->
+<!--        <div class="card-header">-->
+<!--          <strong><label for="comment">{% trans "Comment" %}</label></strong>-->
+<!--        </div>-->
+<!--        <div class="card-body card-block">-->
+<!--          <div class="form-group">-->
+<!--            <textarea id="comment" name="comment" rows="2" placeholder="{% trans 'Comment (optional)' %}" class="form-control"></textarea>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  </div>-->
 
   <div class="row">
     <div class="col-xs-6 col-lg-12">

@@ -6,13 +6,15 @@ function get_datatable_info(table){
     table.$('input').each(function (i, el) {
         let htmlElement = $(el);
         let hours = parseFloat(htmlElement.val());
+        let workerCode = htmlElement[0].name;
+        let comment = $('#'+workerCode+'-comment').val();
         if (hours*2%1!==0) {
             error = true;
         } else {
             if (htmlElement.attr('type') === 'checkbox')
                 hours = (htmlElement.prop('checked') ? 9 : 0);
             let userId = htmlElement.attr('name');
-            hours_list.push({'user': userId, 'amount': hours});
+            hours_list.push({'user': userId, 'amount': hours, 'comment':comment});
         }
     });
     if (!error)
@@ -28,7 +30,7 @@ $(document).ready(function() {
     const $hours_input = $('.hours-input');
     const $submit_hours = $('#submit-hours');
     const $comment_group = $('#comment-group');
-    const $comment = $('#comment');
+//    const $comment = $('#comment');
 
     var require_prompt_on_task_change = false;
     var current_category = '';
@@ -46,25 +48,60 @@ $(document).ready(function() {
     $submit_hours.click( function() {
         let taskId = parseInt($task.val());
         let hoursList = get_datatable_info(table);
-        let comment = $comment.val();
+//        let comment = $comment.val();
 
         let task = find_task(taskId);
 
-        let data = {'task': taskId, 'hours_list': hoursList, 'comment': comment};
+        let data = {'task': taskId, 'hours_list': hoursList};
 
         // csrf and post_url are rendered in server side and
         // are defined in log_hours.html javascript_header section
         if (data.hours_list && data.hours_list.length > 0) {
-            if (task.requires_comment && !comment) {
-                let hour_sum = 0;
-                for (i in data.hours_list) {
-                    hour_sum += data.hours_list[i].amount;
+
+
+
+            if (task.requires_comment) {
+                let i = 0;
+                while (i < data.hours_list.length){
+
+//                    let workerCode = data.hours_list[i].user;
+//                    let input = $('#'+workerCode+'-hours');
+
+                    if (data.hours_list[i].amount > 0){
+                        if (data.hours_list[i].comment == ""){
+                            alert(COMMENT_REQUIRED_TXT + " - userId: " + data.hours_list[i].user);
+                            return false;
+                        }
+                    }
+
+
+                    i++;
                 }
-                if (hour_sum > 0) {
-                    alert(COMMENT_REQUIRED_TXT);
-                    return false;
-                }
+
+
             }
+
+
+
+//            if (task.requires_comment && !comment) {
+//                let hour_sum = 0;
+//                for (i in data.hours_list) {
+//                    hour_sum += data.hours_list[i].amount;
+//
+//                    if (data.hours_list[i].amount > 0){
+//                        console.log('userId: ' + data.hours_list[i].user + ' - amount: ' + data.hours_list[i].amount);
+//                        console.log('la fila ' + i +' tiene comentario.');
+//                    } else {
+//                        console.log('userId: ' + data.hours_list[i].user + ' - amount: ' + data.hours_list[i].amount);
+//                        console.log('la fila ' + i +' NO tiene comentario.');
+//                    }
+//
+//                }
+//                if (hour_sum > 0) {
+//                    alert(COMMENT_REQUIRED_TXT);
+//                    return false;
+//                }
+//            }
             $.ajaxSetup({
                 headers: { "X-CSRFToken": csrf }
             });
@@ -80,7 +117,7 @@ $(document).ready(function() {
                   location.reload();
                 },
               error: function(XMLHttpRequest, textStatus, errorThrown) {
-                alert("some error " + String(errorThrown) + String(textStatus) + String(XMLHttpRequest.responseText));
+                alert("ERROR: " + String(errorThrown) + " - " + String(textStatus) + " - " + String(XMLHttpRequest.responseText));
                 return false;
                 }
             });
@@ -158,6 +195,8 @@ $(document).ready(function() {
                     for (let i in task.logs) {
                         let log = task.logs[i];
                         $('#'+log.worker.code+'-hours').prop('checked', true);
+                        $('#'+ log.worker.code +'-comment').val(log.comment);
+
                     }
                     $submit_hours.text(UPDATE_BOOLEAN_TASK_TXT+ ' '+ task.name);
                 } else {
@@ -169,6 +208,7 @@ $(document).ready(function() {
                     for (let i in task.logs) {
                         let log = task.logs[i];
                         $('#'+log.worker.code+'-hours').val(log.amount);
+                        $('#'+log.worker.code+'-comment').val(log.comment);
                     }
                     $submit_hours.text(UPDATE_HOURS_FOR_TXT+ ' ' + task.name);
                 } else {
@@ -178,11 +218,14 @@ $(document).ready(function() {
             }
             if (task.requires_comment) {
                 //$comment_group.show();
-                $comment.attr('placeholder', COMMENT_REQUIRED_TXT);
+                $('textarea').attr('placeholder', COMMENT_REQUIRED_TXT);
             } else {
                 //$comment_group.hide();
-                $comment.attr('placeholder', COMMENT_NOT_REQUIRED_TXT);
+                $('textarea').attr('placeholder', COMMENT_NOT_REQUIRED_TXT);
             }
+
+
+
             update_logged_hours(task.id);
         } else {
             $hours_label.text(SELECT_TASK_TXT);
