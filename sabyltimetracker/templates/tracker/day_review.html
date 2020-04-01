@@ -125,7 +125,7 @@
               <button id="report" class="btn btn-lg btn-block btn-outline-primary" type="submit">{% trans "Download Report" %}</button>
             </form>
           </div>
-        <br>        <br>
+        <br>       <br>
 
           <div class="col-12">
             <form method="post" action="{% url 'tracker:api_end_day' request.user.username%}">{% csrf_token %}
