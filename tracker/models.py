@@ -303,7 +303,7 @@ class Workday(models.Model):
         workday = self
         tasks = workday.building.tasks.all()
         amount_of_tasks = len(tasks)
-        max_column = utils.column_letter(2 + amount_of_tasks)
+        max_column = utils.column_letter(3 + amount_of_tasks + 1)
         workers = workday.building.workers.all()
         for worker in workers:
             worker.logs = list(workday.logs.filter(worker=worker))
@@ -316,10 +316,14 @@ class Workday(models.Model):
         title = workbook.add_format({'bold': True, 'font_size': 14, 'align': 'left'})
         header = workbook.add_format({'bg_color': '#F7F7F7', 'color': 'black', 'align': 'left', 'border': 1})
         task_header = workbook.add_format({'bg_color': '#F7F7F7', 'color': 'black', 'align': 'center', 'border': 1})
+        number_format = workbook.add_format()
+        number_format.set_num_format(2)
+        background_color_number = workbook.add_format({'bg_color': '#F5A9BC', 'color': 'red'})
+        background_color_number.set_num_format(2)
 
         # title row
         r.merge_range('A1:C3', config.COMPANY_NAME, title)
-        r.insert_image('A1', 'static:images:logo.png')
+        r.insert_image('A1', 'sabyltimetracker/static/images/logo.png', {'x_scale': 0.5, 'y_scale': 0.5})
         r.merge_range('D1:%s1' % max_column, __('Daily Report'), title)
         building_info = '%s: %s' % (__('Building'), str(workday.building))
         r.merge_range('D2:%s2' % max_column, building_info, title)
@@ -327,19 +331,24 @@ class Workday(models.Model):
         r.merge_range('D3:%s3' % max_column, date_info, title)
 
         # general headers row
-        r.merge_range('A4:C4', __('Workers'), header)
-        r.merge_range('D4:%s4' % max_column, __('Tasks'), header)
+        r.merge_range('A4:D4', __('Workers'), header)
 
         # specific headers row
         r.write('A5', __('Code'), header)
         r.write('B5', __('Full Name'), header)
         r.write('C5', __('Cat'), header)
+        r.write('D5', __('Total'), header)
 
-        col = 3  # starting column is D
+        col = 5  # starting column is E
         for task in tasks:
             letter = utils.column_letter(col)
             r.write('%s5' % letter, str(task.code), task_header)
-            r.set_column('%s:%s' % (letter, letter), len(task.code)+0.6)
+
+            ancho = 5
+            if len(task.code)>ancho:
+                ancho = len(task.code) + 0.6
+
+            r.set_column('%s:%s' % (letter, letter), ancho)
             task.column = letter
             col += 1
 
@@ -351,6 +360,9 @@ class Workday(models.Model):
         full_name_width = constants.MIN_FULL_NAME_WIDTH
         category_width = constants.MIN_WORKER_CATEGORY_WIDTH
         title_rows_height = constants.MIN_TITLE_ROW_HEIGHT
+
+        columns_no_empty = []
+        columns_empty = []
         for worker in workers:
             r.write('A%d' % row, worker.code, header)
             if len(worker.code) > code_width:
@@ -361,21 +373,65 @@ class Workday(models.Model):
             r.write('C%d' % row, str(worker.category.code), header)
             if len(str(worker.category.code)) > category_width:
                 category_width = len(str(worker.category.code))
+
+
+            columns_no_empty_aux = []
+            suma = 0
             for log in worker.logs:
+
                 col = None
-                text = ''
                 if log.task.whole_day:
                     text = log.workday.expected_hours()
+                    # ver caso en el que el día sea un viernes, son 8 horas
+
+                    # se controla tareas que no suman
+                    if (log.task.code != 'P'):
+                        suma = 9
                 else:
                     text = log.amount
+                    # se controla tareas que no suman
+                    if (log.task.code != 'P'):
+                        suma = suma + text
+
                 for task in tasks:
                     if task.id == log.task_id:
+                        columns_no_empty_aux.append(task.column)
                         col = task.column
-                r.write('%s%d' % (col, row), text)
+
+                r.write_number('%s%d' % (col, row), text)
+                r.write('%s%d' % (col, row), text, number_format)
                 if log.comment:
-                    notes[log.task.code] = (log.task, log.comment)
+                    comentario = (worker.code + '-' + worker.full_name() + ': ' + log.comment)
+                    if log.task.code in notes:
+                        note  = notes[log.task.code]
+                        comentario = note[1] + '    ***    ' + comentario
+                    notes[log.task.code] = (log.task, comentario)
+
+            for col_no_empty_aux in columns_no_empty_aux:
+                if col_no_empty_aux not in columns_no_empty:
+                    columns_no_empty.append(col_no_empty_aux)
+
+            if (suma < 9):
+                r.write('D%d' % row, suma, background_color_number)
+            else:
+                r.write('D%d' % row, suma, number_format)
 
             row += 1
+
+        # print("********Columnas no vacias")
+        # for col_no_empty in columns_no_empty:
+        #     print(col_no_empty + " - ")
+        #
+        for tas in tasks:
+            if tas.column not in columns_no_empty:
+                columns_empty.append(tas.column)
+
+        # print("****************************************")
+        # print("********Columnas vacias")
+        # for col_empty in columns_empty:
+        #     print(col_empty + " - ")
+
+
         r.set_column('A:A', code_width)
         r.set_column('B:B', full_name_width)
         r.set_column('C:C', category_width)
@@ -401,10 +457,19 @@ class Workday(models.Model):
         if notes:
             r.merge_range('A%d:%s%d' % (row, max_column, row), __('Notes'), header)
             row += 1
+            print('Llego a las notas')
             for code, (task, comment) in notes.items():
+                print('Entra al for de notas')
                 r.merge_range('A%d:C%d' % (row, row), task.name, header)
                 r.merge_range('D%d:%s%d' % (row, max_column, row), comment)
                 row += 1
+
+
+        if columns_empty:
+            r.merge_range('E4:%s4' % max_column, __('Tasks'), header)
+            for letter in columns_empty:
+                r.set_column('%s:%s' % (letter, letter), None, None, {'hidden': True})
+
 
         workbook.close()
         xlsx_data = output.getvalue()

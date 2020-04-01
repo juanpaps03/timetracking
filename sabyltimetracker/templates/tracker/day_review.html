@@ -121,10 +121,7 @@
           </div>
           <div class="col-sm-6 col-12">
             <form method="post" action="{% url 'tracker:api_daily_report' request.user.username %}">{% csrf_token %}
-
-                  <input type="text" name="workdaydate" style="display:none;" value="{{ workday }}"/>
-<!--              <input type="text" name="workdaydate" style="display:none;" value="algo"/>-->
-
+              <input type="text" name="workdaydate" style="display:none;" value="{{ workday }}"/>
               <button id="report" class="btn btn-lg btn-block btn-outline-primary" type="submit">{% trans "Download Report" %}</button>
             </form>
           </div>

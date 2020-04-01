@@ -57,6 +57,7 @@ MIN_WORKER_CODE_WIDTH = 6.5
 MIN_FULL_NAME_WIDTH = 20
 MIN_WORKER_CATEGORY_WIDTH = 4
 MIN_TITLE_ROW_HEIGHT = 20
+MIN_TASK_COLUMN_WIDTH = 5
 
 
 # winter period goes from second sunday of march until third monday of october.
