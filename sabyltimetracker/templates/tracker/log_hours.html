@@ -100,19 +100,29 @@
               </select>
             </div>
           </div>
+
+          <div class="row form-group">
+            <div class="col-12 col-lg-3"><label for="task-category">Buscar tarea:</label></div>
+            <div class="col-12 col-lg-9">
+              <input id="task-browser" class="form-control" value="">
+            </div>
+          </div>
+
+
           <div class="row form-group">
             <div class="col-12 col-lg-3"><label for="task">{% trans 'Task:' %}</label></div>
             <div class="col-12 col-lg-9">
               <select id="task" name="task" class="form-control">
-                <option value="">-{% trans 'Select a task' %}-</option>
+                <option id="0000" value="">-{% trans 'Select a task' %}-</option>
                 {% for category in grouped_tasks %}
                   {% for task in category.tasks %}
-                    <option value="{{ task.id }}">{{ task.code }} - {{ task.name }}</option>
+                    <option id="{{ task.id }}" value="{{ task.id }}">{{ task.code }} - {{ task.name }}</option>
                   {% endfor %}
                 {% endfor %}
               </select>
             </div>
           </div>
+
         </div>
       </div>
     </div>

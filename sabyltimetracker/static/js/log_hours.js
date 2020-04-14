@@ -243,7 +243,56 @@ $(document).ready(function() {
     $hours_input.change( () => {
         require_prompt_on_task_change = true;
     });
-} );
+
+
+    $('#task-browser').keyup(function(){
+        console.log('cambio el input: ' + $(this).val());
+        var keyText = $(this).val();
+
+
+        $('#task option').each(function() {
+            var text = $(this).html();
+            var id = $(this).attr('id');
+
+            if (text.toLowerCase().indexOf(keyText) == -1){
+                console.log('NO encontro - keyText: ' + keyText + ' -- En texto: ' + text + ' -- id: ' + id);
+                $('#'+id).hide();
+            } else {
+                $('#'+id).show();
+                console.log('ENCONTRO - keyText: ' + keyText + ' -- En texto: ' + text);
+            }
+
+        });
+
+    });
+
+
+//$('#task option').map(function() { return $(this).html; }).get();
+//$('#407').attr('display', 'none')
+
+
+//    $(document).ready(function(){
+//      $('#buscador').keyup(function(){
+//         var nombres = $('.nombres');
+//         var buscando = $(this).val();
+//         var item='';
+//         for( var i = 0; i < nombres.length; i++ ){
+//             item = $(nombres[i]).html().toLowerCase();
+//              for(var x = 0; x < item.length; x++ ){
+//                  if( buscando.length == 0 || item.indexOf( buscando ) > -1 ){
+//                      $(nombres[i]).parents('.item').show();
+//                  }else{
+//                       $(nombres[i]).parents('.item').hide();
+//                  }
+//              }
+//         }
+//      });
+
+
+
+//});
+
+});
 
 
 function find_task(task_id) {

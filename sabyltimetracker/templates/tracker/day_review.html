@@ -62,7 +62,7 @@
                   <div class="stat-digit">{% trans "There is 1 worker left." %}</div>
                 {% else %}
                   <div class="stat-text">
-                    {% trans 'The logs for' %} {{ workers_missing_logs|ellipsize:3 }} {% trans "require attention." %}
+                    {% trans 'The logs for' %} {{ workers_missing_logs|ellipsize:5 }} {% trans "require attention." %}
                   </div>
                   <div class="stat-digit">{% trans 'There are' %} {{ workers_missing_logs|length }} {% trans "workers left." %}</div>
                 {% endif %}
