@@ -381,12 +381,15 @@ class Workday(models.Model):
 
                 col = None
                 if log.task.whole_day:
+                    #se obtienen las horas esperadas para el día workday
                     text = log.workday.expected_hours()
-                    # ver caso en el que el día sea un viernes, son 8 horas
 
                     # se controla tareas que no suman
                     if (log.task.code != 'P'):
-                        suma = 9
+                        if (text == 9):
+                            suma = 9
+                        else:
+                            suma = 8
                 else:
                     text = log.amount
                     # se controla tareas que no suman
@@ -411,7 +414,7 @@ class Workday(models.Model):
                 if col_no_empty_aux not in columns_no_empty:
                     columns_no_empty.append(col_no_empty_aux)
 
-            if (suma < 9):
+            if (suma != workday.expected_hours()):
                 r.write('D%d' % row, suma, background_color_number)
             else:
                 r.write('D%d' % row, suma, number_format)
