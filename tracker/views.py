@@ -202,3 +202,20 @@ class PastDaysEdit(View):
         }
 
         return render(request, 'tracker/past_days_edit.html', context)
+
+
+
+class DhtReport(View):
+    def get(self, request, username):
+        user = request.user
+        view_threshold = timezone.localdate(timezone.now()) - timezone.timedelta(days=config.DAYS_ABLE_TO_VIEW)
+        edit_threshold = timezone.localdate(timezone.now()) - timezone.timedelta(days=config.DAYS_ABLE_TO_EDIT)
+        workdays = Workday.objects.filter(overseer=user, date__lte=timezone.localdate(timezone.now()), date__gte=view_threshold)
+        # editable_workdays = workdays.filter(date__gte=edit_threshold).order_by('-date')
+        # workdays = workdays.difference(editable_workdays).order_by('-date')
+        #
+        context = {'workdays': workdays}
+
+        return render(request, 'tracker/dht_report.html', context)
+
+        # return render(request, 'tracker/dht_report.html')

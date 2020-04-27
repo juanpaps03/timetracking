@@ -157,7 +157,11 @@ $(document).ready(function() {
         return true;
     });
 
+
+
+
     $task_category.change( () => {
+        var keyText = $('#task-browser').val();
         let change_confirmed = !require_prompt_on_task_change || confirm(TASK_CHANGE_PROMPT);
         if (!change_confirmed) {
             $task_category.val(current_category);
@@ -171,31 +175,54 @@ $(document).ready(function() {
         if (cat_name) {
             let cat = null;
             let i = 0;
-            while (!cat) {
-                if (grouped_tasks[i].name === cat_name)
+            var largo = grouped_tasks.length
+            console.log("largo: " + largo)
+
+            while (i < largo) {
+                if (grouped_tasks[i].name === cat_name){
                     cat = grouped_tasks[i];
+                    for (let j in cat.tasks) {
+                        let task = cat.tasks[j];
+                        if (task.name.toLowerCase().indexOf(keyText.toLowerCase()) > -1){
+                            $('#'+task.id).show();
+                        } else {
+                            $('#'+task.id).hide();
+                        }
+                    }
+                } else {
+                    cat = grouped_tasks[i];
+                    for (let j in cat.tasks) {
+                        let task = cat.tasks[j];
+                        $('#'+task.id).hide();
+                    }
+
+                }
+
                 i++;
             }
-            $task.html('');
-            $task.append('<option value="">-' + SELECT_TASK_TXT + '-</option>');
-            for (let j in cat.tasks) {
-                let task = cat.tasks[j];
-                $task.append('<option value="' + task.id + '">' + task.code + ' - ' + task.name + '</option>');
-            }
+
             $task.prop('disabled', false);
         } else {
-            $task.html('');
-            $task.append('<option value="">-' + SELECT_TASK_TXT + '-</option>');
-            for (let i in grouped_tasks) {
-                let cat = grouped_tasks[i];
-                for (let j in cat.tasks) {
-                    let task = cat.tasks[j];
-                    $task.append('<option value="' + task.id + '">' + task.code + ' - ' + task.name + '</option>');
+
+            for (let k in grouped_tasks) {
+                let cat = grouped_tasks[k];
+                for (let x in cat.tasks) {
+                    let task = cat.tasks[x];
+                    if (task.name.toLowerCase().indexOf(keyText.toLowerCase()) > -1){
+                        $('#'+task.id).show();
+                    } else {
+                        $('#'+task.id).hide();
+                    }
                 }
+
             }
         }
         $task.change();
     });
+
+
+
+
 
     $task.change( () => {
         let change_confirmed = !require_prompt_on_task_change || confirm(TASK_CHANGE_PROMPT);
@@ -274,16 +301,48 @@ $(document).ready(function() {
 
 
     $('#task-browser').keyup(function(){
+
+        var cat_name = $('#task-category').find(':selected').html();
         var keyText = $(this).val();
-        $('#task option').each(function() {
-            var text = $(this).html();
-            var id = $(this).attr('id');
-            if (text.toLowerCase().indexOf(keyText) == -1){
-                $('#'+id).hide();
-            } else {
-                $('#'+id).show();
+
+        if (cat_name.toLowerCase().indexOf(("All categories").toLowerCase()) == -1){
+            for (let k in grouped_tasks) {
+                if (grouped_tasks[k].name === cat_name){
+                    let cat = grouped_tasks[k];
+                    for (let x in cat.tasks) {
+                        let task = cat.tasks[x];
+                        if (task.name.toLowerCase().indexOf(keyText.toLowerCase()) > -1){
+                            $('#'+task.id).show();
+                        } else {
+                            $('#'+task.id).hide();
+                        }
+                    }
+
+                } else {
+                    let cat = grouped_tasks[k];
+                    for (let x in cat.tasks) {
+                        let task = cat.tasks[x];
+                        $('#'+task.id).hide();
+                    }
+                }
             }
-        });
+
+        } else {
+            for (let k in grouped_tasks) {
+
+                let cat = grouped_tasks[k];
+                for (let x in cat.tasks) {
+                    let task = cat.tasks[x];
+                    if (task.name.toLowerCase().indexOf(keyText.toLowerCase()) > -1){
+                        $('#'+task.id).show();
+                    } else {
+                        $('#'+task.id).hide();
+                    }
+                }
+
+            }
+
+        }
     });
 
 

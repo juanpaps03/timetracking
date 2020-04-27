@@ -70,6 +70,7 @@
           </li>
           <h3 class="menu-title">{% trans 'Menu' %}</h3><!-- /.menu-title -->
           <li><a href="{% url 'tracker:past_days' request.user.username %}"><i class="menu-icon fa fa-calendar"></i>{% trans 'Past Days' %}</a></li>
+          <li><a href="{% url 'tracker:dht_report' request.user.username %}"><i class="menu-icon fa fa-table"></i>{% trans 'DHT General' %}</a></li>
           {##}
           {#                <li class="menu-item-has-children dropdown">#}
           {#                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-laptop"></i>Components</a>#}

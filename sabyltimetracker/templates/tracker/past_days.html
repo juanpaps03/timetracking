@@ -39,7 +39,7 @@
         <div class="card-body">
           <p class="text-muted m-b-15">{% trans 'Workdays among the past' %} {{ days }} {% trans 'days can be edited.' %}</p>
           <div class="form-group">
-            <select id="day" name="date" class="form-control">
+            <select id="day" name="workdaydate" class="form-control">
               <option value="">{% trans '-Select a workday-' %}</option>
               <optgroup label="{% trans 'Editable' %}">
                 {% for workday in editable_workdays %}

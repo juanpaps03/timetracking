@@ -1,5 +1,7 @@
 import datetime
 import io
+from distutils.command.build import build
+from datetime import timedelta
 
 import xlsxwriter
 from django.core.exceptions import ObjectDoesNotExist
@@ -190,6 +192,226 @@ class Building(models.Model):
         workbook.close()
         xlsx_data = output.getvalue()
         return xlsx_data
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    def get_dht_report(self, initialDate, finishDate):
+        print("Entro al reporte!!!!")
+
+        building = self
+        # tasks = building.tasks.all()
+        workers = building.workers.all()
+
+
+
+
+
+        output = io.BytesIO()
+        workbook = xlsxwriter.Workbook(output)
+
+        print("algo 1")
+
+        # Here we will adding the code to add data
+        r = workbook.add_worksheet(__("Reporte"))
+        title = workbook.add_format({'bold': True, 'font_size': 14, 'align': 'left'})
+        header = workbook.add_format({'bg_color': '#F7F7F7', 'color': 'black', 'align': 'left', 'border': 1})
+        header_center = workbook.add_format({'bg_color': '#F7F7F7', 'color': 'black', 'align': 'center', 'border': 1})
+        header_center_without_bg = workbook.add_format({'color': 'black', 'align': 'center', 'border': 1})
+        format_align_left = workbook.add_format({'color': 'black', 'align': 'left', 'border': 1})
+        number_format = workbook.add_format()
+        number_format.set_num_format(2)
+        background_color_number = workbook.add_format({'bg_color': '#F5A9BC', 'color': 'red'})
+        background_color_number.set_num_format(2)
+
+        print("algo 2")
+
+        # title row
+        r.merge_range('A1:C3', config.COMPANY_NAME, title)
+        r.insert_image('A1', 'sabyltimetracker/static/images/logo.png', {'x_scale': 0.5, 'y_scale': 0.5})
+        r.merge_range('D1:J1', __('DHT General'), title)
+        building_info = '%s: %s' % (__('Building'), str(building))
+        r.merge_range('D2:J2', building_info, title)
+
+        partes1 = initialDate.split("_")
+        dia1 = partes1[0]
+        mes1 = partes1[1]
+        anio1 = partes1[2]
+        partes2 = finishDate.split("_")
+        dia2 = partes2[0]
+        mes2 = partes2[1]
+        anio2 = partes2[2]
+        iDate = dia1 + "/" + mes1 + "/" + anio1
+        fDate = dia2 + "/" + mes2 + "/" + anio2
+        range = 'Rango de fechas: ' + iDate + " a " +  fDate
+        r.merge_range('D3:J3', range, title)
+
+
+        # general headers row
+        r.merge_range('A4:D4', __('Workers'), header_center)
+        r.merge_range('H4:J4', __('HORAS TRABAJADAS'), header_center)
+        r.merge_range('K4:M4', __('HORAS INCENTIVOS'), header_center)
+        r.merge_range('N4:P4', __('HORAS EXTRAS'), header_center)
+
+
+
+
+        # specific headers row
+        r.write('A5', __('Ordinal'), header_center)
+        r.write('B5', __('Code'), header_center)
+        r.write('C5', __('Full Name'), header_center)
+        r.write('D5', __('Cat'), header_center)
+
+        r.write('E5', __('VL1'), header_center)
+        r.write('F5', __('VL2'), header_center)
+        r.write('G5', __('Fer.'), header_center)
+
+        r.write('H5', __('1ªQ'), header_center)
+        r.write('I5', __('2ªQ'), header_center)
+        r.write('J5', __('TOTAL'), header_center)
+
+        r.write('K5', __('1ªQ'), header_center)
+        r.write('L5', __('2ªQ'), header_center)
+        r.write('M5', __('TOTAL'), header_center)
+
+        r.write('N5', __('1ªQ'), header_center)
+        r.write('O5', __('2ªQ'), header_center)
+        r.write('P5', __('TOTAL'), header_center)
+
+
+        #Se cargan los días del rango seleccionado
+        start_date = datetime.date(int(anio1), int(mes1), int(dia1))
+        end_date = datetime.date(int(anio2), int(mes2), int(dia2))
+
+        print("Se imprimen todos los días del rango")
+        day = start_date
+        col = 17
+        indice = 17
+        indiceInicial = 17
+        indiceFinal = 17
+        sinHoras = ""
+        while day <= end_date:
+            print("***NUEVO DÍA***")
+            print(day)
+
+            letter = utils.column_letter(col)
+            r.write('%s5' % letter, str(day.day), header_center)
+
+            day_aux = day + timedelta(days=1)
+            if day.month < day_aux.month or day == end_date:
+                print("entro en if de cambio de mes")
+                letterMonthStart = utils.column_letter(indice)
+                letterMonthEnd = utils.column_letter(col)
+                month = utils.traducir_mes(day.month)
+                r.merge_range('%s4:%s4' % (letterMonthStart, letterMonthEnd), month + " - " + str(day.year), header_center)
+                indice = col + 1
+
+
+            print("algo por ahí")
+            dia = day.day
+            mes = day.month
+            anio = day.year
+            # dia = 4
+            # mes = 3
+            # anio = 2020
+            wd = str(anio) + "-" + str(mes) + "-" + str(dia)
+            print("wd:")
+            print(wd)
+
+            print("antes")
+            date = datetime.datetime.strptime(wd, "%Y-%m-%d").date()
+            print("despues")
+            print("fecha a consultar:")
+            print(date)
+            #Poner try catch por si no devuelve nada la consulta
+            try:
+                workday = Workday.objects.get(building=building, date=date)
+            except Workday.DoesNotExist:
+                workday = None
+            if workday == None:
+                print("No trajo fecha la consulta")
+
+                # Se cargan logs de los trabajadores
+                row = 6
+                for worker in workers:
+                    print("Entro a for de los workers sin workday")
+                    r.write('%s%d' % (letter, row), sinHoras)
+                    row += 1
+            else:
+                print("workday no es vacío")
+                print(workday)
+
+                #Se cargan logs de los trabajadores
+                row = 6
+                for worker in workers:
+                    print("Entro a for de los workers")
+                    worker.logs = list(workday.logs.filter(worker=worker))
+                    suma = 0
+                    for log in worker.logs:
+
+                        # col = None
+                        if log.task.whole_day:
+                            # se obtienen las horas esperadas para el día workday
+                            text = log.workday.expected_hours()
+
+                            # se controla tareas que no suman
+                            if (log.task.code != 'P'):
+                                if (text == 9):
+                                    suma = 9
+                                else:
+                                    suma = 8
+                        else:
+                            text = log.amount
+                            # se controla tareas que no suman
+                            if (log.task.code != 'P'):
+                                suma = suma + text
+
+                    r.write('%s%d' % (letter, row), suma, number_format)
+                    row += 1
+
+
+            day = day + timedelta(days=1)
+            col += 1
+
+
+        # Se cargan los nombres de los trabajadores
+        rowNames = 6
+        letterEnd = utils.column_letter(col-1)
+        print("letra final: " + letterEnd)
+        for worker in workers:
+            r.write('B%d' % rowNames, worker.code, header_center_without_bg)
+            r.write('C%d' % rowNames, worker.full_name(), format_align_left)
+            r.write('D%d' % rowNames, str(worker.category.code), header_center_without_bg)
+            r.write_formula('J%d' % rowNames, '=sum(Q%d:%s%d)' % (rowNames, letterEnd, rowNames))  # total hours
+            rowNames += 1
+
+
+
+
+
+        workbook.close()
+        xlsx_data = output.getvalue()
+
+        print("algo 3")
+        return xlsx_data
+
+
+
+
+
+
 
     def __str__(self):
         return str(self.code)
@@ -401,7 +623,7 @@ class Workday(models.Model):
                         columns_no_empty_aux.append(task.column)
                         col = task.column
 
-                r.write_number('%s%d' % (col, row), text)
+                # r.write_number('%s%d' % (col, row), text)
                 r.write('%s%d' % (col, row), text, number_format)
                 if log.comment:
                     comentario = (worker.code + '-' + worker.full_name() + ': ' + log.comment)
