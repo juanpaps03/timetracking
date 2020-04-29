@@ -323,9 +323,6 @@ class Building(models.Model):
             dia = day.day
             mes = day.month
             anio = day.year
-            # dia = 4
-            # mes = 3
-            # anio = 2020
             wd = str(anio) + "-" + str(mes) + "-" + str(dia)
             print("wd:")
             print(wd)
@@ -386,6 +383,7 @@ class Building(models.Model):
             col += 1
 
 
+
         # Se cargan los nombres de los trabajadores
         rowNames = 6
         letterEnd = utils.column_letter(col-1)
@@ -398,6 +396,14 @@ class Building(models.Model):
             rowNames += 1
 
 
+        let1 = utils.column_letter(col)
+        let2 = utils.column_letter(col+1)
+        let3 = utils.column_letter(col+2)
+        r.merge_range('%s4:%s4' % (let1, let3), __('1/2 HORAS ADICIONAL'), header_center)
+
+        r.write('%s5' % let1, __('1ªQ'), header_center)
+        r.write('%s5' % let2, __('2ªQ'), header_center)
+        r.write('%s5' % let3, __('TOTAL'), header_center)
 
 
 

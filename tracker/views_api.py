@@ -147,15 +147,15 @@ class DhtReportApi(APIView):
             # dateInitial = datetime.datetime.strptime(initialDay, "%Y-%m-%d").date()
             # dateFinish = datetime.datetime.strptime(finishDay, "%Y-%m-%d").date()
 
-            partes1 = initialDay.split("-")
-            anio1 = partes1[0]
+            partes1 = initialDay.split("/")
+            dia1 = partes1[0]
             mes1 = partes1[1]
-            dia1 = partes1[2]
+            anio1 = partes1[2]
 
-            partes2 = finishDay.split("-")
-            anio2 = partes2[0]
+            partes2 = finishDay.split("/")
+            dia2 = partes2[0]
             mes2 = partes2[1]
-            dia2 = partes2[2]
+            anio2 = partes2[2]
 
 
             # start_date = datetime.date(int(anio1), int(mes1), int(dia1))

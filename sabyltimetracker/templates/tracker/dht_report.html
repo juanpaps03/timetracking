@@ -31,7 +31,7 @@
 {%  endblock breadcrumbs %}
 
 {% block content %}
-<form method="post" action="{% url 'tracker:api_dhtgeneral_report' request.user.username %}">{% csrf_token %}
+<form method="post" autocomplete="off" action="{% url 'tracker:api_dhtgeneral_report' request.user.username %}">{% csrf_token %}
   <div class="row">
     <div class="col-xs-6 col-lg-12">
       <div class="card">
@@ -40,10 +40,10 @@
         </div>
         <div class="card-body">
           <div class="form-group col-md-4">
-            <input id="initialDay" type="text" name="initialDay" class="form-control"/>
+            <input id="initialDay" type="text" name="initialDay" class="form-control" autocomplete="off"/>
           </div>
           <div class="form-group col-md-4">
-            <input id="finishDay" type="text" name="finishDay" class="form-control"/>
+            <input id="finishDay" type="text" name="finishDay" class="form-control" autocomplete="off"/>
           </div>
         </div>
       </div>
@@ -82,13 +82,51 @@
 
 
 <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
-<!--<script>-->
-<!--    $('#initialDay').datepicker();-->
-<!--</script>-->
-
+<script src="{% static 'js/datepicker_spanish.js' %}"></script>
 <script>
-    $('#initialDay').val('2020-03-01');
-    $('#finishDay').val('2020-04-20');
+    $('#initialDay').datepicker({
+        closeText: "Cerrar",
+        prevText: "&#x3C;Ant",
+        nextText: "Sig&#x3E;",
+        currentText: "Hoy",
+        monthNames: [ "enero","febrero","marzo","abril","mayo","junio",
+        "julio","agosto","septiembre","octubre","noviembre","diciembre" ],
+        monthNamesShort: [ "ene","feb","mar","abr","may","jun",
+        "jul","ago","sep","oct","nov","dic" ],
+        dayNames: [ "domingo","lunes","martes","miércoles","jueves","viernes","sábado" ],
+        dayNamesShort: [ "dom","lun","mar","mié","jue","vie","sáb" ],
+        dayNamesMin: [ "D","L","M","X","J","V","S" ],
+        weekHeader: "Sm",
+        dateFormat: "dd/mm/yy",
+        firstDay: 1,
+        isRTL: false,
+        showMonthAfterYear: false,
+        yearSuffix: ""
+    });
+    $('#finishDay').datepicker({
+        closeText: "Cerrar",
+        prevText: "&#x3C;Ant",
+        nextText: "Sig&#x3E;",
+        currentText: "Hoy",
+        monthNames: [ "enero","febrero","marzo","abril","mayo","junio",
+        "julio","agosto","septiembre","octubre","noviembre","diciembre" ],
+        monthNamesShort: [ "ene","feb","mar","abr","may","jun",
+        "jul","ago","sep","oct","nov","dic" ],
+        dayNames: [ "domingo","lunes","martes","miércoles","jueves","viernes","sábado" ],
+        dayNamesShort: [ "dom","lun","mar","mié","jue","vie","sáb" ],
+        dayNamesMin: [ "D","L","M","X","J","V","S" ],
+        weekHeader: "Sm",
+        dateFormat: "dd/mm/yy",
+        firstDay: 1,
+        isRTL: false,
+        showMonthAfterYear: false,
+        yearSuffix: ""
+    });
 </script>
+
+<!--<script>-->
+<!--    $('#initialDay').val('2020-03-01');-->
+<!--    $('#finishDay').val('2020-04-20');-->
+<!--</script>-->
 
 {% endblock javascript %}
