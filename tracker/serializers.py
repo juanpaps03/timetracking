@@ -42,9 +42,10 @@ def serialize_worker_with_logs(worker):
         'first_name': worker.first_name,
         'last_name': worker.last_name,
         'category': {'code': worker.category.code, 'name': worker.category.name},
-        'logs': serialize_logs(worker.logs, with_tasks=True, with_workers=False),
+        'logs': serialize_logs(worker.logs, with_workers=False, with_tasks=True),
         'passes_controls': worker.passes_controls,
-        'hours_percent': worker.hours_percent
+        'hours_percent': worker.hours_percent,
+        'passes_controls_string': worker.passes_controls_string
     }
 
 

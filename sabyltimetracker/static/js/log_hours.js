@@ -183,7 +183,7 @@ $(document).ready(function() {
                     cat = grouped_tasks[i];
                     for (let j in cat.tasks) {
                         let task = cat.tasks[j];
-                        if (task.name.toLowerCase().indexOf(keyText.toLowerCase()) > -1){
+                        if ((task.name.toLowerCase().indexOf(keyText.toLowerCase()) > -1) || (task.code.toLowerCase().indexOf(keyText.toLowerCase()) > -1)){
                             $('#'+task.id).show();
                         } else {
                             $('#'+task.id).hide();
@@ -208,7 +208,7 @@ $(document).ready(function() {
                 let cat = grouped_tasks[k];
                 for (let x in cat.tasks) {
                     let task = cat.tasks[x];
-                    if (task.name.toLowerCase().indexOf(keyText.toLowerCase()) > -1){
+                    if ((task.name.toLowerCase().indexOf(keyText.toLowerCase()) > -1) || (task.code.toLowerCase().indexOf(keyText.toLowerCase()) > -1)){
                         $('#'+task.id).show();
                     } else {
                         $('#'+task.id).hide();
@@ -243,6 +243,7 @@ $(document).ready(function() {
         if (task) {
             $hours_input.prop('disabled', false);
             $submit_hours.prop('disabled', false);
+            $('.comentario').prop('disabled', false);
             if(task.is_boolean) {
                 $hours_input.attr('type', 'checkbox');
                 $select_all.show();
@@ -288,6 +289,7 @@ $(document).ready(function() {
             $submit_hours.prop('disabled', true);
             $submit_hours.text(LOG_HOURS_TXT);
             update_logged_hours(null);
+            $('.comentario').prop('disabled', true);
         }
     });
 
@@ -305,13 +307,14 @@ $(document).ready(function() {
         var cat_name = $('#task-category').find(':selected').html();
         var keyText = $(this).val();
 
-        if (cat_name.toLowerCase().indexOf(("All categories").toLowerCase()) == -1){
+//        if (cat_name.toLowerCase().indexOf(("All categories").toLowerCase()) == -1){
+        if (cat_name.toLowerCase().indexOf(("Todas las categ").toLowerCase()) == -1){
             for (let k in grouped_tasks) {
                 if (grouped_tasks[k].name === cat_name){
                     let cat = grouped_tasks[k];
                     for (let x in cat.tasks) {
                         let task = cat.tasks[x];
-                        if (task.name.toLowerCase().indexOf(keyText.toLowerCase()) > -1){
+                        if ((task.name.toLowerCase().indexOf(keyText.toLowerCase()) > -1) || (task.code.toLowerCase().indexOf(keyText.toLowerCase()) > -1)){
                             $('#'+task.id).show();
                         } else {
                             $('#'+task.id).hide();
@@ -333,7 +336,7 @@ $(document).ready(function() {
                 let cat = grouped_tasks[k];
                 for (let x in cat.tasks) {
                     let task = cat.tasks[x];
-                    if (task.name.toLowerCase().indexOf(keyText.toLowerCase()) > -1){
+                    if ((task.name.toLowerCase().indexOf(keyText.toLowerCase()) > -1) || (task.code.toLowerCase().indexOf(keyText.toLowerCase()) > -1)){
                         $('#'+task.id).show();
                     } else {
                         $('#'+task.id).hide();
@@ -345,7 +348,24 @@ $(document).ready(function() {
         }
     });
 
+    $('#task-category').html($('#task-category').html().replace(">Special", ">Especial"));
+    $('#task-category').html($('#task-category').html().replace(">All Categories", ">Todas las categorías"));
 
+    $('.comentario').prop('disabled', true);
+
+
+    $('#hours_per_user_paginate').click(function(){
+        current_task = $('#task').val();
+        let option = $('#task').find(":selected");
+        let id = parseInt($(option).val());
+        let task = find_task(id);
+
+        if (task){
+            $('.comentario').prop('disabled', false);
+        } else {
+            $('.comentario').prop('disabled', true);
+        }
+    });
 
 });
 
@@ -362,14 +382,16 @@ function find_task(task_id) {
 }
 
 function update_logged_hours(excluded_task_id) {
+    let tareas_que_no_suman = ["AS", "CAP", "E", "FOCAP", "LS", "P", "POST", "S", "SA", "LL"];
     let i, j;
     for (i in workers) {
         let worker = workers[i];
         let sum = 0;
         for (j in worker.logs) {
             let log = worker.logs[j];
-            //if (log.task.id !== excluded_task_id && !log.task.is_boolean)
+            if (jQuery.inArray(log.task.code, tareas_que_no_suman) == -1) {
                 sum += log.amount;
+            }
         }
         $('#'+worker.code+'-logged-hours').text(sum);
     }
@@ -382,3 +404,14 @@ function update_logged_hours(excluded_task_id) {
 }
 
 
+//function disabled_enabled_comment_buttons(){
+//    $('.comentario').each(function (i) {
+//        let idDataTarget = $(this).attr('data-target');
+//        let arr = idDataTarget.split("-");
+//        let idWorker = arr[0];
+//
+//        if ($(idWorker + '-hours').val() == 0){
+//            $(this).attr('disabled', true);
+//        }
+//    });
+//}

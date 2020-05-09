@@ -38,10 +38,13 @@ class CreateLogHours(APIView):
 
         try:
             workday = Workday.objects.filter(building=building, finished=False).order_by('-date')[0]
+            print("volvio***")
             if workday.assign_logs(task_id, hours_per_user):
+                print("volvio*** if")
                 django_messages.success(request, messages.LOGS_UPDATED)
                 return JsonResponse({'message': messages.LOGS_UPDATED}, status=200)
             else:
+                print("volvio*** else")
                 return JsonResponse({'message': messages.GENERIC_ERROR}, status=500)
                 # actually it's comment empty error, but is caught in frontend so this should never happen.
         except IndexError:

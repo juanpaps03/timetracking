@@ -215,10 +215,6 @@ class Building(models.Model):
         # tasks = building.tasks.all()
         workers = building.workers.all()
 
-
-
-
-
         output = io.BytesIO()
         workbook = xlsxwriter.Workbook(output)
 
@@ -264,8 +260,7 @@ class Building(models.Model):
         r.merge_range('H4:J4', __('HORAS TRABAJADAS'), header_center)
         r.merge_range('K4:M4', __('HORAS INCENTIVOS'), header_center)
         r.merge_range('N4:P4', __('HORAS EXTRAS'), header_center)
-
-
+        r.merge_range('Q4:S4', __('1/2 HORA ADICIONAL'), header_center)
 
 
         # specific headers row
@@ -290,6 +285,11 @@ class Building(models.Model):
         r.write('O5', __('2ªQ'), header_center)
         r.write('P5', __('TOTAL'), header_center)
 
+        r.write('Q5', __('1ªQ'), header_center)
+        r.write('R5', __('2ªQ'), header_center)
+        r.write('S5', __('TOTAL'), header_center)
+
+
 
         #Se cargan los días del rango seleccionado
         start_date = datetime.date(int(anio1), int(mes1), int(dia1))
@@ -297,10 +297,8 @@ class Building(models.Model):
 
         print("Se imprimen todos los días del rango")
         day = start_date
-        col = 17
-        indice = 17
-        indiceInicial = 17
-        indiceFinal = 17
+        col = 20
+        indice = 20
         sinHoras = ""
         while day <= end_date:
             print("***NUEVO DÍA***")
@@ -364,7 +362,8 @@ class Building(models.Model):
                             text = log.workday.expected_hours()
 
                             # se controla tareas que no suman
-                            if (log.task.code != 'P'):
+                            # if (log.task.code != 'P'):
+                            if log.task.code not in constants.TAREAS_QUE_NO_SUMAN:
                                 if (text == 9):
                                     suma = 9
                                 else:
@@ -372,7 +371,8 @@ class Building(models.Model):
                         else:
                             text = log.amount
                             # se controla tareas que no suman
-                            if (log.task.code != 'P'):
+                            # if (log.task.code != 'P'):
+                            if log.task.code not in constants.TAREAS_QUE_NO_SUMAN:
                                 suma = suma + text
 
                     r.write('%s%d' % (letter, row), suma, number_format)
@@ -392,18 +392,18 @@ class Building(models.Model):
             r.write('B%d' % rowNames, worker.code, header_center_without_bg)
             r.write('C%d' % rowNames, worker.full_name(), format_align_left)
             r.write('D%d' % rowNames, str(worker.category.code), header_center_without_bg)
-            r.write_formula('J%d' % rowNames, '=sum(Q%d:%s%d)' % (rowNames, letterEnd, rowNames))  # total hours
+            r.write_formula('J%d' % rowNames, '=sum(T%d:%s%d)' % (rowNames, letterEnd, rowNames))  # total hours
             rowNames += 1
 
 
-        let1 = utils.column_letter(col)
-        let2 = utils.column_letter(col+1)
-        let3 = utils.column_letter(col+2)
-        r.merge_range('%s4:%s4' % (let1, let3), __('1/2 HORAS ADICIONAL'), header_center)
-
-        r.write('%s5' % let1, __('1ªQ'), header_center)
-        r.write('%s5' % let2, __('2ªQ'), header_center)
-        r.write('%s5' % let3, __('TOTAL'), header_center)
+        # let1 = utils.column_letter(col)
+        # let2 = utils.column_letter(col+1)
+        # let3 = utils.column_letter(col+2)
+        # r.merge_range('%s4:%s4' % (let1, let3), __('1/2 HORAS ADICIONAL'), header_center)
+        #
+        # r.write('%s5' % let1, __('1ªQ'), header_center)
+        # r.write('%s5' % let2, __('2ªQ'), header_center)
+        # r.write('%s5' % let3, __('TOTAL'), header_center)
 
 
 
@@ -605,6 +605,7 @@ class Workday(models.Model):
 
             columns_no_empty_aux = []
             suma = 0
+            total_tareas_que_no_suman = 0
             for log in worker.logs:
 
                 col = None
@@ -613,16 +614,25 @@ class Workday(models.Model):
                     text = log.workday.expected_hours()
 
                     # se controla tareas que no suman
-                    if (log.task.code != 'P'):
-                        if (text == 9):
-                            suma = 9
-                        else:
+                    # if (log.task.code != 'P'):
+                    if log.task.code not in constants.TAREAS_QUE_NO_SUMAN:
+                        if (text == 8):
                             suma = 8
+                        else:
+                            suma = 9
+                    else:
+                        if (text == 8):
+                            total_tareas_que_no_suman = 8
+                        else:
+                            total_tareas_que_no_suman = 9
                 else:
                     text = log.amount
                     # se controla tareas que no suman
-                    if (log.task.code != 'P'):
+                    # if (log.task.code != 'P'):
+                    if log.task.code not in constants.TAREAS_QUE_NO_SUMAN:
                         suma = suma + text
+                    else:
+                        total_tareas_que_no_suman = total_tareas_que_no_suman + text
 
                 for task in tasks:
                     if task.id == log.task_id:
@@ -642,7 +652,9 @@ class Workday(models.Model):
                 if col_no_empty_aux not in columns_no_empty:
                     columns_no_empty.append(col_no_empty_aux)
 
-            if (suma != workday.expected_hours()):
+
+            horas_del_dia = suma + total_tareas_que_no_suman
+            if (horas_del_dia != workday.expected_hours()):
                 r.write('D%d' % row, suma, background_color_number)
             else:
                 r.write('D%d' % row, suma, number_format)
@@ -722,7 +734,7 @@ class LogHour(models.Model):
     workday = models.ForeignKey('Workday', on_delete=models.CASCADE, related_name='logs', verbose_name=_('workday'))
     worker = models.ForeignKey('Worker', verbose_name=_('worker'))
     task = models.ForeignKey('Task', verbose_name=_('task'))
-    amount = models.DecimalField(_('amount'), max_digits=2, decimal_places=1, null=False, blank=False, default=1,
+    amount = models.DecimalField(_('amount'), max_digits=3, decimal_places=1, null=False, blank=False, default=1,
                                  validators=[MaxValueValidator(24), MinValueValidator(1)])
     comment = models.CharField(_('comment'), null=True, blank=True, max_length=255, default=None)
 
@@ -747,13 +759,15 @@ class LogHour(models.Model):
 
     @staticmethod
     def sum_hours(logs):
+        tareas_que_no_suman = ["AS", "CAP", "E", "FOCAP", "LS", "P", "POST", "S", "SA", "LL"];
         if logs:
             sum = 0
             for log in logs:
-                if not log.task.is_boolean:
-                    sum += log.amount
-                elif log.task.whole_day:
-                    sum += log.workday.expected_hours()
+                if log.task.code not in tareas_que_no_suman:
+                    if not log.task.is_boolean:
+                        sum += log.amount
+                    elif log.task.whole_day:
+                        sum += log.workday.expected_hours()
             return sum
         else:
             return 0
@@ -775,6 +789,25 @@ class LogHour(models.Model):
                 return sum == workday.expected_hours()
         else:
             return False
+
+    @staticmethod
+    def worker_passes_controls_string(workday, logs):
+        # print('Entro en passes controls string')
+        if logs:
+            sum = 0
+            for log in logs:
+                sum += log.amount
+                if log.task.whole_day:
+                    return "igual"
+
+            if sum < workday.expected_hours():
+                return "menor"
+            elif sum == workday.expected_hours():
+                return "igual"
+            else:
+                return "mayor"
+        else:
+            return "menor"
 
     def __str__(self):
         return '%2.1f %s %s %s %s' % (self.amount, _('of'), self.worker, _('in task'), self.task)

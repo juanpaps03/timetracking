@@ -89,10 +89,52 @@ class LogHours(View):
                 for worker in workers:
                     worker.logs = list(logs.filter(worker=worker))
                     worker.passes_controls = LogHour.worker_passes_controls(workday, worker.logs)
-                    if expected > 0:
-                        worker.hours_percent = round(100 * LogHour.sum_hours(worker.logs) / expected)
+                    worker.passes_controls_string = LogHour.worker_passes_controls_string(workday, worker.logs)
+                    # expected = 0
+                    # if expected > 0:
+                    #     percent = round(100 * LogHour.sum_hours(worker.logs) / expected)
+                    #     if (percent >= 100):
+                    #         worker.hours_percent = 100
+                    #     else:
+                    #         worker.hours_percent = percent
+                    # else:
+                    #     worker.hours_percent = 100
+
+                    print("******************************************")
+                    print(workday.date.day)
+
+                    day = str(workday.date.day)
+                    if day.__len__() == 1:
+                        day = "0" + day
+                    month = str(workday.date.month)
+                    if month.__len__() == 1:
+                        month = "0" + month
+                    year = str(workday.date.year)
+                    dia = day + "/" + month + "/" + year
+
+                    print("dia es: " + dia)
+
+                    if dia in constants.DIAS_DE_HORAS_EXTRA:
+                        worker.passes_controls_string = "mayor"
+                        expected = 9
+                        percent = round(100 * LogHour.sum_hours(worker.logs) / expected)
+                        if (percent >= 100):
+                            worker.hours_percent = 100
+                        else:
+                            worker.hours_percent = percent
+                        print("entro al if de horas extra y modifica expected")
+
                     else:
-                        worker.hours_percent = 100
+                        if expected > 0:
+                            percent = round(100 * LogHour.sum_hours(worker.logs) / expected)
+                            if (percent >= 100):
+                                worker.hours_percent = 100
+                            else:
+                                worker.hours_percent = percent
+                        else:
+                            #Si entra en el else es porque hubo un error, hay que imprimir el error
+                            worker.hours_percent = 100
+
                 for task in tasks:
                     task.logs = list(logs.filter(task=task))
             except IndexError:
