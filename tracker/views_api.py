@@ -139,26 +139,35 @@ class DhtReportApi(APIView):
     def post(self, request, username):
         print("entro en DhtReportApi!!!!!!!!")
         initialDay = request.data.get('initialDay')
+        finishBiweeklyDay = request.data.get('finishBiweeklyDay')
         finishDay = request.data.get('finishDay')
         print(initialDay)
+        print(finishBiweeklyDay)
         print(finishDay)
 
         user = request.user
         building = Building.objects.get_by_overseer(user)
 
-        if initialDay and finishDay:
-            # dateInitial = datetime.datetime.strptime(initialDay, "%Y-%m-%d").date()
-            # dateFinish = datetime.datetime.strptime(finishDay, "%Y-%m-%d").date()
+        if initialDay and ((finishBiweeklyDay and finishDay) or finishBiweeklyDay):
+
+            fechaFinal = ""
+            if finishDay:
+                partes2 = finishDay.split("/")
+                dia2 = partes2[0]
+                mes2 = partes2[1]
+                anio2 = partes2[2]
+                fechaFinal = dia2 + "_" + mes2 + "_" + anio2
 
             partes1 = initialDay.split("/")
             dia1 = partes1[0]
             mes1 = partes1[1]
             anio1 = partes1[2]
 
-            partes2 = finishDay.split("/")
-            dia2 = partes2[0]
-            mes2 = partes2[1]
-            anio2 = partes2[2]
+
+            partes3 = finishBiweeklyDay.split("/")
+            dia3 = partes3[0]
+            mes3 = partes3[1]
+            anio3 = partes3[2]
 
 
             # start_date = datetime.date(int(anio1), int(mes1), int(dia1))
@@ -172,18 +181,23 @@ class DhtReportApi(APIView):
 
 
             fechaInicial = dia1 + "_" + mes1 + "_" + anio1
-            fechaFinal = dia2 + "_" + mes2 + "_" + anio2
-            rango = fechaInicial + "_a_" + fechaFinal
+            fechaFinalQuincena = dia3 + "_" + mes3 + "_" + anio3
+
+
+            if fechaFinal:
+                rango = fechaInicial + "_a_" + fechaFinal
+            else:
+                rango = fechaInicial + "_a_" + fechaFinalQuincena
 
             try:
                 # workday = Workday.objects.get(building=building, date=dateInitial)
                 response = HttpResponse(content_type='application/vnd.ms-excel')
                 response['Content-Disposition'] = 'attachment; filename=%s_%s_%s.xlsx' % (_('DHT_General'), building, rango)
-                xlsx_data = building.get_dht_report(fechaInicial, fechaFinal)
+                xlsx_data = building.get_dht_report_biweekly(fechaInicial, fechaFinalQuincena, fechaFinal)
                 response.write(xlsx_data)
                 return response
             except Workday.DoesNotExist:
                 return JsonResponse({'message': messages.WORKDAY_NOT_FOUND}, status=400)
             except Exception:
                 return JsonResponse({'message': messages.GENERIC_ERROR}, status=500)
-        return JsonResponse({'message': messages.WORKDAY_NOT_FOUND}, status=400)
+        return JsonResponse({'message': messages.INPUT_DHT_GENERAL_ERROR}, status=400)

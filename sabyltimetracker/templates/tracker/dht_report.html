@@ -43,6 +43,9 @@
             <input id="initialDay" type="text" name="initialDay" class="form-control" autocomplete="off"/>
           </div>
           <div class="form-group col-md-4">
+            <input id="finishBiweeklyDay" type="text" name="finishBiweeklyDay" class="form-control" autocomplete="off"/>
+          </div>
+          <div class="form-group col-md-4">
             <input id="finishDay" type="text" name="finishDay" class="form-control" autocomplete="off"/>
           </div>
         </div>
@@ -122,6 +125,26 @@
         showMonthAfterYear: false,
         yearSuffix: ""
     });
+    $('#finishBiweeklyDay').datepicker({
+        closeText: "Cerrar",
+        prevText: "&#x3C;Ant",
+        nextText: "Sig&#x3E;",
+        currentText: "Hoy",
+        monthNames: [ "enero","febrero","marzo","abril","mayo","junio",
+        "julio","agosto","septiembre","octubre","noviembre","diciembre" ],
+        monthNamesShort: [ "ene","feb","mar","abr","may","jun",
+        "jul","ago","sep","oct","nov","dic" ],
+        dayNames: [ "domingo","lunes","martes","miércoles","jueves","viernes","sábado" ],
+        dayNamesShort: [ "dom","lun","mar","mié","jue","vie","sáb" ],
+        dayNamesMin: [ "D","L","M","X","J","V","S" ],
+        weekHeader: "Sm",
+        dateFormat: "dd/mm/yy",
+        firstDay: 1,
+        isRTL: false,
+        showMonthAfterYear: false,
+        yearSuffix: ""
+    });
+
 </script>
 
 <!--<script>-->

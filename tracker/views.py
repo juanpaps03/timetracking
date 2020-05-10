@@ -114,7 +114,7 @@ class LogHours(View):
 
                     print("dia es: " + dia)
 
-                    if dia in constants.DIAS_DE_HORAS_EXTRA:
+                    if ((dia in constants.DIAS_DE_HORAS_EXTRA) or (workday.date.weekday() == 5 or workday.date.weekday() == 6)):
                         worker.passes_controls_string = "mayor"
                         expected = 9
                         percent = round(100 * LogHour.sum_hours(worker.logs) / expected)
