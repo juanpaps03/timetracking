@@ -10,7 +10,7 @@ from django.db import models
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import ugettext as __
-
+from docutils.nodes import row
 
 from config import constants
 from sabyltimetracker.users.models import User
@@ -563,12 +563,12 @@ class Building(models.Model):
         indice = 20
         sinHoras = ""
         colFinPrimeraQuincena = 20
+        diccionarioPrimeraQuincena = {}
+        diccionarioSegundaQuincena = {}
+        esPrimeraQuincena = True
         while day <= end_date:
             print("***NUEVO DÍA***")
             print(day)
-
-            if day == end_date_biweekly:
-                colFinPrimeraQuincena = col
 
             letter = utils.column_letter(col)
             r.write('%s5' % letter, str(day.day), header_center)
@@ -596,7 +596,7 @@ class Building(models.Model):
             print("despues")
             print("fecha a consultar:")
             print(date)
-            #Poner try catch por si no devuelve nada la consulta
+            #Try catch por si no devuelve nada la consulta
             try:
                 workday = Workday.objects.get(building=building, date=date)
             except Workday.DoesNotExist:
@@ -614,12 +614,13 @@ class Building(models.Model):
                 print("workday no es vacío")
                 print(workday)
 
-                #Se cargan logs de los trabajadores
+                # Se cargan logs de los trabajadores
                 row = 6
                 for worker in workers:
                     # print("Entro a for de los workers")
                     worker.logs = list(workday.logs.filter(worker=worker))
                     suma = 0
+                    comentario = ""
                     for log in worker.logs:
 
                         # col = None
@@ -628,7 +629,6 @@ class Building(models.Model):
                             text = log.workday.expected_hours()
 
                             # se controla tareas que no suman
-                            # if (log.task.code != 'P'):
                             if log.task.code not in constants.TAREAS_QUE_NO_SUMAN:
                                 if (text == 9):
                                     suma = 9
@@ -637,13 +637,53 @@ class Building(models.Model):
                         else:
                             text = log.amount
                             # se controla tareas que no suman
-                            # if (log.task.code != 'P'):
                             if log.task.code not in constants.TAREAS_QUE_NO_SUMAN:
                                 suma = suma + text
 
-                    r.write('%s%d' % (letter, row), suma, number_format)
+                        if log.comment:
+                            if comentario:
+                                comentario = comentario + " -- " + log.comment
+                            else:
+                                comentario = log.comment
+
+                    expected = workday.expected_hours()
+
+
+                    # Se controla si se pinta la cenda o no
+                    if suma != expected:
+                        format_cell = background_color_number
+                        if comentario:
+                            r.write_comment('%s%d' % (letter, row), comentario)
+                    else:
+                        format_cell = number_format
+
+                    r.write('%s%d' % (letter, row), suma, format_cell)
+
+                    # Para contar horas extras
+                    if esPrimeraQuincena:
+                        print("esPrimeraQuincena")
+                        if row in diccionarioPrimeraQuincena:
+                            if suma > expected:
+                                diccionarioPrimeraQuincena[row] = diccionarioPrimeraQuincena[row] + (suma - expected)
+                        else:
+                            diccionarioPrimeraQuincena[row] = 0
+                            if suma > expected:
+                                diccionarioPrimeraQuincena[row] = diccionarioPrimeraQuincena[row] + (suma - expected)
+                    else:
+                        print("esSegundaQuincena")
+                        if row in diccionarioSegundaQuincena:
+                            if suma > expected:
+                                diccionarioSegundaQuincena[row] = diccionarioSegundaQuincena[row] + (suma - expected)
+                        else:
+                            diccionarioSegundaQuincena[row] = 0
+                            if suma > expected:
+                                diccionarioSegundaQuincena[row] = diccionarioSegundaQuincena[row] + (suma - expected)
+
                     row += 1
 
+            if day == end_date_biweekly:
+                colFinPrimeraQuincena = col
+                esPrimeraQuincena = False
 
             day = day + timedelta(days=1)
             col += 1
@@ -667,12 +707,23 @@ class Building(models.Model):
             r.write('B%d' % rowNames, worker.code, header_center_without_bg)
             r.write('C%d' % rowNames, worker.full_name(), format_align_left)
             r.write('D%d' % rowNames, str(worker.category.code), header_center_without_bg)
-            r.write_formula('H%d' % rowNames, '=sum(T%d:%s%d)' % (rowNames, letterBikeekyEnd, rowNames))  # total hours first biweekly
+            r.write_formula('H%d' % rowNames, '=sum(T%d:%s%d)' % (rowNames, letterBikeekyEnd, rowNames), number_format)  # total hours first biweekly
             if esConsultaDosQuincenas:
-                r.write_formula('I%d' % rowNames, '=sum(%s%d:%s%d)' % (letterSecondBikeekyStart, rowNames, letterEnd, rowNames))  # total hours second biweekly
-            r.write_formula('J%d' % rowNames, '=sum(T%d:%s%d)' % (rowNames, letterEnd, rowNames))  # total hours
-            rowNames += 1
+                r.write_formula('I%d' % rowNames, '=sum(%s%d:%s%d)' % (letterSecondBikeekyStart, rowNames, letterEnd, rowNames), number_format)  # total hours second biweekly
+            r.write_formula('J%d' % rowNames, '=sum(T%d:%s%d)' % (rowNames, letterEnd, rowNames), number_format)  # total hours
 
+            # Se imprimen horas extras cargadas en los diccionarios
+            if diccionarioPrimeraQuincena:
+                if rowNames in diccionarioPrimeraQuincena:
+                    r.write('N%d' % rowNames, diccionarioPrimeraQuincena[rowNames], number_format)
+
+            if diccionarioSegundaQuincena:
+                if rowNames in diccionarioSegundaQuincena:
+                    r.write('O%d' % rowNames, diccionarioSegundaQuincena[rowNames], number_format)
+
+            r.write_formula('P%d' % rowNames, '=sum(N%d:O%d)' % (rowNames, rowNames), number_format)  # total horas extra
+
+            rowNames += 1
 
 
         workbook.close()
