@@ -221,10 +221,44 @@ class PastDaysEdit(View):
             for worker in workers:
                 worker.logs = list(logs.filter(worker=worker))
                 worker.passes_controls = LogHour.worker_passes_controls(workday, worker.logs)
-                if expected > 0:
-                    worker.hours_percent = round(100 * LogHour.sum_hours(worker.logs) / expected)
+                worker.passes_controls_string = LogHour.worker_passes_controls_string(workday, worker.logs)
+
+                day = str(workday.date.day)
+                if day.__len__() == 1:
+                    day = "0" + day
+                month = str(workday.date.month)
+                if month.__len__() == 1:
+                    month = "0" + month
+                year = str(workday.date.year)
+                dia = day + "/" + month + "/" + year
+
+                print("dia es: " + dia)
+
+                if ((dia in constants.DIAS_DE_HORAS_EXTRA) or (
+                    workday.date.weekday() == 5 or workday.date.weekday() == 6)):
+                    worker.passes_controls_string = "mayor"
+                    expected = 9
+                    percent = round(100 * LogHour.sum_hours(worker.logs) / expected)
+                    if (percent >= 100):
+                        worker.hours_percent = 100
+                    else:
+                        worker.hours_percent = percent
+                    print("entro al if de horas extra y modifica expected")
+
                 else:
-                    worker.hours_percent = 100
+                    if expected > 0:
+                        percent = round(100 * LogHour.sum_hours(worker.logs) / expected)
+                        if (percent >= 100):
+                            worker.hours_percent = 100
+                        else:
+                            worker.hours_percent = percent
+                    else:
+                        # Si entra en el else es porque hubo un error, hay que imprimir el error
+                        worker.hours_percent = 100
+                # if expected > 0:
+                #     worker.hours_percent = round(100 * LogHour.sum_hours(worker.logs) / expected)
+                # else:
+                #     worker.hours_percent = 100
             for task in tasks:
                 task.logs = list(logs.filter(task=task))
         except Workday.DoesNotExist:
@@ -251,13 +285,12 @@ class DhtReport(View):
     def get(self, request, username):
         user = request.user
         view_threshold = timezone.localdate(timezone.now()) - timezone.timedelta(days=config.DAYS_ABLE_TO_VIEW)
-        edit_threshold = timezone.localdate(timezone.now()) - timezone.timedelta(days=config.DAYS_ABLE_TO_EDIT)
         workdays = Workday.objects.filter(overseer=user, date__lte=timezone.localdate(timezone.now()), date__gte=view_threshold)
-        # editable_workdays = workdays.filter(date__gte=edit_threshold).order_by('-date')
-        # workdays = workdays.difference(editable_workdays).order_by('-date')
-        #
         context = {'workdays': workdays}
-
         return render(request, 'tracker/dht_report.html', context)
 
-        # return render(request, 'tracker/dht_report.html')
+
+
+class DhtTasksReport(View):
+    def get(self, request, username):
+        return render(request, 'tracker/dht_tasks_report.html')

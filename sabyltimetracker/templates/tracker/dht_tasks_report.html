@@ -1,0 +1,162 @@
+{% extends "base.html" %}
+{% load static i18n%}
+{% load filters %}
+
+{% block css %}
+  {{ block.super }}
+  <link rel="stylesheet" href="{% static '/css/datatable/dataTables.bootstrap.min.css' %}">
+  <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/themes/smoothness/jquery-ui.min.css" />
+
+{% endblock css %}
+
+{% block breadcrumbs %}
+  <div class="breadcrumbs">
+    <div class="col-sm-4">
+      <div class="page-header float-left">
+        <div class="page-title">
+          <h1>DHT Tareas</h1>
+        </div>
+      </div>
+    </div>
+  </div>
+{%  endblock breadcrumbs %}
+
+{% block content %}
+<form method="post" autocomplete="off" action="{% url 'tracker:api_dht_tasks_report' request.user.username %}">{% csrf_token %}
+  <div class="row">
+    <div class="col-xs-6 col-lg-12">
+      <div class="card">
+        <div class="card-header">
+          <strong><label class="hidden">{% trans "Elegir rango de fechas" %}</label></strong>
+        </div>
+        <div class="card-body">
+          <div class="form-group col-md-4">
+            <label>Inicio de primer quincena:</label>
+            <input id="initialDay" type="text" name="initialDay" class="form-control" autocomplete="off"/>
+          </div>
+          <div class="form-group col-md-4">
+            <label>Fin de primer quincena:</label>
+            <input id="finishBiweeklyDay" type="text" name="finishBiweeklyDay" class="form-control" autocomplete="off"/>
+          </div>
+          <div class="form-group col-md-4">
+            <label>Fin de segunda quincena:</label>
+            <input id="finishDay" type="text" name="finishDay" class="form-control" autocomplete="off"/>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-xs-6 col-lg-12">
+      <div class="card">
+        <div class="card-body card-block">
+            <div class="col-sm-6 col-12">
+              <button id="report" class="btn btn-lg btn-block btn-primary" type="submit">{% trans "Download Report" %}</button>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+{% endblock content%}
+
+{% block javascript %}
+  {{ block.super }}
+<!--  <script type="text/javascript" src="{% static 'js/past_days.js' %}"></script>-->
+
+<!--  <script src="{% static 'js/data-table/datatables.min.js' %}"></script>-->
+<!--  <script src="{% static 'js/data-table/dataTables.bootstrap.min.js' %}"></script>-->
+<!--  <script src="{% static 'js/data-table/dataTables.buttons.min.js' %}"></script>-->
+<!--  <script src="{% static 'js/data-table/buttons.bootstrap.min.js' %}"></script>-->
+<!--  <script src="{% static 'js/data-table/jszip.min.js' %}"></script>-->
+<!--  <script src="{% static 'js/data-table/pdfmake.min.js' %}"></script>-->
+<!--  <script src="{% static 'js/data-table/vfs_fonts.js' %}"></script>-->
+<!--  <script src="{% static 'js/data-table/buttons.html5.min.js' %}"></script>-->
+<!--  <script src="{% static 'js/data-table/buttons.print.min.js' %}"></script>-->
+<!--  <script src="{% static 'js/data-table/buttons.colVis.min.js' %}"></script>-->
+<!--  <script src="{% static 'js/data-table/datatables-init.js' %}"></script>-->
+
+
+<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+<script src="{% static 'js/datepicker_spanish.js' %}"></script>
+<script>
+    $('#initialDay').datepicker({
+        closeText: "Cerrar",
+        prevText: "&#x3C;Ant",
+        nextText: "Sig&#x3E;",
+        currentText: "Hoy",
+        monthNames: [ "enero","febrero","marzo","abril","mayo","junio",
+        "julio","agosto","septiembre","octubre","noviembre","diciembre" ],
+        monthNamesShort: [ "ene","feb","mar","abr","may","jun",
+        "jul","ago","sep","oct","nov","dic" ],
+        dayNames: [ "domingo","lunes","martes","miércoles","jueves","viernes","sábado" ],
+        dayNamesShort: [ "dom","lun","mar","mié","jue","vie","sáb" ],
+        dayNamesMin: [ "D","L","M","X","J","V","S" ],
+        weekHeader: "Sm",
+        dateFormat: "dd/mm/yy",
+        firstDay: 1,
+        isRTL: false,
+        showMonthAfterYear: false,
+        yearSuffix: ""
+    });
+    $('#finishDay').datepicker({
+        closeText: "Cerrar",
+        prevText: "&#x3C;Ant",
+        nextText: "Sig&#x3E;",
+        currentText: "Hoy",
+        monthNames: [ "enero","febrero","marzo","abril","mayo","junio",
+        "julio","agosto","septiembre","octubre","noviembre","diciembre" ],
+        monthNamesShort: [ "ene","feb","mar","abr","may","jun",
+        "jul","ago","sep","oct","nov","dic" ],
+        dayNames: [ "domingo","lunes","martes","miércoles","jueves","viernes","sábado" ],
+        dayNamesShort: [ "dom","lun","mar","mié","jue","vie","sáb" ],
+        dayNamesMin: [ "D","L","M","X","J","V","S" ],
+        weekHeader: "Sm",
+        dateFormat: "dd/mm/yy",
+        firstDay: 1,
+        isRTL: false,
+        showMonthAfterYear: false,
+        yearSuffix: ""
+    });
+    $('#finishBiweeklyDay').datepicker({
+        closeText: "Cerrar",
+        prevText: "&#x3C;Ant",
+        nextText: "Sig&#x3E;",
+        currentText: "Hoy",
+        monthNames: [ "enero","febrero","marzo","abril","mayo","junio",
+        "julio","agosto","septiembre","octubre","noviembre","diciembre" ],
+        monthNamesShort: [ "ene","feb","mar","abr","may","jun",
+        "jul","ago","sep","oct","nov","dic" ],
+        dayNames: [ "domingo","lunes","martes","miércoles","jueves","viernes","sábado" ],
+        dayNamesShort: [ "dom","lun","mar","mié","jue","vie","sáb" ],
+        dayNamesMin: [ "D","L","M","X","J","V","S" ],
+        weekHeader: "Sm",
+        dateFormat: "dd/mm/yy",
+        firstDay: 1,
+        isRTL: false,
+        showMonthAfterYear: false,
+        yearSuffix: ""
+    });
+
+    $("#finishDay").datepicker("option", "disabled", true);
+
+    $("#finishBiweeklyDay").change(function(){
+      let valor = $("#finishBiweeklyDay").val();
+      console.log("valor: " + valor)
+      if ((valor != null) && (valor != "")){
+        $("#finishDay").datepicker("option", "disabled", false);
+      } else {
+        $("#finishDay").datepicker("option", "disabled", true);
+      }
+    });
+
+</script>
+
+<script>
+    $('#initialDay').val('15/04/2020');
+    $('#finishBiweeklyDay').val('30/04/2020');
+    $('#finishDay').val('07/05/2020');
+</script>
+
+{% endblock javascript %}

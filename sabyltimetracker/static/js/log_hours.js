@@ -8,6 +8,7 @@ function get_datatable_info(table){
         let hours = parseFloat(htmlElement.val());
         let workerCode = htmlElement[0].name;
         let comment = $('#'+workerCode+'-comment').val();
+        //Se controla que las horas ingresadas sean múltimplo de 0.5
         if (hours*2%1!==0) {
             error = true;
         } else {
