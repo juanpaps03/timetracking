@@ -746,39 +746,6 @@ class Building(models.Model):
         print("algo 1")
 
 
-        # wd = "2020-05-04"
-        # print("antes wd")
-        # wday = datetime.datetime.strptime(wd, "%Y-%m-%d").date()
-        # print(wday)
-        # workday = Workday.objects.get(building=building, date=wday)
-        # print(workday)
-        # print("despues wd")
-        #
-        # print("antes tarea A64")
-        # tarea = Task.objects.filter(code='A64')
-        # print(tarea)
-        # print("despues tarea A64")
-        #
-        # print("antes tarea A94")
-        # tarea2 = Task.objects.filter(code='A94')
-        # print(tarea2)
-        # print("despues tarea A94")
-        #
-        # print("antes worker")
-        # wkr = Worker.objects.filter(code='13')
-        # print(wkr)
-        # print("despues worker")
-        #
-        # print("antes de logs")
-        # logs = LogHour.objects.filter(workday=workday, task=tarea, worker=wkr)
-        # print(logs[0].amount)
-        # print("despues de logs")
-        #
-        # print("antes de logs2")
-        # logs2 = LogHour.objects.filter(workday=workday, task=tarea2, worker=wkr)
-        # print(logs2[0].task)
-        # print("despues de logs2")
-
         # Here we will adding the code to add data
         r = workbook.add_worksheet(__("Reporte"))
         title = workbook.add_format({'bold': True, 'font_size': 14, 'align': 'left'})
@@ -950,9 +917,6 @@ class Building(models.Model):
 
             # print("antes")
             date = datetime.datetime.strptime(wd, "%Y-%m-%d").date()
-            # print("despues")
-            # print("fecha a consultar:")
-            # print(date)
             #Try catch por si no devuelve nada la consulta
             try:
                 workday = Workday.objects.get(building=building, date=date)
@@ -970,29 +934,7 @@ class Building(models.Model):
             else:
                 print("workday no es vacío")
 
-                # tarea = Task.objects.filter(code='A71')
-
-                # logs_de_la_tarea = {}
-
-                # print("antes tarea A94")
-                # tarea2 = Task.objects.filter(code='A94')
-                # print(tarea2)
-                # print("despues tarea A94")
-                #
-                # print("antes worker")
-                # wkr = Worker.objects.filter(code='13')
-                # print(wkr)
-                # print("despues worker")
-                #
-                # print("antes de logs")
-                # logs = LogHour.objects.filter(workday=workday, task=tarea, worker=wkr)
-                # print(logs[0].amount)
-                # print("despues de logs")
-
-
                 for tarea in tasks:
-                    # print("for de tareas")
-                    # print(tarea)
                     try:
                         logs = LogHour.objects.filter(workday=workday, task=tarea)
                     except LogHour.DoesNotExist:
@@ -1001,13 +943,9 @@ class Building(models.Model):
                     # print("despues de ir a buscar los logs")
 
                     if logs:
-                        # print("logs:")
-                        # print(logs)
-
                         arreglo = []
                         for log in logs:
                             # print("for de logs")
-                            # tupla = (log.workday, log.worker, log.amount)
                             tupla = (letter, log.worker, log.amount)
                             arreglo.append(tupla)
 
@@ -1017,30 +955,33 @@ class Building(models.Model):
                             # print("entra al if tarea code")
                             for tup in arreglo:
                                 arr = logs_principal[tarea.code]
-                                # print("arr")
-                                # print(arr)
                                 arr.append(tup)
                                 logs_principal[tarea.code] = arr
                         else:
-                            # print("entra al ELSE de tarea code")
-                            # print(arreglo)
                             logs_principal.update({tarea.code : arreglo})
 
-
-
-
+            if day == end_date_biweekly:
+                colFinPrimeraQuincena = col
+                # esPrimeraQuincena = False
 
 
             day = day + timedelta(days=1)
             col += 1
 
+
+        # Se obtiene letra de columna de fin de primera quincena
+        letterBikeekyEnd = utils.column_letter(colFinPrimeraQuincena)
+        print("letterBikeekyEnd: " + letterBikeekyEnd)
+
+        # Se obtiene letra de columna de comienzo de segunda quincena
+        if esConsultaDosQuincenas:
+            letterSecondBikeekyStart = utils.column_letter(colFinPrimeraQuincena + 1)
+            print("letterSecondBikeekyStart: " + letterSecondBikeekyStart)
+
         print("LOGS PRINCIPAL******************")
         print("")
 
         class ColumnaMonto():
-            col = ""
-            monto = ""
-
             def __init__(self, col, monto):
                 self.col = col
                 self.monto = monto
@@ -1061,6 +1002,7 @@ class Building(models.Model):
 
 
         fila = 6
+        letterEnd = utils.column_letter(col - 1)
         # tar es el codigo de tarea
         for tar in logs_principal:
 
@@ -1079,13 +1021,10 @@ class Building(models.Model):
             while i<cant:
 
                 objeto = ColumnaMonto(arreglo_de_tuplas[i][0],arreglo_de_tuplas[i][2])
-                # objeto.col = arreglo_de_tuplas[i][0]
-                # objeto.monto = arreglo_de_tuplas[i][2]
 
                 # i = 0, 1, 2 ...cant-1
                 if arreglo_de_tuplas[i][1] not in arreglo_de_workers:
                     wkr_aux = WorkerAux(arreglo_de_tuplas[i][1], [])
-                    # wkr_aux.wkr = arreglo_de_tuplas[i][1]
                     wkr_aux.lista_columna_monto.append(objeto)
 
                     lista_workers_final.append(wkr_aux)
@@ -1101,27 +1040,19 @@ class Building(models.Model):
                 i += 1
 
 
-
-            # for elem in arreglo_de_workers:
-            #     print(tar + ": " + str(elem))
-            #     r.write('B%d' % fila, tar, header_center)
-            #     r.write('C%d' % fila, elem.code, header_center)
-            #     r.write('D%d' % fila, elem.full_name(), header_center)
-            #     r.write('E%d' % fila, str(elem.category.code), header_center)
-            #     fila += 1
-
             print("SE IMPRIME LISTA DE WORKERS FINAL DE UNA TAREA (filas de una tarea a imprimir)")
             for w in lista_workers_final:
-                r.write('B%d' % fila, tar, header_center)
-                r.write('C%d' % fila, w.wkr.code, header_center)
-                r.write('D%d' % fila, w.wkr.full_name(), header_center)
-                r.write('E%d' % fila, str(w.wkr.category.code), header_center)
+                r.write('B%d' % fila, tar, header_center_without_bg)
+                r.write('C%d' % fila, w.wkr.code, header_center_without_bg)
+                r.write('D%d' % fila, w.wkr.full_name(), format_align_left)
+                r.write('E%d' % fila, str(w.wkr.category.code), header_center_without_bg)
+                r.write_formula('I%d' % fila, '=sum(U%d:%s%d)' % (fila, letterBikeekyEnd, fila), number_format)  # total hours first biweekly
+                if esConsultaDosQuincenas:
+                    r.write_formula('J%d' % fila, '=sum(%s%d:%s%d)' % (letterSecondBikeekyStart, fila, letterEnd, fila), number_format)  # total hours second biweekly
+                r.write_formula('K%d' % fila, '=sum(I%d:J%d)' % (fila, fila), number_format)  # total hours
 
-
-                print("antes de imprimir los montos")
                 for nodo in w.lista_columna_monto:
-                    r.write('%s%d' % (nodo.col, fila), nodo.monto , header_center)
-
+                    r.write('%s%d' % (nodo.col, fila), nodo.monto , number_format)
 
                 fila += 1
                 # print(w.wkr.full_name())
