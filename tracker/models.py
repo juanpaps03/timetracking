@@ -986,8 +986,8 @@ class Building(models.Model):
                 self.col = col
                 self.monto = monto
 
-            def __str__(self):
-                return '%s - %s' % (self.code, self.name)
+            # def __str__(self):
+            #     return '%s - %s' % (self.code, self.name)
 
         class WorkerAux():
             wkr = Worker()
@@ -997,23 +997,28 @@ class Building(models.Model):
                 self.wkr = wkr
                 self.lista_columna_monto = lista
 
-            def __str__(self):
-                return '%s' % self.code
+            # def __str__(self):
+            #     return '%s' % self.code
 
+
+
+
+        # Se ordenan alfabéticamente las tareas de logs_principal
+        logs_principal_ord = dict(sorted(logs_principal.items()))
 
         fila = 6
         letterEnd = utils.column_letter(col - 1)
         # tar es el codigo de tarea
-        for tar in logs_principal:
+        for tar in logs_principal_ord:
 
             if tar == 'D11':
                 print("es D11")
 
-            print(tar + ": " + str(logs_principal[tar]))
+            print(tar + ": " + str(logs_principal_ord[tar]))
 
             arreglo_de_workers = []
-            arreglo_de_tuplas = logs_principal[tar]
-            cant = len(logs_principal[tar])
+            arreglo_de_tuplas = logs_principal_ord[tar]
+            cant = len(logs_principal_ord[tar])
 
             lista_workers_final = []
 
@@ -1040,7 +1045,7 @@ class Building(models.Model):
                 i += 1
 
 
-            print("SE IMPRIME LISTA DE WORKERS FINAL DE UNA TAREA (filas de una tarea a imprimir)")
+            # print("SE IMPRIME LISTA DE WORKERS FINAL DE UNA TAREA (filas de una tarea a imprimir)")
             for w in lista_workers_final:
                 r.write('B%d' % fila, tar, header_center_without_bg)
                 r.write('C%d' % fila, w.wkr.code, header_center_without_bg)

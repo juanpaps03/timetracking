@@ -116,6 +116,13 @@ class DailyReport(APIView):
         print(workdayDate)
         x = workdayDate.split(" - ")
         wkday = x[0]
+
+        partes = wkday.split("-")
+        anio = partes[0]
+        mes = partes[1]
+        dia = partes[2]
+        fecha = dia + "_" + mes + "_" + anio
+
         user = request.user
         building = Building.objects.get_by_overseer(user)
         if wkday:
@@ -123,7 +130,40 @@ class DailyReport(APIView):
             try:
                 workday = Workday.objects.get(building=building, date=date)
                 response = HttpResponse(content_type='application/vnd.ms-excel')
-                response['Content-Disposition'] = 'attachment; filename=%s_%s_%s.xlsx' % (_('Parte_Diario'), building, date)
+                response['Content-Disposition'] = 'attachment; filename=%s_%s_%s.xlsx' % (_('Parte_Diario'), building, fecha)
+                xlsx_data = workday.get_report()
+                response.write(xlsx_data)
+                return response
+            except Workday.DoesNotExist:
+                return JsonResponse({'message': messages.WORKDAY_NOT_FOUND}, status=400)
+            except Exception:
+                return JsonResponse({'message': messages.GENERIC_ERROR}, status=500)
+        return JsonResponse({'message': messages.WORKDAY_NOT_FOUND}, status=400)
+
+
+
+class DailyReportFromPastDay(APIView):
+    def post(self, request, username):
+        print("entro en DailyReport!!!!!!!!")
+        workdayDate = request.data.get('workdaydate')
+        print(workdayDate)
+        partes1 = workdayDate.split("/")
+        dia1 = partes1[0]
+        mes1 = partes1[1]
+        anio1 = partes1[2]
+
+        fecha = anio1 + "_" + mes1 + "_" + dia1
+
+        wkday = datetime.date(int(anio1), int(mes1), int(dia1))
+
+        user = request.user
+        building = Building.objects.get_by_overseer(user)
+        if wkday:
+            # date = datetime.datetime.strptime(wkday, "%Y-%m-%d").date()
+            try:
+                workday = Workday.objects.get(building=building, date=wkday)
+                response = HttpResponse(content_type='application/vnd.ms-excel')
+                response['Content-Disposition'] = 'attachment; filename=%s_%s_%s.xlsx' % (_('Parte_Diario'), building, fecha)
                 xlsx_data = workday.get_report()
                 response.write(xlsx_data)
                 return response
@@ -207,6 +247,7 @@ class DhtReportApi(APIView):
 class DhtTasksReportApi(APIView):
     def post(self, request, username):
         print("entro en DhtTasksReportApi!!!!!!!!")
+        codigo_obra_seleccionada = request.data.get('obra')
         initialDay = request.data.get('initialDay')
         finishBiweeklyDay = request.data.get('finishBiweeklyDay')
         finishDay = request.data.get('finishDay')
@@ -215,6 +256,19 @@ class DhtTasksReportApi(APIView):
         print(finishDay)
 
         user = request.user
+
+        #si user es admin: ver cual obra se eligió...sino obtener obra del capataz logueado
+
+        print("obra: ")
+        print(codigo_obra_seleccionada)
+
+
+        print(user)
+        print(user.is_staff)
+        print(user.full_name())
+        print(user.email)
+
+
         building = Building.objects.get_by_overseer(user)
 
         if initialDay and ((finishBiweeklyDay and finishDay) or finishBiweeklyDay):

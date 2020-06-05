@@ -21,8 +21,27 @@
   </div>
 {%  endblock breadcrumbs %}
 
+
+
+
 {% block content %}
 <form method="post" autocomplete="off" action="{% url 'tracker:api_dht_tasks_report' request.user.username %}">{% csrf_token %}
+  <div class="row form-group">
+    <div class="col-12 col-lg-3"><label for="obra">Elegir obra:</label></div>
+    <div class="col-12 col-lg-9">
+      <select id="obra" name="obra" class="form-control">
+        <option value="">Seleccione una obra</option>
+        {% for ob in obras %}
+            <option id="{{ ob.code }}" value="{{ ob.code }}">{{ ob.code }} - {{ ob.address}}</option>
+        {% endfor %}
+      </select>
+    </div>
+  </div>
+
+
+
+
+
   <div class="row">
     <div class="col-xs-6 col-lg-12">
       <div class="card">
@@ -79,7 +98,7 @@
 
 
 <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
-<script src="{% static 'js/datepicker_spanish.js' %}"></script>
+<!--<script src="{% static 'js/datepicker_spanish.js' %}"></script>-->
 <script>
     $('#initialDay').datepicker({
         closeText: "Cerrar",

@@ -5,6 +5,7 @@
 {% block css %}
   {{ block.super }}
   <link rel="stylesheet" href="{% static '/css/datatable/dataTables.bootstrap.min.css' %}">
+  <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/themes/smoothness/jquery-ui.min.css" />
 {% endblock css %}
 
 {% block breadcrumbs %}
@@ -29,50 +30,45 @@
 {%  endblock breadcrumbs %}
 
 {% block content %}
-<form method="post" action="{% url 'tracker:api_daily_report' request.user.username %}">{% csrf_token %}
   <div class="row">
     <div class="col-xs-6 col-lg-12">
       <div class="card">
         <div class="card-header">
-          <strong><label for="day" class="hidden">{% trans "Select Day" %}</label></strong>
+          <strong><label for="selectDay" class="hidden">{% trans "Select Day" %}</label></strong>
         </div>
         <div class="card-body">
           <p class="text-muted m-b-15">{% trans 'Workdays among the past' %} {{ days }} {% trans 'days can be edited.' %}</p>
-          <div class="form-group">
-            <select id="day" name="workdaydate" class="form-control">
-              <option value="">{% trans '-Select a workday-' %}</option>
-              <optgroup label="{% trans 'Editable' %}">
-                {% for workday in editable_workdays %}
-                  <option data-url="{% url 'tracker:past_days_edit' username=request.user.username date=workday.date|date:'Y-m-d' %}" value="{{ workday.date|date:'Y-m-d' }}">{{ workday.date }} {% trans 'at' %} {{ workday.building }}</option>
-                {% endfor %}
-              </optgroup>
-              <optgroup label="{% trans 'Non-editable' %}">
-                {% for workday in non_editable_workdays %}
-                  <option value="{{ workday.date|date:'Y-m-d' }}">{{ workday.date }} {% trans 'at' %} {{ workday.building }}</option>
-                {% endfor %}
-              </optgroup>
-            </select>
+
+          <div class="form-group col-md-4">
+            <input id="selectDay" type="text" name="selectDay" class="form-control" autocomplete="off"/>
           </div>
+
         </div>
       </div>
     </div>
   </div>
+
 
   <div class="row">
     <div class="col-xs-6 col-lg-12">
       <div class="card">
         <div class="card-body card-block">
             <div class="col-sm-6 col-12">
-              <button id="edit" class="btn btn-lg btn-block btn-danger" disabled type="button">{% trans "Edit Day" %}</button>
+              <form method="get" action="{% url 'tracker:past_days_edit' username=request.user.username %}">{% csrf_token %}
+                <input id="wkday" type="text" name="wkday" class="form-control" style="display:none;"/>
+                <button id="edit" class="btn btn-lg btn-block btn-danger" disabled type="submit">{% trans "Edit Day" %}</button>
+              </form>
             </div>
             <div class="col-sm-6 col-12">
-              <button id="report" class="btn btn-lg btn-block btn-primary" disabled type="submit">{% trans "Download Report" %}</button>
+              <form method="post" action="{% url 'tracker:api_daily_report_from_past_day' request.user.username %}">{% csrf_token %}
+                <input id="workdaydate" type="text" name="workdaydate" class="form-control" style="display:none;"/>
+                <button id="report" class="btn btn-lg btn-block btn-primary" disabled type="submit">{% trans "Download Report" %}</button>
+              </form>
             </div>
         </div>
       </div>
     </div>
   </div>
-</form>
 {% endblock content%}
 
 {% block javascript %}
@@ -90,4 +86,45 @@
   <script src="{% static 'js/data-table/buttons.print.min.js' %}"></script>
   <script src="{% static 'js/data-table/buttons.colVis.min.js' %}"></script>
   <script src="{% static 'js/data-table/datatables-init.js' %}"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+  <script>
+    $('#selectDay').datepicker({
+        closeText: "Cerrar",
+        prevText: "&#x3C;Ant",
+        nextText: "Sig&#x3E;",
+        currentText: "Hoy",
+        monthNames: [ "enero","febrero","marzo","abril","mayo","junio",
+        "julio","agosto","septiembre","octubre","noviembre","diciembre" ],
+        monthNamesShort: [ "ene","feb","mar","abr","may","jun",
+        "jul","ago","sep","oct","nov","dic" ],
+        dayNames: [ "domingo","lunes","martes","miércoles","jueves","viernes","sábado" ],
+        dayNamesShort: [ "dom","lun","mar","mié","jue","vie","sáb" ],
+        dayNamesMin: [ "D","L","M","X","J","V","S" ],
+        weekHeader: "Sm",
+        dateFormat: "dd/mm/yy",
+        firstDay: 1,
+        isRTL: false,
+        showMonthAfterYear: false,
+        yearSuffix: ""
+    });
+
+
+
+    $("#selectDay").change(function(){
+      $('#wkday').val($('#selectDay').val());
+      $('#workdaydate').val($('#selectDay').val());
+
+      let valor = $("#selectDay").val();
+      console.log("valor: " + valor)
+      if ((valor != null) && (valor != "")){
+        $("#edit").attr("disabled", false);
+        $("#report").attr("disabled", false);
+      } else {
+        $("#edit").attr("disabled", true);
+        $("#report").attr("disabled", true);
+      }
+    });
+
+
+  </script>
 {% endblock javascript %}

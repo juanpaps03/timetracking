@@ -14,7 +14,7 @@ from operator import itemgetter
 from tracker.serializers import *
 
 from constance import config
-
+import datetime
 
 class Dashboard(View):
     def get(self, request, username):
@@ -205,9 +205,27 @@ class PastDays(View):
 
 
 class PastDaysEdit(View):
-    def get(self, request, date, username):
+    def get(self, request, username):
         user = request.user
-        date = date
+
+
+        print("Entra en PastDaysEdit!!!")
+        print(user)
+        print(request)
+
+        dia = request.GET['wkday']
+        print("diaaaa")
+        print(dia)
+        partes1 = dia.split("/")
+        dia1 = partes1[0]
+        mes1 = partes1[1]
+        anio1 = partes1[2]
+
+        start_date = datetime.date(int(anio1), int(mes1), int(dia1))
+
+        date = start_date
+
+        # date = date
         workers = []
         tasks = []
         workday = None
@@ -293,4 +311,8 @@ class DhtReport(View):
 
 class DhtTasksReport(View):
     def get(self, request, username):
-        return render(request, 'tracker/dht_tasks_report.html')
+        buildings = Building.objects.all()
+
+        context = {'obras': buildings}
+
+        return render(request, 'tracker/dht_tasks_report.html', context)
