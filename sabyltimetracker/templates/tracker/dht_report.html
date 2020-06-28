@@ -23,6 +23,20 @@
 
 {% block content %}
 <form method="post" autocomplete="off" action="{% url 'tracker:api_dhtgeneral_report' request.user.username %}">{% csrf_token %}
+  {%  if request.user.is_superuser or request.user.is_staff %}
+    <div class="row form-group">
+      <div class="col-12 col-lg-3"><label for="obra">Elegir obra:</label></div>
+      <div class="col-12 col-lg-9">
+        <select id="obra" name="obra" class="form-control">
+          <option value="">Seleccione una obra</option>
+          {% for ob in obras %}
+              <option id="{{ ob.code }}" value="{{ ob.code }}">{{ ob.code }} - {{ ob.address}}</option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+  {% endif %}
+
   <div class="row">
     <div class="col-xs-6 col-lg-12">
       <div class="card">

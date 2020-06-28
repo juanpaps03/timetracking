@@ -29,6 +29,7 @@
     <link rel="stylesheet" href="{% static 'css/flag-icon.min.css' %}">
     <link rel="stylesheet" href="{% static 'css/cs-skin-elastic.css' %}">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/loader-clock.css' %}">
 
     {#      <link href="assets/css/lib/vector-map/jqvmap.min.css" rel="stylesheet">#}
 
@@ -36,8 +37,7 @@
 
 
     <!-- Latest compiled and minified Bootstrap 4 beta CSS -->
-    {#    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">#}
-
+<!--    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">-->
 
     <!-- Your stuff: Third-party CSS libraries go here -->
     {% compress css %}
@@ -72,6 +72,10 @@
           <li><a href="{% url 'tracker:past_days' request.user.username %}"><i class="menu-icon fa fa-calendar"></i>{% trans 'Past Days' %}</a></li>
           <li><a href="{% url 'tracker:dht_report' request.user.username %}"><i class="menu-icon fa fa-table"></i>{% trans 'DHT General' %}</a></li>
           <li><a href="{% url 'tracker:dht_tasks_report' request.user.username %}"><i class="menu-icon fa fa-table"></i>{% trans 'DHT Tareas' %}</a></li>
+          {%  if request.user.is_superuser or request.user.is_staff %}
+            <li><a href="{% url 'tracker:dht_tasks_report_resumen' request.user.username %}"><i class="menu-icon fa fa-table"></i>{% trans 'DHT Tareas Resumen' %}</a></li>
+            <li><a href="{% url 'admin:index' %}"><i class="menu-icon fa fa-table"></i>{% trans 'Administración' %}</a></li>
+          {% endif %}
           {##}
           {#                <li class="menu-item-has-children dropdown">#}
           {#                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-laptop"></i>Components</a>#}
@@ -263,10 +267,21 @@
     </div>
   {% endif %}
 
+
+
+  <div id="div-mensaje-error" class="alert alert-danger mx-2 my-2" role="alert" style="display:none;">
+    <strong>Error!</strong> <span id="mensaje-error"></span>
+    <button id="cerrar-mensaje-error" type="button" class="close" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+
   <div class="content mt-3">
     {% block content %}{% endblock content %}
   </div>
 
+  <!-- Loader active -->
+  <div id="loading" class="loader loader-clock"></div>
 
 </div>
 
@@ -289,6 +304,14 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"></script>
 <script src="{%  static 'js/plugins.js'  %}"></script>
 <script src="{%  static 'js/main_theme.js'  %}"></script>
+
+<script>
+    $('#cerrar-mensaje-error').click(function(){
+      $('#div-mensaje-error').hide();
+    });
+
+
+</script>
 
 {% block javascript %}
   {#      <script src="assets/js/lib/chart-js/Chart.bundle.js"></script>#}

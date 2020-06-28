@@ -92,7 +92,7 @@ WINTER_PERIOD = [
 # DYNAMIC CONSTANTS DEFAULTS:
 DYNAMIC_CONSTANTS = {
     'COMPANY_NAME': ('Sabyl Constructora', 'Nombre de la empresa'),
-    'DAYS_ABLE_TO_EDIT': (7, 'Cantidad de días pasados que un capataz puede editar.'),
+    'DAYS_ABLE_TO_EDIT': (60, 'Cantidad de días pasados que un capataz puede editar.'),
     'DAYS_ABLE_TO_VIEW': (36500, 'Cantidad de días pasados que un capataz puede ver (por defecto 100 años).'),
     'MONDAY_HOURS': (9, 'Horas de trabajo esperadas los días lunes.'),
     'TUESDAY_HOURS': (9, 'Horas de trabajo esperadas los días martes.'),

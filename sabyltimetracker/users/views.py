@@ -18,11 +18,15 @@ class UserRedirectView(LoginRequiredMixin, RedirectView):
 
     def get_redirect_url(self):
         user = self.request.user
-        if user.is_superuser or user.is_staff:
-            return reverse('admin:index')
-        else:
-            return reverse('tracker:dashboard',
-                           kwargs={'username': self.request.user.username})
+        # if user.is_superuser or user.is_staff:
+        # if user.is_superuser:
+        #     return reverse('admin:index')
+        # else:
+        #     return reverse('tracker:dashboard',
+        #                    kwargs={'username': self.request.user.username})
+
+        return reverse('tracker:dashboard',
+                       kwargs={'username': self.request.user.username})
 
 
 class UserUpdateView(LoginRequiredMixin, UpdateView):

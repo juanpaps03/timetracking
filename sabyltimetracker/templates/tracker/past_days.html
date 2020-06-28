@@ -30,6 +30,21 @@
 {%  endblock breadcrumbs %}
 
 {% block content %}
+
+  {%  if request.user.is_superuser or request.user.is_staff %}
+    <div class="row form-group">
+      <div class="col-12 col-lg-3"><label for="obraSelect">Elegir obra:</label></div>
+      <div class="col-12 col-lg-9">
+        <select id="obraSelect" name="obraSelect" class="form-control">
+          <option value="">Seleccione una obra</option>
+          {% for ob in obras %}
+              <option id="{{ ob.code }}" value="{{ ob.code }}">{{ ob.code }} - {{ ob.address}}</option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+  {% endif %}
+
   <div class="row">
     <div class="col-xs-6 col-lg-12">
       <div class="card">
@@ -53,15 +68,18 @@
     <div class="col-xs-6 col-lg-12">
       <div class="card">
         <div class="card-body card-block">
-            <div class="col-sm-6 col-12">
-              <form method="get" action="{% url 'tracker:past_days_edit' username=request.user.username %}">{% csrf_token %}
-                <input id="wkday" type="text" name="wkday" class="form-control" style="display:none;"/>
-                <button id="edit" class="btn btn-lg btn-block btn-danger" disabled type="submit">{% trans "Edit Day" %}</button>
-              </form>
-            </div>
+            {% if not request.user.is_superuser and not request.user.is_staff %}
+              <div class="col-sm-6 col-12">
+                <form method="get" action="{% url 'tracker:past_days_edit' username=request.user.username %}">{% csrf_token %}
+                  <input id="wkday" type="text" name="wkday" class="form-control" style="display:none;"/>
+                  <button id="edit" class="btn btn-lg btn-block btn-danger" disabled type="submit">{% trans "Edit Day" %}</button>
+                </form>
+              </div>
+            {% endif %}
             <div class="col-sm-6 col-12">
               <form method="post" action="{% url 'tracker:api_daily_report_from_past_day' request.user.username %}">{% csrf_token %}
                 <input id="workdaydate" type="text" name="workdaydate" class="form-control" style="display:none;"/>
+                <input id="obra" type="text" name="obra" class="form-control" style="display:none;"/>
                 <button id="report" class="btn btn-lg btn-block btn-primary" disabled type="submit">{% trans "Download Report" %}</button>
               </form>
             </div>
@@ -125,6 +143,10 @@
       }
     });
 
+
+    $("#obraSelect").change(function(){
+      $('#obra').val($('#obraSelect').val());
+    });
 
   </script>
 {% endblock javascript %}

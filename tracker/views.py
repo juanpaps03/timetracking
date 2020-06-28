@@ -62,8 +62,12 @@ class Dashboard(View):
                 return render(request, 'tracker/start_day.html', context)
         else:
             context = {'building': None, 'able_to_start': False}
-            django_messages.warning(request, messages.NO_BUILDING)
-            return render(request, 'tracker/start_day.html', context)
+
+            if user.is_superuser or user.is_staff:
+                return render(request, 'tracker/start_day.html', context)
+            else:
+                django_messages.warning(request, messages.NO_BUILDING)
+                return render(request, 'tracker/start_day.html', context)
 
 
 class LogHours(View):
@@ -198,8 +202,9 @@ class PastDays(View):
         workdays = Workday.objects.filter(overseer=user, date__lte=timezone.localdate(timezone.now()), date__gte=view_threshold)
         editable_workdays = workdays.filter(date__gte=edit_threshold).order_by('-date')
         workdays = workdays.difference(editable_workdays).order_by('-date')
+        buildings = Building.objects.all()
 
-        context = {'editable_workdays': editable_workdays, 'non_editable_workdays': workdays, 'days': config.DAYS_ABLE_TO_EDIT}
+        context = {'editable_workdays': editable_workdays, 'non_editable_workdays': workdays, 'days': config.DAYS_ABLE_TO_EDIT, 'obras': buildings}
 
         return render(request, 'tracker/past_days.html', context)
 
@@ -304,7 +309,8 @@ class DhtReport(View):
         user = request.user
         view_threshold = timezone.localdate(timezone.now()) - timezone.timedelta(days=config.DAYS_ABLE_TO_VIEW)
         workdays = Workday.objects.filter(overseer=user, date__lte=timezone.localdate(timezone.now()), date__gte=view_threshold)
-        context = {'workdays': workdays}
+        buildings = Building.objects.all()
+        context = {'workdays': workdays, 'obras': buildings}
         return render(request, 'tracker/dht_report.html', context)
 
 
@@ -312,7 +318,12 @@ class DhtReport(View):
 class DhtTasksReport(View):
     def get(self, request, username):
         buildings = Building.objects.all()
-
         context = {'obras': buildings}
-
         return render(request, 'tracker/dht_tasks_report.html', context)
+
+
+class DhtTasksReportResumen(View):
+    def get(self, request, username):
+        buildings = Building.objects.all()
+        context = {'obras': buildings}
+        return render(request, 'tracker/dht_tasks_report_resumen.html', context)

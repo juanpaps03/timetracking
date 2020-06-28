@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+{% load static i18n%}
+{% load filters %}
+
+{% block css %}
+  {{ block.super }}
+  <link rel="stylesheet" href="{% static '/css/datatable/dataTables.bootstrap.min.css' %}">
+  <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/themes/smoothness/jquery-ui.min.css" />
+
+{% endblock css %}
+
+{% block breadcrumbs %}
+  <div class="breadcrumbs">
+    <div class="col-sm-4">
+      <div class="page-header float-left">
+        <div class="page-title">
+          <h1>DHT Tareas Resumen</h1>
+        </div>
+      </div>
+    </div>
+  </div>
+{%  endblock breadcrumbs %}
+
+
+{% block javascript_header %}
+  <script>
+    var csrf = "{{ csrf_token }}";
+    var post_url = "{% url 'tracker:api_dht_tasks_report_resumen' request.user.username %}";
+  </script>
+{% endblock javascript_header %}
+
+{% block content %}
+<!--<form id="myForm" method="post" autocomplete="off" action="{% url 'tracker:api_dht_tasks_report_resumen' request.user.username %}">{% csrf_token %}-->
+
+  {%  if request.user.is_superuser or request.user.is_staff %}
+    <div class="row form-group">
+      <div class="col-12 col-lg-3"><label for="obra">Elegir obra:</label></div>
+      <div class="col-12 col-lg-9">
+        <select id="obra" name="obra" class="form-control">
+          <option value="">Seleccione una obra</option>
+          {% for ob in obras %}
+              <option id="{{ ob.code }}" value="{{ ob.code }}">{{ ob.code }} - {{ ob.address}}</option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+  {% endif %}
+
+
+  <div class="row">
+    <div class="col-xs-6 col-lg-12">
+      <div class="card">
+        <div class="card-header">
+          <strong><label class="hidden">{% trans "Elegir rango de fechas" %}</label></strong>
+        </div>
+        <div class="card-body">
+          <div class="form-group col-md-4">
+            <label>Inicio de primer quincena:</label>
+            <input id="initialDay" type="text" name="initialDay" class="form-control" autocomplete="off"/>
+          </div>
+          <div class="form-group col-md-4">
+            <label>Fin de primer quincena:</label>
+            <input id="finishBiweeklyDay" type="text" name="finishBiweeklyDay" class="form-control" autocomplete="off"/>
+          </div>
+          <div class="form-group col-md-4">
+            <label>Fin de segunda quincena:</label>
+            <input id="finishDay" type="text" name="finishDay" class="form-control" autocomplete="off"/>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-xs-6 col-lg-12">
+      <div class="card">
+        <div class="card-body card-block">
+            <div class="col-sm-6 col-12">
+              <button id="report" class="btn btn-lg btn-block btn-primary">{% trans "Download Report" %}</button>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+<!--</form>-->
+
+
+{% endblock content%}
+
+
+
+{% block javascript %}
+  {{ block.super }}
+
+
+<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+<!--<script src="{% static 'js/datepicker_spanish.js' %}"></script>-->
+<script type="text/javascript" src="{% static 'js/dht_tasks_report_resumen.js' %}"></script>
+
+<script>
+    $('#initialDay').val('28/04/2020');
+    $('#finishBiweeklyDay').val('30/04/2020');
+</script>
+
+{% endblock javascript %}

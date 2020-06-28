@@ -26,20 +26,20 @@
 
 {% block content %}
 <form method="post" autocomplete="off" action="{% url 'tracker:api_dht_tasks_report' request.user.username %}">{% csrf_token %}
-  <div class="row form-group">
-    <div class="col-12 col-lg-3"><label for="obra">Elegir obra:</label></div>
-    <div class="col-12 col-lg-9">
-      <select id="obra" name="obra" class="form-control">
-        <option value="">Seleccione una obra</option>
-        {% for ob in obras %}
-            <option id="{{ ob.code }}" value="{{ ob.code }}">{{ ob.code }} - {{ ob.address}}</option>
-        {% endfor %}
-      </select>
+
+  {%  if request.user.is_superuser or request.user.is_staff %}
+    <div class="row form-group">
+      <div class="col-12 col-lg-3"><label for="obra">Elegir obra:</label></div>
+      <div class="col-12 col-lg-9">
+        <select id="obra" name="obra" class="form-control">
+          <option value="">Seleccione una obra</option>
+          {% for ob in obras %}
+              <option id="{{ ob.code }}" value="{{ ob.code }}">{{ ob.code }} - {{ ob.address}}</option>
+          {% endfor %}
+        </select>
+      </div>
     </div>
-  </div>
-
-
-
+  {% endif %}
 
 
   <div class="row">
@@ -173,9 +173,8 @@
 </script>
 
 <script>
-    $('#initialDay').val('15/04/2020');
+    $('#initialDay').val('28/04/2020');
     $('#finishBiweeklyDay').val('30/04/2020');
-    $('#finishDay').val('07/05/2020');
 </script>
 
 {% endblock javascript %}
