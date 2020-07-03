@@ -5,7 +5,6 @@ from django.template.defaultfilters import wordcount
 from django.utils import timezone
 from django.utils.formats import date_format
 from django.utils.translation import ugettext_lazy as _
-from pip._internal.locations import write_delete_marker_file
 from pip._vendor.pyparsing import unicode_set
 from rest_framework.views import APIView
 
