@@ -1,81 +1,51 @@
-# Wheel 0.25+ needed to install certain packages on CPython 3.5+
-# like Pillow and psycopg2
-# See http://bitly.com/wheel-building-fails-CPython-35
-# Verified bug on Python 3.5.1
-wheel==0.30.0
-
-
-# Conservative Django
-django==1.11.17 # pyup: <2.0
-
-# Configuration
-django-environ==0.4.4
-
-
-
-# Forms
-django-crispy-forms==1.7.0
-
-# Models
-django-model-utils==3.1.1
-
-# Images
-Pillow==5.2.0
-
-# Password storage
 argon2-cffi==18.1.0
-
-# For user registration, either via email or social
-# Well-built with regular release cycles!
-django-allauth==0.34.0
-
-
-# Python-PostgreSQL Database Adapter
-psycopg2==2.7.3.2
-
-# Unicode slugification
 awesome-slugify==1.6.5
-
-# Time zones support
-pytz==2017.3
-
-# Redis support
-django-redis==4.8.0
-redis>=2.10.5
-
-rcssmin==1.0.6
-django-compressor==2.2
-
-# Django REST framework
-djangorestframework==3.7.7
-
+boto3==1.5.22
+botocore==1.8.50
 certifi==2018.8.24
 cffi==1.11.5
 chardet==3.0.4
 convertapi==1.1.0
 defusedxml==0.5.0
+diff-match-patch==20181111
+Django==1.11.17
+django-allauth==0.34.0
 django-appconf==1.0.2
+django-compressor==2.2
+django-constance==2.3.1
+django-crispy-forms==1.7.0
+django-debug-toolbar==2.2
+django-environ==0.4.4
+django-extensions==2.1.2
+django-import-export==1.1.0
+django-model-utils==3.1.1
+django-picklefield==1.1.0
+django-redis==4.8.0
+djangorestframework==3.7.7
+docutils==0.14
 greenlet==0.4.14
+gunicorn==19.7.1
 idna==2.7
 jmespath==0.9.3
 oauthlib==2.1.0
+Pillow==5.2.0
+psycopg2==2.7.3.2
 pycparser==2.18
 python-dateutil==2.7.3
 python3-openid==3.1.0
+pytz==2017.3
+raven==6.5.0
+rcssmin==1.0.6
+redis==3.4.1
+regex==2018.8.29
 requests==2.19.1
 requests-oauthlib==1.0.0
-
-django-constance==2.3.1
-django-extensions==2.1.2
-django-picklefield==1.1.0
-
-docutils==0.14
-regex==2018.8.29
 rjsmin==1.0.12
 s3transfer==0.1.13
 six==1.11.0
 sqlparse==0.2.4
+tablib==1.1.0
 Unidecode==0.4.21
 urllib3==1.23
+whitenoise==3.3.1
 XlsxWriter==1.1.1
-django-import-export==1.1.0
