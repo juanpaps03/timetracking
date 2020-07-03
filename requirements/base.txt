@@ -21,7 +21,7 @@ django-import-export==1.1.0
 django-model-utils==3.1.1
 django-picklefield==1.1.0
 django-redis==4.8.0
-djangorestframework==3.7.7
+djangorestframework==3.9.1
 docutils==0.14
 greenlet==0.4.14
 gunicorn==19.7.1
