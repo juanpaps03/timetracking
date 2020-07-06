@@ -143,46 +143,62 @@ class DailyReport(APIView):
 
 class DailyReportFromPastDay(APIView):
     def post(self, request, username):
-        print("entro en DailyReport!!!!!!!!")
-        workdayDate = request.data.get('workdaydate')
-        print(workdayDate)
-        partes1 = workdayDate.split("/")
-        dia1 = partes1[0]
-        mes1 = partes1[1]
-        anio1 = partes1[2]
+        try:
+            print("entro en DailyReportFromPastDay!!!!!!!!")
+            workdayDate = request.data.get('workdaydate')
 
-        fecha = anio1 + "_" + mes1 + "_" + dia1
+            if workdayDate:
+                print(workdayDate)
+                partes1 = workdayDate.split("/")
+                dia1 = partes1[0]
+                mes1 = partes1[1]
+                anio1 = partes1[2]
 
-        wkday = datetime.date(int(anio1), int(mes1), int(dia1))
+                fecha = anio1 + "_" + mes1 + "_" + dia1
 
-        user = request.user
+                wkday = datetime.date(int(anio1), int(mes1), int(dia1))
 
-        building = None
-        if user.is_superuser or user.is_staff:
-            print("entra en el else de seleccionar obra")
-            codigo_obra_seleccionada = request.data.get('obra')
-            print("obra: ")
-            print(codigo_obra_seleccionada)
-            building = Building.objects.get(code=codigo_obra_seleccionada)
-        else:
-            building = Building.objects.get_by_overseer(user)
+                user = request.user
+
+                building = None
+                if user.is_superuser or user.is_staff:
+                    print("entra en el else de seleccionar obra")
+                    if request.data.get('obra'):
+                        codigo_obra_seleccionada = request.data.get('obra')
+                        print("obra: ")
+                        print(codigo_obra_seleccionada)
+                        try:
+                            building = Building.objects.get(code=codigo_obra_seleccionada)
+                        except Building.DoesNotExist:
+                            return JsonResponse({'message': messages.BUILDING_NOT_FOUND}, status=400)
+                    else:
+                        return JsonResponse({'message': messages.BUILDING_NOT_FOUND}, status=400)
+                else:
+                    try:
+                        building = Building.objects.get_by_overseer(user)
+                    except Building.DoesNotExist:
+                        return JsonResponse({'message': messages.BUILDING_NOT_FOUND}, status=400)
 
 
-        if wkday:
-            # date = datetime.datetime.strptime(wkday, "%Y-%m-%d").date()
-            try:
-                workday = Workday.objects.get(building=building, date=wkday)
-                response = HttpResponse(content_type='application/vnd.ms-excel')
-                response['Content-Disposition'] = 'attachment; filename=%s_%s_%s.xlsx' % (_('Parte_Diario'), building, fecha)
-                xlsx_data = workday.get_report()
-                response.write(xlsx_data)
-                return response
-            except Workday.DoesNotExist:
+                if wkday:
+                    # date = datetime.datetime.strptime(wkday, "%Y-%m-%d").date()
+                    try:
+                        workday = Workday.objects.get(building=building, date=wkday)
+                        response = HttpResponse(content_type='application/vnd.ms-excel')
+                        response['Content-Disposition'] = 'attachment; filename=%s_%s_%s.xlsx' % (_('Parte_Diario'), building, fecha)
+                        xlsx_data = workday.get_report()
+                        response.write(xlsx_data)
+                        return response
+                    except Workday.DoesNotExist:
+                        return JsonResponse({'message': messages.WORKDAY_NOT_FOUND}, status=400)
+                    except Exception:
+                        return JsonResponse({'message': messages.GENERIC_ERROR}, status=500)
                 return JsonResponse({'message': messages.WORKDAY_NOT_FOUND}, status=400)
-            except Exception:
+            else:
+                print('workdayDate es vacío')
                 return JsonResponse({'message': messages.GENERIC_ERROR}, status=500)
-        return JsonResponse({'message': messages.WORKDAY_NOT_FOUND}, status=400)
-
+        except Exception:
+            return JsonResponse({'message': messages.GENERIC_ERROR}, status=500)
 
 
 class DhtReportApi(APIView):
@@ -364,22 +380,21 @@ class DhtTasksReportResumenApi(APIView):
             building = None
             if user.is_superuser or user.is_staff:
                 print("entra en el if de user is superuser or staff")
-                codigo_obra_seleccionada = request.data.get('obra')
-                print("obra: ")
-                print(codigo_obra_seleccionada)
-
-                # building = Building.objects.get(code=codigo_obra_seleccionada)
-
-                try:
-                    building = Building.objects.get(code=codigo_obra_seleccionada)
-                except Building.DoesNotExist:
+                if request.data.get('obra'):
+                    codigo_obra_seleccionada = request.data.get('obra')
+                    print("obra: ")
+                    print(codigo_obra_seleccionada)
+                    try:
+                        building = Building.objects.get(code=codigo_obra_seleccionada)
+                    except Building.DoesNotExist:
+                        return JsonResponse({'message': messages.BUILDING_NOT_FOUND}, status=400)
+                else:
                     return JsonResponse({'message': messages.BUILDING_NOT_FOUND}, status=400)
             else:
                 try:
                     building = Building.objects.get_by_overseer(user)
                 except Building.DoesNotExist:
                     return JsonResponse({'message': messages.BUILDING_NOT_FOUND}, status=400)
-
 
 
             print(user)

@@ -204,7 +204,7 @@ class PastDays(View):
         workdays = workdays.difference(editable_workdays).order_by('-date')
         buildings = Building.objects.all()
 
-        context = {'editable_workdays': editable_workdays, 'non_editable_workdays': workdays, 'days': config.DAYS_ABLE_TO_EDIT, 'obras': buildings}
+        context = {'editable_workdays': editable_workdays, 'non_editable_workdays': workdays, 'days': config.DAYS_ABLE_TO_EDIT, 'obras': buildings, 'error': ''}
 
         return render(request, 'tracker/past_days.html', context)
 
@@ -230,11 +230,11 @@ class PastDaysEdit(View):
 
         date = start_date
 
-        # date = date
         workers = []
         tasks = []
         workday = None
         try:
+            print('entra al try')
             workday = Workday.objects.filter(overseer=user, date=date).first()
             expected = workday.expected_hours()
             building = workday.building
@@ -254,8 +254,6 @@ class PastDaysEdit(View):
                     month = "0" + month
                 year = str(workday.date.year)
                 dia = day + "/" + month + "/" + year
-
-                print("dia es: " + dia)
 
                 if ((dia in constants.DIAS_DE_HORAS_EXTRA) or (
                     workday.date.weekday() == 5 or workday.date.weekday() == 6)):
@@ -285,7 +283,21 @@ class PastDaysEdit(View):
             for task in tasks:
                 task.logs = list(logs.filter(task=task))
         except Workday.DoesNotExist:
+            print('se captura la excepcion')
             return JsonResponse({'message': messages.WORKDAY_NOT_FOUND}, status=400)
+        except Exception:
+            print('se captura la excepcion generica')
+            view_threshold = timezone.localdate(timezone.now()) - timezone.timedelta(days=config.DAYS_ABLE_TO_VIEW)
+            edit_threshold = timezone.localdate(timezone.now()) - timezone.timedelta(days=config.DAYS_ABLE_TO_EDIT)
+            workdays = Workday.objects.filter(overseer=user, date__lte=timezone.localdate(timezone.now()),
+                                              date__gte=view_threshold)
+            editable_workdays = workdays.filter(date__gte=edit_threshold).order_by('-date')
+            workdays = workdays.difference(editable_workdays).order_by('-date')
+            buildings = Building.objects.all()
+            mensaje_error = messages.GENERIC_ERROR
+            context = {'error': mensaje_error}
+
+            return render(request, 'tracker/past_days.html', context)
 
         # filter out useless data
         tasks = serialize_tasks_with_logs(tasks)

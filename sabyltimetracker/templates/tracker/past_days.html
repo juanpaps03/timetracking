@@ -29,7 +29,22 @@
   </div>
 {%  endblock breadcrumbs %}
 
+
+{% block javascript_header %}
+  <script>
+    var csrf = "{{ csrf_token }}";
+    var post_url = "{% url 'tracker:api_daily_report_from_past_day' request.user.username %}";
+    var post_url_edit = "{% url 'tracker:past_days_edit' request.user.username %}";
+  </script>
+{% endblock javascript_header %}
+
 {% block content %}
+
+  {% if error %}
+    <div id="div-mensaje-error" class="alert alert-danger mx-2 my-2" role="alert">
+      <strong>Error!</strong> <span id="mensaje-error">{{ error }}</span>
+    </div>
+  {% endif %}
 
   {%  if request.user.is_superuser or request.user.is_staff %}
     <div class="row form-group">
@@ -77,11 +92,7 @@
               </div>
             {% endif %}
             <div class="col-sm-6 col-12">
-              <form method="post" action="{% url 'tracker:api_daily_report_from_past_day' request.user.username %}">{% csrf_token %}
-                <input id="workdaydate" type="text" name="workdaydate" class="form-control" style="display:none;"/>
-                <input id="obra" type="text" name="obra" class="form-control" style="display:none;"/>
                 <button id="report" class="btn btn-lg btn-block btn-primary" disabled type="submit">{% trans "Download Report" %}</button>
-              </form>
             </div>
         </div>
       </div>
@@ -106,31 +117,29 @@
   <script src="{% static 'js/data-table/datatables-init.js' %}"></script>
   <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
   <script>
+
     $('#selectDay').datepicker({
-        closeText: "Cerrar",
-        prevText: "&#x3C;Ant",
-        nextText: "Sig&#x3E;",
-        currentText: "Hoy",
-        monthNames: [ "enero","febrero","marzo","abril","mayo","junio",
-        "julio","agosto","septiembre","octubre","noviembre","diciembre" ],
-        monthNamesShort: [ "ene","feb","mar","abr","may","jun",
-        "jul","ago","sep","oct","nov","dic" ],
-        dayNames: [ "domingo","lunes","martes","miércoles","jueves","viernes","sábado" ],
-        dayNamesShort: [ "dom","lun","mar","mié","jue","vie","sáb" ],
-        dayNamesMin: [ "D","L","M","X","J","V","S" ],
-        weekHeader: "Sm",
-        dateFormat: "dd/mm/yy",
-        firstDay: 1,
-        isRTL: false,
-        showMonthAfterYear: false,
-        yearSuffix: ""
+      closeText: "Cerrar",
+      prevText: "&#x3C;Ant",
+      nextText: "Sig&#x3E;",
+      currentText: "Hoy",
+      monthNames: [ "enero","febrero","marzo","abril","mayo","junio",
+      "julio","agosto","septiembre","octubre","noviembre","diciembre" ],
+      monthNamesShort: [ "ene","feb","mar","abr","may","jun",
+      "jul","ago","sep","oct","nov","dic" ],
+      dayNames: [ "domingo","lunes","martes","miércoles","jueves","viernes","sábado" ],
+      dayNamesShort: [ "dom","lun","mar","mié","jue","vie","sáb" ],
+      dayNamesMin: [ "D","L","M","M","J","V","S" ],
+      weekHeader: "Sm",
+      dateFormat: "dd/mm/yy",
+      firstDay: 1,
+      isRTL: false,
+      showMonthAfterYear: false,
+      yearSuffix: ""
     });
-
-
 
     $("#selectDay").change(function(){
       $('#wkday').val($('#selectDay').val());
-      $('#workdaydate').val($('#selectDay').val());
 
       let valor = $("#selectDay").val();
       console.log("valor: " + valor)
@@ -143,10 +152,6 @@
       }
     });
 
-
-    $("#obraSelect").change(function(){
-      $('#obra').val($('#obraSelect').val());
-    });
 
   </script>
 {% endblock javascript %}

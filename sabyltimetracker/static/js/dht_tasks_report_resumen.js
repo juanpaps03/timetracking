@@ -123,13 +123,23 @@
                         document.body.appendChild(a);
                         a.click();
                         $('#loading').removeClass('is-active');
+                        $('#div-mensaje-error').hide();
                     });
                 } else {
-                    console.log('Respuesta de red OK pero respuesta HTTP no OK');
+                    response.json().then(function(respuesta) {
+                        console.log(respuesta);
+                        console.log('Respuesta de red OK pero respuesta HTTP no OK');
+                        $('#loading').removeClass('is-active');
+                        $('#div-mensaje-error').show();
+                        $('#mensaje-error').html(respuesta.message);
+                    });
                 }
             })
             .catch(function(error) {
               console.log('Hubo un problema con la petición Fetch:' + error.message);
+              $('#loading').removeClass('is-active');
+              $('#div-mensaje-error').show();
+              $('#mensaje-error').html("Intente nuevamente.");
             });
             //fin llamada con fetch
 
