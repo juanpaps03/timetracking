@@ -54,18 +54,11 @@
         <div class="card-body card-block">
           <div class="stat-widget-one">
             <div class="stat-content dib">
-              {%  if workers_missing_logs %}
-                {% if workers_missing_logs|length == 1 %}
+              {% if workers_missing_logs %}
                   <div class="stat-text">
-                    {% trans 'The logs for' %} {{ workers_missing_logs|first }} {% trans "require attention." %}
+                    Cantidad de trabajadores sin registros:
                   </div>
-                  <div class="stat-digit">{% trans "There is 1 worker left." %}</div>
-                {% else %}
-                  <div class="stat-text">
-                    {% trans 'The logs for' %} {{ workers_missing_logs|ellipsize:5 }} {% trans "require attention." %}
-                  </div>
-                  <div class="stat-digit">{% trans 'There are' %} {{ workers_missing_logs|length }} {% trans "workers left." %}</div>
-                {% endif %}
+                  <div class="stat-digit">{{ workers_missing_logs|length }}</div>
               {% else %}
                 <div class="stat-text">
                   {% trans "All workers have logs to match their hours. When you are sure everything is done, you can end the day." %}
