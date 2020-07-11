@@ -56,7 +56,7 @@
             <div class="stat-content dib">
               {% if workers_missing_logs %}
                   <div class="stat-text">
-                    Cantidad de trabajadores sin registros:
+                    Trabajadores con registros incompletos:
                   </div>
                   <div class="stat-digit">{{ workers_missing_logs|length }}</div>
               {% else %}
@@ -81,8 +81,8 @@
           <table id="logs" class="table table-striped table-bordered">
             <thead>
             <tr>
-              <th>{% trans "Worker Nº" %}</th>
-              <th>{% trans "Worker Category" %}</th>
+              <th>{% trans "Nº" %}</th>
+              <th>{% trans "Category" %}</th>
               <th>{% trans "Full Name" %}</th>
               <th>{% trans "Task" %}</th>
               <th>{% trans "Hours Logged" %}</th>
