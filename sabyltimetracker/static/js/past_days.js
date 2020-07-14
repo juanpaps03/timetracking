@@ -1,7 +1,6 @@
 
 
 
-
 $(document).ready(function() {
     /*$('#day').change( () => {
         let option = $(this).find(":selected");
@@ -23,11 +22,11 @@ $(document).ready(function() {
 
 
 
-    $('#edit').click( () => {
+    /*$('#edit').click( () => {
         let option = $(this).find(":selected");
         let v = $(option).attr('data-url');
         window.location.href = v;
-    });
+    });*/
 
 
 
@@ -104,3 +103,24 @@ $(document).ready(function() {
 
 
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

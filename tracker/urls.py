@@ -19,6 +19,7 @@ urlpatterns = [
     url(regex=r'^api/daily_report_from_past_day/$', view=views_api.DailyReportFromPastDay.as_view(), name='api_daily_report_from_past_day'),
     url(regex=r'^api/dhtgeneral_report/$', view=views_api.DhtReportApi.as_view(), name='api_dhtgeneral_report'),
     url(regex=r'^api/dht_tasks_report_api/$', view=views_api.DhtTasksReportApi.as_view(), name='api_dht_tasks_report'),
-    url(regex=r'^api/dht_tasks_report_resumen_api/$', view=views_api.DhtTasksReportResumenApi.as_view(), name='api_dht_tasks_report_resumen')
+    url(regex=r'^api/dht_tasks_report_resumen_api/$', view=views_api.DhtTasksReportResumenApi.as_view(), name='api_dht_tasks_report_resumen'),
+    url(regex=r'^api/exist_workday/$', view=views_api.ExistWorkday.as_view(), name='api_exist_workday')
 ]
 

@@ -38,10 +38,12 @@ class Dashboard(View):
                 logs = LogHour.objects.all().filter(workday=workday)
                 for worker in workers:
                     worker_logs = list(logs.filter(worker=worker))
-                    if worker_logs:
-                        workers_with_logs += 1
+                    # if worker_logs:
+                    #     workers_with_logs += 1
                     if not LogHour.worker_passes_controls(workday, worker_logs):
                         workers_missing_logs.append(worker)
+                    else:
+                        workers_with_logs += 1
                 if workers:
                     workers_ratio = round(100 * workers_with_logs / len(workers))
                 else:
@@ -230,61 +232,76 @@ class PastDaysEdit(View):
 
         date = start_date
 
+        hayError = False
         workers = []
         tasks = []
         workday = None
         try:
             print('entra al try')
+
             workday = Workday.objects.filter(overseer=user, date=date).first()
-            expected = workday.expected_hours()
-            building = workday.building
-            workers = building.workers.all()
-            logs = LogHour.objects.all().filter(workday=workday)
-            tasks = Task.objects.get_by_building(building)
-            for worker in workers:
-                worker.logs = list(logs.filter(worker=worker))
-                worker.passes_controls = LogHour.worker_passes_controls(workday, worker.logs)
-                worker.passes_controls_string = LogHour.worker_passes_controls_string(workday, worker.logs)
 
-                day = str(workday.date.day)
-                if day.__len__() == 1:
-                    day = "0" + day
-                month = str(workday.date.month)
-                if month.__len__() == 1:
-                    month = "0" + month
-                year = str(workday.date.year)
-                dia = day + "/" + month + "/" + year
+            if workday:
+                expected = workday.expected_hours()
+                building = workday.building
+                workers = building.workers.all()
+                logs = LogHour.objects.all().filter(workday=workday)
+                tasks = Task.objects.get_by_building(building)
+                for worker in workers:
+                    worker.logs = list(logs.filter(worker=worker))
+                    worker.passes_controls = LogHour.worker_passes_controls(workday, worker.logs)
+                    worker.passes_controls_string = LogHour.worker_passes_controls_string(workday, worker.logs)
 
-                if ((dia in constants.DIAS_DE_HORAS_EXTRA) or (
-                    workday.date.weekday() == 5 or workday.date.weekday() == 6)):
-                    worker.passes_controls_string = "mayor"
-                    expected = 9
-                    percent = round(100 * LogHour.sum_hours(worker.logs) / expected)
-                    if (percent >= 100):
-                        worker.hours_percent = 100
-                    else:
-                        worker.hours_percent = percent
-                    print("entro al if de horas extra y modifica expected")
+                    day = str(workday.date.day)
+                    if day.__len__() == 1:
+                        day = "0" + day
+                    month = str(workday.date.month)
+                    if month.__len__() == 1:
+                        month = "0" + month
+                    year = str(workday.date.year)
+                    dia = day + "/" + month + "/" + year
 
-                else:
-                    if expected > 0:
+                    if ((dia in constants.DIAS_DE_HORAS_EXTRA) or (
+                        workday.date.weekday() == 5 or workday.date.weekday() == 6)):
+                        worker.passes_controls_string = "mayor"
+                        expected = 9
                         percent = round(100 * LogHour.sum_hours(worker.logs) / expected)
                         if (percent >= 100):
                             worker.hours_percent = 100
                         else:
                             worker.hours_percent = percent
+                        print("entro al if de horas extra y modifica expected")
+
                     else:
-                        # Si entra en el else es porque hubo un error, hay que imprimir el error
-                        worker.hours_percent = 100
-                # if expected > 0:
-                #     worker.hours_percent = round(100 * LogHour.sum_hours(worker.logs) / expected)
-                # else:
-                #     worker.hours_percent = 100
-            for task in tasks:
-                task.logs = list(logs.filter(task=task))
+                        if expected > 0:
+                            percent = round(100 * LogHour.sum_hours(worker.logs) / expected)
+                            if (percent >= 100):
+                                worker.hours_percent = 100
+                            else:
+                                worker.hours_percent = percent
+                        else:
+                            # Si entra en el else es porque hubo un error, hay que imprimir el error
+                            worker.hours_percent = 100
+                    # if expected > 0:
+                    #     worker.hours_percent = round(100 * LogHour.sum_hours(worker.logs) / expected)
+                    # else:
+                    #     worker.hours_percent = 100
+                for task in tasks:
+                    task.logs = list(logs.filter(task=task))
+            else:
+                print('Error al obtener el workday')
+                mensaje_error = messages.WORKDAY_NOT_FOUND
+                hayError = True
+                context = {'error': mensaje_error, 'hayError': hayError}
+                return render(request, 'tracker/past_days_edit.html', context)
+
         except Workday.DoesNotExist:
-            print('se captura la excepcion')
-            return JsonResponse({'message': messages.WORKDAY_NOT_FOUND}, status=400)
+            print('se captura la excepcion Workday.DoesNotExist')
+            mensaje_error = messages.WORKDAY_NOT_FOUND
+            hayError = True
+            context = {'error': mensaje_error, 'hayError': hayError}
+            return render(request, 'tracker/past_days_edit.html', context)
+
         except Exception:
             print('se captura la excepcion generica')
             view_threshold = timezone.localdate(timezone.now()) - timezone.timedelta(days=config.DAYS_ABLE_TO_VIEW)
@@ -295,9 +312,10 @@ class PastDaysEdit(View):
             workdays = workdays.difference(editable_workdays).order_by('-date')
             buildings = Building.objects.all()
             mensaje_error = messages.GENERIC_ERROR
-            context = {'error': mensaje_error}
+            hayError = True
+            context = {'error': mensaje_error, 'hayError': hayError}
 
-            return render(request, 'tracker/past_days.html', context)
+            return render(request, 'tracker/past_days_edit.html', context)
 
         # filter out useless data
         tasks = serialize_tasks_with_logs(tasks)
@@ -309,7 +327,8 @@ class PastDaysEdit(View):
             'tasks': tasks,
             'workers': serialize_workers_with_logs(workers),
             'expected': expected,
-            'workday': workday
+            'workday': workday,
+            'hayError': hayError
         }
 
         return render(request, 'tracker/past_days_edit.html', context)

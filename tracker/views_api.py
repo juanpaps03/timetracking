@@ -447,3 +447,66 @@ class DhtTasksReportResumenApi(APIView):
             print('entra en la excepcion general')
             # return JsonResponse({'message': messages.GENERIC_ERROR}, status=500)
             return JsonResponse({'message': 'Algo salió mal. Intente nuevamente.'}, status=500)
+
+
+
+
+class ExistWorkday(APIView):
+    def post(self, request, username):
+
+        try:
+            print("entro en ExistWorkday!!!!!!!!")
+            print("data***")
+            print(request.data)
+
+            wd = request.data.get('fecha')
+            print(wd)
+
+            # se obtiene usuario capataz logueado
+            print("se obtiene user")
+            user = request.user
+            building = None
+            try:
+                building = Building.objects.get_by_overseer(user)
+            except Building.DoesNotExist:
+                return JsonResponse({'message': messages.BUILDING_NOT_FOUND}, status=400)
+
+
+            print(user)
+            print(user.is_staff)
+            print(user.full_name())
+            print(user.email)
+
+            if wd:
+                # partes1 = initialDay.split("_")
+                # dia1 = partes1[0]
+                # mes1 = partes1[1]
+                # anio1 = partes1[2]
+                # start_date = datetime.date(int(anio1), int(mes1), int(dia1))
+                # day = start_date
+                #
+                # dia = day.day
+                # mes = day.month
+                # anio = day.year
+                # wd = str(anio) + "-" + str(mes) + "-" + str(dia)
+
+                # date = datetime.datetime.strptime(wd, "%Y-%m-%d").date()
+                date = datetime.datetime.strptime(wd, "%d/%m/%Y").date()
+                try:
+                    workday = Workday.objects.get(building=building, date=date)
+                except Workday.DoesNotExist:
+                    workday = None
+
+                if workday:
+                    print(workday)
+                    return JsonResponse({'message': 'Exito, se obtuvo workday'}, status=200)
+                else:
+                    print('No se obtuvo workday')
+                    return JsonResponse({'message': 'El día de trabajo seleccionado no existe.'}, status=400)
+
+
+            return JsonResponse({'message': 'Fecha es vacía'}, status=400)
+        except Exception:
+            print('entra en la excepcion general')
+            # return JsonResponse({'message': messages.GENERIC_ERROR}, status=500)
+            return JsonResponse({'message': 'Algo salió mal. Intente nuevamente.'}, status=500)

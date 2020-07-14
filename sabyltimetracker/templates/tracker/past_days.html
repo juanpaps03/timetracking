@@ -35,16 +35,11 @@
     var csrf = "{{ csrf_token }}";
     var post_url = "{% url 'tracker:api_daily_report_from_past_day' request.user.username %}";
     var post_url_edit = "{% url 'tracker:past_days_edit' request.user.username %}";
+    var post_url_consultar_workday = "{% url 'tracker:api_exist_workday' request.user.username %}";
   </script>
 {% endblock javascript_header %}
 
 {% block content %}
-
-  {% if error %}
-    <div id="div-mensaje-error" class="alert alert-danger mx-2 my-2" role="alert">
-      <strong>Error!</strong> <span id="mensaje-error">{{ error }}</span>
-    </div>
-  {% endif %}
 
   {%  if request.user.is_superuser or request.user.is_staff %}
     <div class="row form-group">
@@ -85,7 +80,7 @@
         <div class="card-body card-block">
             {% if not request.user.is_superuser and not request.user.is_staff %}
               <div class="col-sm-6 col-12">
-                <form method="get" action="{% url 'tracker:past_days_edit' username=request.user.username %}">{% csrf_token %}
+                <form method="get" action="{% url 'tracker:past_days_edit' username=request.user.username %}">
                   <input id="wkday" type="text" name="wkday" class="form-control" style="display:none;"/>
                   <button id="edit" class="btn btn-lg btn-block btn-danger" disabled type="submit">{% trans "Edit Day" %}</button>
                 </form>
@@ -138,18 +133,64 @@
       yearSuffix: ""
     });
 
-    $("#selectDay").change(function(){
-      $('#wkday').val($('#selectDay').val());
 
-      let valor = $("#selectDay").val();
-      console.log("valor: " + valor)
-      if ((valor != null) && (valor != "")){
-        $("#edit").attr("disabled", false);
-        $("#report").attr("disabled", false);
-      } else {
-        $("#edit").attr("disabled", true);
-        $("#report").attr("disabled", true);
-      }
+
+    $("#selectDay").change(function(){
+        var fecha = $('#selectDay').val();
+
+        //llamada con fetch
+        let datos = {'fecha': fecha};
+        var myHeaders = new Headers({
+              'X-CSRFToken': csrf,
+              'Accept': 'application/json',
+              'Content-Type': 'application/json',
+            });
+
+        var myInit = { method: 'POST',
+                       headers: myHeaders,
+                       body: JSON.stringify(datos)};
+
+        fetch(post_url_consultar_workday, myInit)
+        .then(function(response) {
+            if(response.ok) {
+                console.log(response);
+                response.json().then(function(respuesta) {
+                    console.log(respuesta);
+                    /*Chequear si existe el workday*/
+                    $('#loading').removeClass('is-active');
+                    $('#div-mensaje-error').hide();
+
+                    /*Si existe el workday, entonces se habilitan los botones*/
+                    $('#wkday').val($('#selectDay').val());
+                    let valor = $("#selectDay").val();
+                    console.log("valor: " + valor)
+                    if ((valor != null) && (valor != "")){
+                      $("#edit").attr("disabled", false);
+                      $("#report").attr("disabled", false);
+                    } else {
+                      $("#edit").attr("disabled", true);
+                      $("#report").attr("disabled", true);
+                    }
+
+                });
+            } else {
+                response.json().then(function(respuesta) {
+                    console.log(respuesta);
+                    console.log('Respuesta de red OK pero respuesta HTTP no OK');
+                    $('#loading').removeClass('is-active');
+                    $('#div-mensaje-error').show();
+                    $('#mensaje-error').html(respuesta.message);
+                });
+            }
+        })
+        .catch(function(error) {
+          console.log('Hubo un problema con la petición Fetch:' + error.message);
+          $('#loading').removeClass('is-active');
+          $('#div-mensaje-error').show();
+          $('#mensaje-error').html("Intente nuevamente.");
+        });
+        //fin llamada con fetch
+
     });
 
 

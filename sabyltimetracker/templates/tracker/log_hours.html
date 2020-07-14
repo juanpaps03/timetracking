@@ -164,10 +164,6 @@
                          disabled
                   />
                 </td>
-
-
-
-
                 <td>
                   <button data-toggle="modal" data-target="#{{ worker.code }}-comment-modal" type="button" class="btn btn-secondary comentario">
                           Agregar
@@ -186,8 +182,6 @@
                         <div id="comment-group" class="row">
                           <div class="col-xs-6 col-lg-12">
                               <div class="form-group">
-
-
                                 <textarea id="{{ worker.code }}-comment" name="comment" rows="2" placeholder="{% trans 'Comment (optional)' %}" class="form-control"></textarea>
                               </div>
                           </div>
@@ -219,6 +213,8 @@
                     {% endif %}
                   </div>
                 </td>
+
+
                 <div class="modal fade" id="{{ worker.code }}-detail" tabindex="-1" role="dialog" aria-labelledby="{{ worker.code }}-label" aria-hidden="true">
                   <div class="modal-dialog modal-md" role="document">
                     <div class="modal-content">
