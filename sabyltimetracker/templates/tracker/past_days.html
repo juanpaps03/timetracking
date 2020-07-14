@@ -180,6 +180,8 @@
                     $('#loading').removeClass('is-active');
                     $('#div-mensaje-error').show();
                     $('#mensaje-error').html(respuesta.message);
+                    $("#edit").attr("disabled", true);
+                    $("#report").attr("disabled", true);
                 });
             }
         })
@@ -188,6 +190,8 @@
           $('#loading').removeClass('is-active');
           $('#div-mensaje-error').show();
           $('#mensaje-error').html("Intente nuevamente.");
+          $("#edit").attr("disabled", true);
+          $("#report").attr("disabled", true);
         });
         //fin llamada con fetch
 
