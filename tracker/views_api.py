@@ -462,14 +462,27 @@ class ExistWorkday(APIView):
             wd = request.data.get('fecha')
             print(wd)
 
-            # se obtiene usuario capataz logueado
+            # si user es admin: ver cual obra se eligió...sino obtener obra del capataz logueado
             print("se obtiene user")
             user = request.user
             building = None
-            try:
-                building = Building.objects.get_by_overseer(user)
-            except Building.DoesNotExist:
-                return JsonResponse({'message': messages.BUILDING_NOT_FOUND}, status=400)
+            if user.is_superuser or user.is_staff:
+                print("entra en el if de user is superuser or staff")
+                if request.data.get('obra'):
+                    codigo_obra_seleccionada = request.data.get('obra')
+                    print("obra: ")
+                    print(codigo_obra_seleccionada)
+                    try:
+                        building = Building.objects.get(code=codigo_obra_seleccionada)
+                    except Building.DoesNotExist:
+                        return JsonResponse({'message': messages.BUILDING_NOT_FOUND}, status=400)
+                else:
+                    return JsonResponse({'message': messages.BUILDING_NOT_FOUND}, status=400)
+            else:
+                try:
+                    building = Building.objects.get_by_overseer(user)
+                except Building.DoesNotExist:
+                    return JsonResponse({'message': messages.BUILDING_NOT_FOUND}, status=400)
 
 
             print(user)

@@ -137,9 +137,13 @@
 
     $("#selectDay").change(function(){
         var fecha = $('#selectDay').val();
+        let obra = $('#obraSelect').children("option:selected").val();
+        console.log('obra:');
+        console.log(obra);
+
 
         //llamada con fetch
-        let datos = {'fecha': fecha};
+        let datos = {'fecha': fecha, 'obra': obra};
         var myHeaders = new Headers({
               'X-CSRFToken': csrf,
               'Accept': 'application/json',
