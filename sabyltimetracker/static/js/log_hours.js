@@ -41,7 +41,8 @@ $(document).ready(function() {
     //$comment_group.hide();
     $('[data-toggle="tooltip"]').tooltip();
     let table = $('#hours_per_user').DataTable( {
-        "pageLength": 10,
+        "pageLength": 100,
+        "lengthChange": false,
         "language": {
             "sProcessing": "Procesando...",
             "sLengthMenu": "Mostrar _MENU_ registros",
@@ -383,7 +384,7 @@ function find_task(task_id) {
 }
 
 function update_logged_hours(excluded_task_id) {
-    let tareas_que_no_suman = ["AS", "CAP", "E", "FOCAP", "LS", "P", "POST", "S", "SA", "LL"];
+    let tareas_que_no_suman = ["AS", "CAP", "E", "FOCAP", "LS", "P", "POST", "S", "SA", "LL", "F", "FA"];
     let i, j;
     for (i in workers) {
         let worker = workers[i];
