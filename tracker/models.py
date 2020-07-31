@@ -18,6 +18,7 @@ from tracker import utils
 from django.db import IntegrityError
 
 from constance import config
+from operator import itemgetter, attrgetter
 
 
 class BuildingManager(models.Manager):
@@ -201,6 +202,7 @@ class Building(models.Model):
 
 
 
+    # no se utiliza - deprecated
     def get_dht_report(self, initialDate, finishDate):
         print("Entro al reporte!!!!")
 
@@ -418,6 +420,24 @@ class Building(models.Model):
         # tasks = building.tasks.all()
         workers = building.workers.all()
 
+        # workers = sorted(trabajadores, key=attrgetter('code'))
+
+        codigos_workers = []
+        for w in workers:
+            codigos_workers.append(int(w.code))
+
+        codigos_workers.sort();
+
+        workers_ordenados = []
+        for codigo in codigos_workers:
+            for w2 in workers:
+                if (codigo == int(w2.code)):
+                    workers_ordenados.append(w2)
+
+        # print('workers ordenados')
+        # for w3 in workers_ordenados:
+        #     print(w3)
+
         output = io.BytesIO()
         workbook = xlsxwriter.Workbook(output)
 
@@ -580,7 +600,7 @@ class Building(models.Model):
                 indice = col + 1
 
 
-            print("algo por ahí")
+            # print("algo por ahí")
             dia = day.day
             mes = day.month
             anio = day.year
@@ -603,8 +623,8 @@ class Building(models.Model):
 
                 # Se cargan logs de los trabajadores
                 row = 6
-                for worker in workers:
-                    print("Entro a for de los workers sin workday")
+                for worker in workers_ordenados:
+                    # print("Entro a for de los workers sin workday")
                     r.write('%s%d' % (letter, row), sinHoras)
                     row += 1
             else:
@@ -613,8 +633,8 @@ class Building(models.Model):
 
                 # Se cargan logs de los trabajadores
                 row = 6
-                for worker in workers:
-                    # print("Entro a for de los workers")
+                for worker in workers_ordenados:
+                    # print("Entro a for de los workers_ordenados")
                     worker.logs = list(workday.logs.filter(worker=worker))
                     suma = 0
                     comentario = ""
@@ -658,7 +678,7 @@ class Building(models.Model):
 
                     # Para contar horas extras
                     if esPrimeraQuincena:
-                        print("esPrimeraQuincena")
+                        # print("esPrimeraQuincena")
                         if row in diccionarioPrimeraQuincena:
                             if suma > expected:
                                 diccionarioPrimeraQuincena[row] = diccionarioPrimeraQuincena[row] + (suma - expected)
@@ -667,7 +687,7 @@ class Building(models.Model):
                             if suma > expected:
                                 diccionarioPrimeraQuincena[row] = diccionarioPrimeraQuincena[row] + (suma - expected)
                     else:
-                        print("esSegundaQuincena")
+                        # print("esSegundaQuincena")
                         if row in diccionarioSegundaQuincena:
                             if suma > expected:
                                 diccionarioSegundaQuincena[row] = diccionarioSegundaQuincena[row] + (suma - expected)
@@ -700,7 +720,7 @@ class Building(models.Model):
         rowNames = 6
         letterEnd = utils.column_letter(col-1)
         print("letra final: " + letterEnd)
-        for worker in workers:
+        for worker in workers_ordenados:
             r.write('B%d' % rowNames, worker.code, header_center_without_bg)
             r.write('C%d' % rowNames, worker.full_name(), format_align_left)
             r.write('D%d' % rowNames, str(worker.category.code), header_center_without_bg)
@@ -1438,7 +1458,20 @@ class Workday(models.Model):
         amount_of_tasks = len(tasks)
         max_column = utils.column_letter(3 + amount_of_tasks + 1)
         workers = workday.building.workers.all()
-        for worker in workers:
+
+        codigos_workers = []
+        for w in workers:
+            codigos_workers.append(int(w.code))
+
+        codigos_workers.sort();
+
+        workers_ordenados = []
+        for codigo in codigos_workers:
+            for w2 in workers:
+                if (codigo == int(w2.code)):
+                    workers_ordenados.append(w2)
+
+        for worker in workers_ordenados:
             worker.logs = list(workday.logs.filter(worker=worker))
 
         output = io.BytesIO()
@@ -1496,7 +1529,7 @@ class Workday(models.Model):
 
         columns_no_empty = []
         columns_empty = []
-        for worker in workers:
+        for worker in workers_ordenados:
             r.write('A%d' % row, worker.code, header)
             if len(worker.code) > code_width:
                 code_width = len(worker.code)

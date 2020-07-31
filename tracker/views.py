@@ -84,6 +84,19 @@ class LogHours(View):
         if building:
             tasks = building.tasks.all()
             workers = building.workers.all()
+
+            codigos_workers = []
+            for w in workers:
+                codigos_workers.append(int(w.code))
+
+            codigos_workers.sort();
+
+            workers_ordenados = []
+            for codigo in codigos_workers:
+                for w2 in workers:
+                    if (codigo == int(w2.code)):
+                        workers_ordenados.append(w2)
+
             date = timezone.localdate(timezone.now())
             try:
                 workday = Workday.objects.filter(building=building, finished=False).order_by('-date')[0]
@@ -92,7 +105,7 @@ class LogHours(View):
                     is_old_workday = True
                 expected = workday.expected_hours()
                 logs = LogHour.objects.all().filter(workday=workday)
-                for worker in workers:
+                for worker in workers_ordenados:
                     worker.logs = list(logs.filter(worker=worker))
                     worker.passes_controls = LogHour.worker_passes_controls(workday, worker.logs)
                     worker.passes_controls_string = LogHour.worker_passes_controls_string(workday, worker.logs)
@@ -153,7 +166,7 @@ class LogHours(View):
         context = {
             'grouped_tasks': grouped_tasks,
             'tasks': tasks,
-            'workers': serialize_workers_with_logs(workers),
+            'workers': serialize_workers_with_logs(workers_ordenados),
             'expected': expected,
             'workday': workday,
             'is_old_workday': is_old_workday
@@ -245,9 +258,22 @@ class PastDaysEdit(View):
                 expected = workday.expected_hours()
                 building = workday.building
                 workers = building.workers.all()
+
+                codigos_workers = []
+                for w in workers:
+                    codigos_workers.append(int(w.code))
+
+                codigos_workers.sort();
+
+                workers_ordenados = []
+                for codigo in codigos_workers:
+                    for w2 in workers:
+                        if (codigo == int(w2.code)):
+                            workers_ordenados.append(w2)
+
                 logs = LogHour.objects.all().filter(workday=workday)
                 tasks = Task.objects.get_by_building(building)
-                for worker in workers:
+                for worker in workers_ordenados:
                     worker.logs = list(logs.filter(worker=worker))
                     worker.passes_controls = LogHour.worker_passes_controls(workday, worker.logs)
                     worker.passes_controls_string = LogHour.worker_passes_controls_string(workday, worker.logs)
@@ -325,7 +351,7 @@ class PastDaysEdit(View):
         context = {
             'grouped_tasks': grouped_tasks,
             'tasks': tasks,
-            'workers': serialize_workers_with_logs(workers),
+            'workers': serialize_workers_with_logs(workers_ordenados),
             'expected': expected,
             'workday': workday,
             'hayError': hayError
