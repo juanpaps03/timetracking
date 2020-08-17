@@ -1702,11 +1702,11 @@ class LogHour(models.Model):
 
     @staticmethod
     def sum_hours(logs):
-        tareas_que_no_suman = ["AS", "CAP", "E", "FOCAP", "LS", "P", "POST", "S", "SA", "LL"];
+        # tareas_que_no_suman = ["AS", "CAP", "E", "FOCAP", "LS", "P", "POST", "S", "SA", "LL"];
         if logs:
             sum = 0
             for log in logs:
-                if log.task.code not in tareas_que_no_suman:
+                if log.task.code not in constants.TAREAS_QUE_NO_SUMAN:
                     if not log.task.is_boolean:
                         sum += log.amount
                     elif log.task.whole_day:

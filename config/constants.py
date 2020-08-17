@@ -119,4 +119,4 @@ DYNAMIC_CONSTANT_FIELDSETS = OrderedDict([
 DIAS_DE_HORAS_EXTRA = ["07/05/2021", "01/05/2020", "02/05/2020", "03/05/2020"]
 
 
-TAREAS_QUE_NO_SUMAN = ["AS", "CAP", "E", "FOCAP", "LS", "P", "POST", "S", "SA", "LL", "F", "FA"];
+TAREAS_QUE_NO_SUMAN = ["AS", "DS", "E", "F", "FA", "LD", "LE", "LHD", "LL", "LM", "LP", "P", "PG", "SA", "FOCAP", "FC", "T", "LA", "S", "XAS", "XDS", "XE", "XF", "XFA", "XLD", "XLE", "XLHD", "XLM", "XLP", "XP", "XPG", "XSA", "XFOCAP", "XFC", "XT", "XLA", "XS"];

@@ -10,11 +10,12 @@ from django.contrib import messages as django_messages
 from config import constants, messages
 from tracker.models import Building, Workday, LogHour, Task
 from itertools import groupby
-from operator import itemgetter
+from operator import itemgetter, attrgetter
 from tracker.serializers import *
 
 from constance import config
 import datetime
+import re
 
 class Dashboard(View):
     def get(self, request, username):
@@ -85,6 +86,12 @@ class LogHours(View):
             tasks = building.tasks.all()
             workers = building.workers.all()
 
+            # tareas_ordenadas = sorted(tasks, key=attrgetter('code'))
+            #
+            # for tarord in tareas_ordenadas:
+            #     print(tarord.code)
+
+
             codigos_workers = []
             for w in workers:
                 codigos_workers.append(int(w.code))
@@ -119,8 +126,8 @@ class LogHours(View):
                     # else:
                     #     worker.hours_percent = 100
 
-                    print("******************************************")
-                    print(workday.date.day)
+                    # print("******************************************")
+                    # print(workday.date.day)
 
                     day = str(workday.date.day)
                     if day.__len__() == 1:
@@ -131,7 +138,7 @@ class LogHours(View):
                     year = str(workday.date.year)
                     dia = day + "/" + month + "/" + year
 
-                    print("dia es: " + dia)
+                    # print("dia es: " + dia)
 
                     if ((dia in constants.DIAS_DE_HORAS_EXTRA) or (workday.date.weekday() == 5 or workday.date.weekday() == 6)):
                         worker.passes_controls_string = "mayor"
@@ -162,6 +169,7 @@ class LogHours(View):
         tasks = serialize_tasks_with_logs(tasks)
         keyfunc = itemgetter("category")
         grouped_tasks = [{'name': key, 'tasks': list(grp)} for key, grp in groupby(sorted(tasks, key=keyfunc), key=keyfunc)]
+        tareas_que_no_suman = constants.TAREAS_QUE_NO_SUMAN
 
         context = {
             'grouped_tasks': grouped_tasks,
@@ -169,7 +177,8 @@ class LogHours(View):
             'workers': serialize_workers_with_logs(workers_ordenados),
             'expected': expected,
             'workday': workday,
-            'is_old_workday': is_old_workday
+            'is_old_workday': is_old_workday,
+            'tareas_que_no_suman': tareas_que_no_suman
         }
 
         return render(request, 'tracker/log_hours.html', context)
@@ -347,6 +356,7 @@ class PastDaysEdit(View):
         tasks = serialize_tasks_with_logs(tasks)
         keyfunc = itemgetter("category")
         grouped_tasks = [{'name': key, 'tasks': list(grp)} for key, grp in groupby(sorted(tasks, key=keyfunc), key=keyfunc)]
+        tareas_que_no_suman = constants.TAREAS_QUE_NO_SUMAN
 
         context = {
             'grouped_tasks': grouped_tasks,
@@ -354,7 +364,8 @@ class PastDaysEdit(View):
             'workers': serialize_workers_with_logs(workers_ordenados),
             'expected': expected,
             'workday': workday,
-            'hayError': hayError
+            'hayError': hayError,
+            'tareas_que_no_suman': tareas_que_no_suman
         }
 
         return render(request, 'tracker/past_days_edit.html', context)

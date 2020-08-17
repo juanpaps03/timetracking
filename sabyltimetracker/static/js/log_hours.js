@@ -216,7 +216,6 @@ $(document).ready(function() {
                         $('#'+task.id).hide();
                     }
                 }
-
             }
         }
         $task.change();
@@ -384,7 +383,7 @@ function find_task(task_id) {
 }
 
 function update_logged_hours(excluded_task_id) {
-    let tareas_que_no_suman = ["AS", "CAP", "E", "FOCAP", "LS", "P", "POST", "S", "SA", "LL", "F", "FA"];
+//    let tareas_que_no_suman = ["AS", "CAP", "E", "FOCAP", "LS", "P", "POST", "S", "SA", "LL", "F", "FA"];
     let i, j;
     for (i in workers) {
         let worker = workers[i];
