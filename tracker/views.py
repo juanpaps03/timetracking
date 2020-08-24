@@ -8,7 +8,7 @@ from django.contrib import messages as django_messages
 
 
 from config import constants, messages
-from tracker.models import Building, Workday, LogHour, Task
+from tracker.models import Building, Workday, LogHour, Task, Worker
 from itertools import groupby
 from operator import itemgetter, attrgetter
 from tracker.serializers import *
@@ -76,7 +76,7 @@ class Dashboard(View):
 class LogHours(View):
     def get(self, request, username):
         tasks = []
-        workers = []
+        # workers = []
         user = request.user
         is_old_workday = False
 
@@ -86,23 +86,21 @@ class LogHours(View):
             tasks = building.tasks.all()
             workers = building.workers.all()
 
-            # tareas_ordenadas = sorted(tasks, key=attrgetter('code'))
+            workers_objetos = []
+            for w1 in workers:
+                workers_objetos.append(w1)
+
+            # codigos_workers = []
+            # for w in workers:
+            #     codigos_workers.append(int(w.code))
             #
-            # for tarord in tareas_ordenadas:
-            #     print(tarord.code)
-
-
-            codigos_workers = []
-            for w in workers:
-                codigos_workers.append(int(w.code))
-
-            codigos_workers.sort();
-
-            workers_ordenados = []
-            for codigo in codigos_workers:
-                for w2 in workers:
-                    if (codigo == int(w2.code)):
-                        workers_ordenados.append(w2)
+            # codigos_workers.sort();
+            #
+            # workers_ordenados = []
+            # for codigo in codigos_workers:
+            #     for w2 in workers:
+            #         if (codigo == int(w2.code)):
+            #             workers_ordenados.append(w2)
 
             date = timezone.localdate(timezone.now())
             try:
@@ -111,7 +109,27 @@ class LogHours(View):
                     django_messages.warning(request, messages.OLD_UNFINISHED_WORKDAY)
                     is_old_workday = True
                 expected = workday.expected_hours()
+
                 logs = LogHour.objects.all().filter(workday=workday)
+                for log in logs:
+                    if log.worker not in workers_objetos:
+                        workers_objetos.append(log.worker)
+
+
+                # Se ordenan los workers
+                codigos_workers = []
+                for w in workers_objetos:
+                    codigos_workers.append(int(w.code))
+
+                codigos_workers.sort();
+
+                workers_ordenados = []
+                for codigo in codigos_workers:
+                    for w2 in workers_objetos:
+                        if (codigo == int(w2.code)):
+                            workers_ordenados.append(w2)
+
+
                 for worker in workers_ordenados:
                     worker.logs = list(logs.filter(worker=worker))
                     worker.passes_controls = LogHour.worker_passes_controls(workday, worker.logs)
@@ -148,7 +166,6 @@ class LogHours(View):
                             worker.hours_percent = 100
                         else:
                             worker.hours_percent = percent
-                        print("entro al if de horas extra y modifica expected")
 
                     else:
                         if expected > 0:
@@ -161,8 +178,10 @@ class LogHours(View):
                             #Si entra en el else es porque hubo un error, hay que imprimir el error
                             worker.hours_percent = 100
 
+
                 for task in tasks:
                     task.logs = list(logs.filter(task=task))
+
             except IndexError:
                 return JsonResponse({'message': messages.WORKDAY_NOT_FOUND}, status=400)
         # filter out useless data
@@ -268,19 +287,40 @@ class PastDaysEdit(View):
                 building = workday.building
                 workers = building.workers.all()
 
+                workers_objetos = []
+                for w1 in workers:
+                    workers_objetos.append(w1)
+
+                # codigos_workers = []
+                # for w in workers:
+                #     codigos_workers.append(int(w.code))
+                #
+                # codigos_workers.sort();
+                #
+                # workers_ordenados = []
+                # for codigo in codigos_workers:
+                #     for w2 in workers:
+                #         if (codigo == int(w2.code)):
+                #             workers_ordenados.append(w2)
+
+                logs = LogHour.objects.all().filter(workday=workday)
+                for log in logs:
+                    if log.worker not in workers_objetos:
+                        workers_objetos.append(log.worker)
+
+                # Se ordenan los workers
                 codigos_workers = []
-                for w in workers:
+                for w in workers_objetos:
                     codigos_workers.append(int(w.code))
 
                 codigos_workers.sort();
 
                 workers_ordenados = []
                 for codigo in codigos_workers:
-                    for w2 in workers:
+                    for w2 in workers_objetos:
                         if (codigo == int(w2.code)):
                             workers_ordenados.append(w2)
 
-                logs = LogHour.objects.all().filter(workday=workday)
                 tasks = Task.objects.get_by_building(building)
                 for worker in workers_ordenados:
                     worker.logs = list(logs.filter(worker=worker))

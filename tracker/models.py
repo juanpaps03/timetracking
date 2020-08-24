@@ -325,7 +325,7 @@ class Building(models.Model):
             print("despues")
             print("fecha a consultar:")
             print(date)
-            #Poner try catch por si no devuelve nada la consulta
+
             try:
                 workday = Workday.objects.get(building=building, date=date)
             except Workday.DoesNotExist:
@@ -414,29 +414,27 @@ class Building(models.Model):
 
 
     def get_dht_report_biweekly(self, initialDate, finishBiweeklyDate, finishDate):
-        print("Entro al reporte!!!!")
+        print("Entro al dht general!!!!")
 
         building = self
-        # tasks = building.tasks.all()
-        workers = building.workers.all()
+        # workers = building.workers.all()
+        #
+        # q1 = LogHour.objects.filter(workday__gte=datetime.date.today()).filter(workday__lte=datetime.date.today())
+        #
+        #
+        #
+        # codigos_workers = []
+        # for w in workers:
+        #     codigos_workers.append(int(w.code))
+        #
+        # codigos_workers.sort();
+        #
+        # workers_ordenados = []
+        # for codigo in codigos_workers:
+        #     for w2 in workers:
+        #         if (codigo == int(w2.code)):
+        #             workers_ordenados.append(w2)
 
-        # workers = sorted(trabajadores, key=attrgetter('code'))
-
-        codigos_workers = []
-        for w in workers:
-            codigos_workers.append(int(w.code))
-
-        codigos_workers.sort();
-
-        workers_ordenados = []
-        for codigo in codigos_workers:
-            for w2 in workers:
-                if (codigo == int(w2.code)):
-                    workers_ordenados.append(w2)
-
-        # print('workers ordenados')
-        # for w3 in workers_ordenados:
-        #     print(w3)
 
         output = io.BytesIO()
         workbook = xlsxwriter.Workbook(output)
@@ -570,6 +568,48 @@ class Building(models.Model):
 
             #Fin de solo quincena
 
+        workers_de_building = building.workers.all()
+        workers_objetos = []
+        for w1 in workers_de_building:
+            workers_objetos.append(w1)
+
+        print('antes del for consulta de logs')
+        day_ini = start_date
+        while day_ini <= end_date:
+            dia = day_ini.day
+            mes = day_ini.month
+            anio = day_ini.year
+            wdd = str(anio) + "-" + str(mes) + "-" + str(dia)
+            print("wdd:")
+            print(wdd)
+
+            datedd = datetime.datetime.strptime(wdd, "%Y-%m-%d").date()
+            # Try catch por si no devuelve nada la consulta
+            try:
+                workday = Workday.objects.get(building=building, date=datedd)
+            except Workday.DoesNotExist:
+                workday = None
+
+            logs = LogHour.objects.filter(workday=workday)
+            for log in logs:
+                if log.worker not in workers_objetos:
+                    workers_objetos.append(log.worker)
+
+            day_ini = day_ini + timedelta(days=1)
+
+        print('despues del for consulta de logs')
+
+        codigos_workers = []
+        for w in workers_objetos:
+            codigos_workers.append(int(w.code))
+
+        codigos_workers.sort();
+
+        workers_ordenados = []
+        for codigo in codigos_workers:
+            for w2 in workers_objetos:
+                if (codigo == int(w2.code)):
+                    workers_ordenados.append(w2)
 
 
 
@@ -666,7 +706,7 @@ class Building(models.Model):
                     expected = workday.expected_hours()
 
 
-                    # Se controla si se pinta la cenda o no
+                    # Se controla si se pinta la celda o no
                     if suma != expected:
                         format_cell = background_color_number
                         if comentario:
@@ -760,11 +800,9 @@ class Building(models.Model):
 
 
     def get_dht_tasks_report_biweekly(self, initialDate, finishBiweeklyDate, finishDate):
-        print("Entro al reporte!!!!")
+        print("Entro al dht de tareas!!!!")
 
         building = self
-        tasks = building.tasks.all()
-        workers = building.workers.all()
 
         output = io.BytesIO()
         workbook = xlsxwriter.Workbook(output)
@@ -900,6 +938,43 @@ class Building(models.Model):
 
             #Fin de solo quincena
 
+        tasks_de_building = building.tasks.all()
+        tasks_objetos = []
+        for t in tasks_de_building:
+            tasks_objetos.append(t)
+
+        workers_de_building = building.workers.all()
+        workers_objetos = []
+        for w1 in workers_de_building:
+            workers_objetos.append(w1)
+
+        print('antes del for consulta de logs')
+        day_ini = start_date
+        while day_ini <= end_date:
+            dia = day_ini.day
+            mes = day_ini.month
+            anio = day_ini.year
+            wdd = str(anio) + "-" + str(mes) + "-" + str(dia)
+            print("wdd:")
+            print(wdd)
+
+            datedd = datetime.datetime.strptime(wdd, "%Y-%m-%d").date()
+            # Try catch por si no devuelve nada la consulta
+            try:
+                workday = Workday.objects.get(building=building, date=datedd)
+            except Workday.DoesNotExist:
+                workday = None
+
+            logs = LogHour.objects.filter(workday=workday)
+            for log in logs:
+                if log.worker not in workers_objetos:
+                    workers_objetos.append(log.worker)
+                if log.task not in tasks_objetos:
+                    tasks_objetos.append(log.task)
+
+            day_ini = day_ini + timedelta(days=1)
+        print('despues del for consulta de logs')
+
 
 
 
@@ -953,14 +1028,14 @@ class Building(models.Model):
 
                 # Se cargan logs de los trabajadores
                 row = 6
-                for worker in workers:
+                for worker in workers_objetos:
                     # print("Entro a for de los workers sin workday")
                     r.write('%s%d' % (letter, row), sinHoras)
                     row += 1
             else:
                 print("workday no es vacío")
 
-                for tarea in tasks:
+                for tarea in tasks_objetos:
                     try:
                         logs = LogHour.objects.filter(workday=workday, task=tarea)
                     except LogHour.DoesNotExist:
@@ -1112,8 +1187,6 @@ class Building(models.Model):
         print("Entro al reporte tareas resumen!!!!")
 
         building = self
-        tasks = building.tasks.all()
-        workers = building.workers.all()
 
         output = io.BytesIO()
         workbook = xlsxwriter.Workbook(output)
@@ -1222,6 +1295,37 @@ class Building(models.Model):
 
             # Fin de solo quincena
 
+        tasks_de_building = building.tasks.all()
+        tasks_objetos = []
+        for t in tasks_de_building:
+            tasks_objetos.append(t)
+
+        print('antes del for consulta de logs')
+        day_ini = start_date
+        while day_ini <= end_date:
+            dia = day_ini.day
+            mes = day_ini.month
+            anio = day_ini.year
+            wdd = str(anio) + "-" + str(mes) + "-" + str(dia)
+            # print("wdd:")
+            # print(wdd)
+
+            datedd = datetime.datetime.strptime(wdd, "%Y-%m-%d").date()
+            # Try catch por si no devuelve nada la consulta
+            try:
+                workday = Workday.objects.get(building=building, date=datedd)
+            except Workday.DoesNotExist:
+                workday = None
+
+            logs = LogHour.objects.filter(workday=workday)
+            for log in logs:
+                if log.task not in tasks_objetos:
+                    tasks_objetos.append(log.task)
+
+            day_ini = day_ini + timedelta(days=1)
+        print('despues del for consulta de logs')
+
+
 
 
         # Se cargan los días del rango seleccionado
@@ -1258,7 +1362,7 @@ class Building(models.Model):
             else:
                 print("workday no es vacío")
 
-                for tarea in tasks:
+                for tarea in tasks_objetos:
                     try:
                         logs = LogHour.objects.filter(workday=workday, task=tarea)
                     except LogHour.DoesNotExist:
@@ -1454,20 +1558,37 @@ class Workday(models.Model):
 
     def get_report(self):
         workday = self
-        tasks = workday.building.tasks.all()
-        amount_of_tasks = len(tasks)
+
+        tasks_de_building = workday.building.tasks.all()
+        tasks_objetos = []
+        for t in tasks_de_building:
+            tasks_objetos.append(t)
+
+        workers_de_building = workday.building.workers.all()
+        workers_objetos = []
+        for w1 in workers_de_building:
+            workers_objetos.append(w1)
+
+        logs = LogHour.objects.all().filter(workday=workday)
+        for log in logs:
+            if log.worker not in workers_objetos:
+                workers_objetos.append(log.worker)
+            if log.task not in tasks_objetos:
+                tasks_objetos.append(log.task)
+
+        amount_of_tasks = len(tasks_objetos)
         max_column = utils.column_letter(3 + amount_of_tasks + 1)
-        workers = workday.building.workers.all()
+
 
         codigos_workers = []
-        for w in workers:
+        for w in workers_objetos:
             codigos_workers.append(int(w.code))
 
         codigos_workers.sort();
 
         workers_ordenados = []
         for codigo in codigos_workers:
-            for w2 in workers:
+            for w2 in workers_objetos:
                 if (codigo == int(w2.code)):
                     workers_ordenados.append(w2)
 
@@ -1506,7 +1627,7 @@ class Workday(models.Model):
         r.write('D5', __('Total'), header)
 
         col = 5  # starting column is E
-        for task in tasks:
+        for task in tasks_objetos:
             letter = utils.column_letter(col)
             r.write('%s5' % letter, str(task.code), task_header)
 
@@ -1566,18 +1687,16 @@ class Workday(models.Model):
                 else:
                     text = log.amount
                     # se controla tareas que no suman
-                    # if (log.task.code != 'P'):
                     if log.task.code not in constants.TAREAS_QUE_NO_SUMAN:
                         suma = suma + text
                     else:
                         total_tareas_que_no_suman = total_tareas_que_no_suman + text
 
-                for task in tasks:
+                for task in tasks_objetos:
                     if task.id == log.task_id:
                         columns_no_empty_aux.append(task.column)
                         col = task.column
 
-                # r.write_number('%s%d' % (col, row), text)
                 r.write('%s%d' % (col, row), text, number_format)
                 if log.comment:
                     comentario = (worker.code + '-' + worker.full_name() + ': ' + log.comment)
@@ -1603,7 +1722,7 @@ class Workday(models.Model):
         # for col_no_empty in columns_no_empty:
         #     print(col_no_empty + " - ")
         #
-        for tas in tasks:
+        for tas in tasks_objetos:
             if tas.column not in columns_no_empty:
                 columns_empty.append(tas.column)
 
