@@ -1886,38 +1886,38 @@ class Building(models.Model):
         r.merge_range('D2:L2', building_info, title)
 
         # general headers row
-        r.merge_range('C4:E4', __('Workers'), header_center)
-        r.merge_range('I4:K4', __('HORAS TRABAJADAS'), header_center)
-        r.merge_range('L4:N4', __('HORAS INCENTIVOS'), header_center)
-        r.merge_range('O4:Q4', __('HORAS EXTRAS'), header_center)
-        r.merge_range('R4:T4', __('1/2 HORA ADICIONAL'), header_center)
+        r.merge_range('B4:D4', __('Workers'), header_center)
+        r.merge_range('H4:J4', __('HORAS TRABAJADAS'), header_center)
+        r.merge_range('K4:M4', __('HORAS INCENTIVOS'), header_center)
+        r.merge_range('N4:P4', __('HORAS EXTRAS'), header_center)
+        r.merge_range('Q4:S4', __('1/2 HORA ADICIONAL'), header_center)
 
         # specific headers row
         r.write('A5', __('Ordinal'), header_center)
-        r.write('B5', __('Tarea'), header_center)
-        r.write('C5', __('Code'), header_center)
-        r.write('D5', __('Full Name'), header_center)
-        r.write('E5', __('Cat'), header_center)
+        # r.write('B5', __('Tarea'), header_center)
+        r.write('B5', __('Code'), header_center)
+        r.write('C5', __('Full Name'), header_center)
+        r.write('D5', __('Cat'), header_center)
 
-        r.write('F5', __('VL1'), header_center)
-        r.write('G5', __('VL2'), header_center)
-        r.write('H5', __('Fer.'), header_center)
+        r.write('E5', __('VL1'), header_center)
+        r.write('F5', __('VL2'), header_center)
+        r.write('G5', __('Fer.'), header_center)
 
-        r.write('I5', __('1ªQ'), header_center)
-        r.write('J5', __('2ªQ'), header_center)
-        r.write('K5', __('TOTAL'), header_center)
+        r.write('H5', __('1ªQ'), header_center)
+        r.write('I5', __('2ªQ'), header_center)
+        r.write('J5', __('TOTAL'), header_center)
 
-        r.write('L5', __('1ªQ'), header_center)
-        r.write('M5', __('2ªQ'), header_center)
-        r.write('N5', __('TOTAL'), header_center)
+        r.write('K5', __('1ªQ'), header_center)
+        r.write('L5', __('2ªQ'), header_center)
+        r.write('M5', __('TOTAL'), header_center)
 
-        r.write('O5', __('1ªQ'), header_center)
-        r.write('P5', __('2ªQ'), header_center)
-        r.write('Q5', __('TOTAL'), header_center)
+        r.write('N5', __('1ªQ'), header_center)
+        r.write('O5', __('2ªQ'), header_center)
+        r.write('P5', __('TOTAL'), header_center)
 
-        r.write('R5', __('1ªQ'), header_center)
-        r.write('S5', __('2ªQ'), header_center)
-        r.write('T5', __('TOTAL'), header_center)
+        r.write('Q5', __('1ªQ'), header_center)
+        r.write('R5', __('2ªQ'), header_center)
+        r.write('S5', __('TOTAL'), header_center)
 
         esConsultaDosQuincenas = False
 
@@ -1984,7 +1984,7 @@ class Building(models.Model):
             end_date_biweekly = datetime.date(int(anio3), int(mes3), int(dia3))
 
             range = 'Consulta: ' + iDate + " al " + fBwDate
-            r.merge_range('D3:J3', range, title)
+            r.merge_range('D3:L3', range, title)
 
             end_date = end_date_biweekly
 
@@ -2031,10 +2031,10 @@ class Building(models.Model):
 
         # Se cargan los días del rango seleccionado
         day = start_date
-        col = 21
-        indice = 21
+        col = 20
+        indice = 20
         sinHoras = ""
-        colFinPrimeraQuincena = 21
+        colFinPrimeraQuincena = 20
         diccionarioPrimeraQuincena = {}
         diccionarioSegundaQuincena = {}
         esPrimeraQuincena = True
