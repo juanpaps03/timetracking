@@ -523,3 +523,157 @@ class ExistWorkday(APIView):
             print('entra en la excepcion general')
             # return JsonResponse({'message': messages.GENERIC_ERROR}, status=500)
             return JsonResponse({'message': 'Algo salió mal. Intente nuevamente.'}, status=500)
+
+
+
+class DhtProdReportApi(APIView):
+    def post(self, request, username):
+        print("entro en DhtProdReportApi!!!!!!!!")
+
+
+        initialDay = request.data.get('initialDay')
+        finishBiweeklyDay = request.data.get('finishBiweeklyDay')
+        finishDay = request.data.get('finishDay')
+        print(initialDay)
+        print(finishBiweeklyDay)
+        print(finishDay)
+
+        # si user es admin: ver cual obra se eligió...sino obtener obra del capataz logueado
+        print("se obtiene user")
+        user = request.user
+        building = None
+        if user.is_superuser or user.is_staff:
+            print("entra en el else de seleccionar obra")
+            codigo_obra_seleccionada = request.data.get('obra')
+            print("obra: ")
+            print(codigo_obra_seleccionada)
+            building = Building.objects.get(code=codigo_obra_seleccionada)
+        else:
+            building = Building.objects.get_by_overseer(user)
+
+
+        print(user)
+        print(user.is_staff)
+        print(user.full_name())
+        print(user.email)
+
+        if initialDay and ((finishBiweeklyDay and finishDay) or finishBiweeklyDay):
+
+            fechaFinal = ""
+            if finishDay:
+                partes2 = finishDay.split("/")
+                dia2 = partes2[0]
+                mes2 = partes2[1]
+                anio2 = partes2[2]
+                fechaFinal = dia2 + "_" + mes2 + "_" + anio2
+
+            partes1 = initialDay.split("/")
+            dia1 = partes1[0]
+            mes1 = partes1[1]
+            anio1 = partes1[2]
+
+
+            partes3 = finishBiweeklyDay.split("/")
+            dia3 = partes3[0]
+            mes3 = partes3[1]
+            anio3 = partes3[2]
+
+
+            fechaInicial = dia1 + "_" + mes1 + "_" + anio1
+            fechaFinalQuincena = dia3 + "_" + mes3 + "_" + anio3
+
+
+            if fechaFinal:
+                rango = fechaInicial + "_a_" + fechaFinal
+            else:
+                rango = fechaInicial + "_a_" + fechaFinalQuincena
+
+            try:
+                # workday = Workday.objects.get(building=building, date=dateInitial)
+                response = HttpResponse(content_type='application/vnd.ms-excel')
+                response['Content-Disposition'] = 'attachment; filename=%s_%s_%s.xlsx' % (_('DHT_Produccion'), building, rango)
+                xlsx_data = building.get_dht_prod_report_biweekly(fechaInicial, fechaFinalQuincena, fechaFinal)
+                response.write(xlsx_data)
+                return response
+            except Workday.DoesNotExist:
+                return JsonResponse({'message': messages.WORKDAY_NOT_FOUND}, status=400)
+            except Exception:
+                return JsonResponse({'message': messages.GENERIC_ERROR}, status=500)
+        return JsonResponse({'message': messages.INPUT_DHT_GENERAL_ERROR}, status=400)
+
+
+
+class DhtLluviasReportApi(APIView):
+    def post(self, request, username):
+        print("entro en DhtLluviasReportApi!!!!!!!!")
+
+
+        initialDay = request.data.get('initialDay')
+        finishBiweeklyDay = request.data.get('finishBiweeklyDay')
+        finishDay = request.data.get('finishDay')
+        print(initialDay)
+        print(finishBiweeklyDay)
+        print(finishDay)
+
+        # si user es admin: ver cual obra se eligió...sino obtener obra del capataz logueado
+        print("se obtiene user")
+        user = request.user
+        building = None
+        if user.is_superuser or user.is_staff:
+            print("entra en el else de seleccionar obra")
+            codigo_obra_seleccionada = request.data.get('obra')
+            print("obra: ")
+            print(codigo_obra_seleccionada)
+            building = Building.objects.get(code=codigo_obra_seleccionada)
+        else:
+            building = Building.objects.get_by_overseer(user)
+
+
+        print(user)
+        print(user.is_staff)
+        print(user.full_name())
+        print(user.email)
+
+        if initialDay and ((finishBiweeklyDay and finishDay) or finishBiweeklyDay):
+
+            fechaFinal = ""
+            if finishDay:
+                partes2 = finishDay.split("/")
+                dia2 = partes2[0]
+                mes2 = partes2[1]
+                anio2 = partes2[2]
+                fechaFinal = dia2 + "_" + mes2 + "_" + anio2
+
+            partes1 = initialDay.split("/")
+            dia1 = partes1[0]
+            mes1 = partes1[1]
+            anio1 = partes1[2]
+
+
+            partes3 = finishBiweeklyDay.split("/")
+            dia3 = partes3[0]
+            mes3 = partes3[1]
+            anio3 = partes3[2]
+
+
+            fechaInicial = dia1 + "_" + mes1 + "_" + anio1
+            fechaFinalQuincena = dia3 + "_" + mes3 + "_" + anio3
+
+
+            if fechaFinal:
+                rango = fechaInicial + "_a_" + fechaFinal
+            else:
+                rango = fechaInicial + "_a_" + fechaFinalQuincena
+
+            try:
+                # workday = Workday.objects.get(building=building, date=dateInitial)
+                response = HttpResponse(content_type='application/vnd.ms-excel')
+                response['Content-Disposition'] = 'attachment; filename=%s_%s_%s.xlsx' % (_('DHT_Lluvias'), building, rango)
+                xlsx_data = building.get_dht_lluvias_report_biweekly(fechaInicial, fechaFinalQuincena, fechaFinal)
+                response.write(xlsx_data)
+                return response
+            except Workday.DoesNotExist:
+                return JsonResponse({'message': messages.WORKDAY_NOT_FOUND}, status=400)
+            except Exception:
+                return JsonResponse({'message': messages.GENERIC_ERROR}, status=500)
+        return JsonResponse({'message': messages.INPUT_DHT_GENERAL_ERROR}, status=400)

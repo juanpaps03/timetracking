@@ -84,23 +84,13 @@ class LogHours(View):
         building = Building.objects.get_by_overseer(user)
         if building:
             tasks = building.tasks.all()
-            workers = building.workers.all()
 
+            tasks = sorted(tasks, key=attrgetter('code'))
+
+            workers = building.workers.all()
             workers_objetos = []
             for w1 in workers:
                 workers_objetos.append(w1)
-
-            # codigos_workers = []
-            # for w in workers:
-            #     codigos_workers.append(int(w.code))
-            #
-            # codigos_workers.sort();
-            #
-            # workers_ordenados = []
-            # for codigo in codigos_workers:
-            #     for w2 in workers:
-            #         if (codigo == int(w2.code)):
-            #             workers_ordenados.append(w2)
 
             date = timezone.localdate(timezone.now())
             try:
@@ -134,6 +124,7 @@ class LogHours(View):
                     worker.logs = list(logs.filter(worker=worker))
                     worker.passes_controls = LogHour.worker_passes_controls(workday, worker.logs)
                     worker.passes_controls_string = LogHour.worker_passes_controls_string(workday, worker.logs)
+                    worker.tiene_tarea_especial_todo_el_dia = LogHour.tiene_tarea_especial_todo_el_dia(worker.logs)
                     # expected = 0
                     # if expected > 0:
                     #     percent = round(100 * LogHour.sum_hours(worker.logs) / expected)
@@ -188,7 +179,13 @@ class LogHours(View):
         tasks = serialize_tasks_with_logs(tasks)
         keyfunc = itemgetter("category")
         grouped_tasks = [{'name': key, 'tasks': list(grp)} for key, grp in groupby(sorted(tasks, key=keyfunc), key=keyfunc)]
+        print("+++++++ GROUPED TASKS +++++++")
+        # print(grouped_tasks)
+        for gt in tasks:
+            print(gt['code'] + " - " + gt['name'])
         tareas_que_no_suman = constants.TAREAS_QUE_NO_SUMAN
+        tareas_varios_trabajadores = constants.TAREAS_VARIOS_TRABAJADORES
+        tareas_especiales_todo_el_dia = constants.TAREAS_ESPECIALES_TODO_EL_DIA
 
         context = {
             'grouped_tasks': grouped_tasks,
@@ -197,7 +194,9 @@ class LogHours(View):
             'expected': expected,
             'workday': workday,
             'is_old_workday': is_old_workday,
-            'tareas_que_no_suman': tareas_que_no_suman
+            'tareas_que_no_suman': tareas_que_no_suman,
+            'tareas_varios_trabajadores': tareas_varios_trabajadores,
+            'tareas_especiales_todo_el_dia': tareas_especiales_todo_el_dia
         }
 
         return render(request, 'tracker/log_hours.html', context)
@@ -326,6 +325,7 @@ class PastDaysEdit(View):
                     worker.logs = list(logs.filter(worker=worker))
                     worker.passes_controls = LogHour.worker_passes_controls(workday, worker.logs)
                     worker.passes_controls_string = LogHour.worker_passes_controls_string(workday, worker.logs)
+                    worker.tiene_tarea_especial_todo_el_dia = LogHour.tiene_tarea_especial_todo_el_dia(worker.logs)
 
                     day = str(workday.date.day)
                     if day.__len__() == 1:
@@ -336,8 +336,7 @@ class PastDaysEdit(View):
                     year = str(workday.date.year)
                     dia = day + "/" + month + "/" + year
 
-                    if ((dia in constants.DIAS_DE_HORAS_EXTRA) or (
-                        workday.date.weekday() == 5 or workday.date.weekday() == 6)):
+                    if ((dia in constants.DIAS_DE_HORAS_EXTRA) or (workday.date.weekday() == 5 or workday.date.weekday() == 6)):
                         worker.passes_controls_string = "mayor"
                         expected = 9
                         percent = round(100 * LogHour.sum_hours(worker.logs) / expected)
@@ -397,6 +396,8 @@ class PastDaysEdit(View):
         keyfunc = itemgetter("category")
         grouped_tasks = [{'name': key, 'tasks': list(grp)} for key, grp in groupby(sorted(tasks, key=keyfunc), key=keyfunc)]
         tareas_que_no_suman = constants.TAREAS_QUE_NO_SUMAN
+        tareas_varios_trabajadores = constants.TAREAS_VARIOS_TRABAJADORES
+        tareas_especiales_todo_el_dia = constants.TAREAS_ESPECIALES_TODO_EL_DIA
 
         context = {
             'grouped_tasks': grouped_tasks,
@@ -405,7 +406,9 @@ class PastDaysEdit(View):
             'expected': expected,
             'workday': workday,
             'hayError': hayError,
-            'tareas_que_no_suman': tareas_que_no_suman
+            'tareas_que_no_suman': tareas_que_no_suman,
+            'tareas_varios_trabajadores': tareas_varios_trabajadores,
+            'tareas_especiales_todo_el_dia': tareas_especiales_todo_el_dia
         }
 
         return render(request, 'tracker/past_days_edit.html', context)
@@ -435,3 +438,17 @@ class DhtTasksReportResumen(View):
         buildings = Building.objects.all()
         context = {'obras': buildings}
         return render(request, 'tracker/dht_tasks_report_resumen.html', context)
+
+
+class DhtProdReport(View):
+    def get(self, request, username):
+        buildings = Building.objects.all()
+        context = {'obras': buildings}
+        return render(request, 'tracker/dht_prod_report.html', context)
+
+
+class DhtLluviasReport(View):
+    def get(self, request, username):
+        buildings = Building.objects.all()
+        context = {'obras': buildings}
+        return render(request, 'tracker/dht_lluvias_report.html', context)

@@ -9,43 +9,43 @@ GENERAL_CODE_SUFFIX = 'GR'
 
 # # Special Tasks
 # name for "Special" task category.
-SPECIAL_CATEGORY_NAME = 'Special'
+SPECIAL_CATEGORY_NAME = 'Especial'
 # special task code for worker absences.
-ABSENCE_CODE = 'F'
+ABSENCE_CODE = 'XF'
 # special task code for worker absences with notice.
-NOTICED_ABSENCE_CODE = 'FA'
+NOTICED_ABSENCE_CODE = 'XFA'
 # special task code for sick workers.
-SICK_CODE = 'E'
+SICK_CODE = 'XE'
 # special task code for bereavement leave.
-BEREAVEMENT_LEAVE_CODE = 'LD'
+BEREAVEMENT_LEAVE_CODE = 'XLD'
 # special task code for study leave.
-STUDY_LEAVE_CODE = 'LE'
+STUDY_LEAVE_CODE = 'XLE'
 # special task code for suspended workers.
-SUSPENDED_CODE = 'S'
+SUSPENDED_CODE = 'XS'
 # special task code for union assembly.
-UNION_ASSEMBLY_CODE = 'AS'
+UNION_ASSEMBLY_CODE = 'XAS'
 # special task code for blood donation.
-BLOOD_DONATION_CODE = 'DS'
+BLOOD_DONATION_CODE = 'XDS'
 # special task code for disabled child leave.
-DISABLED_CHILD_LEAVE_CODE = 'LHD'
+DISABLED_CHILD_LEAVE_CODE = 'XLHD'
 # special task code for marriage leave.
-MARRIAGE_LEAVE_CODE = 'LM'
+MARRIAGE_LEAVE_CODE = 'XLM'
 # special task code for paternity leave.
-PATERNITY_LEAVE_CODE = 'LP'
+PATERNITY_LEAVE_CODE = 'XLP'
 # special task code for strikes.
-STRIKE_CODE = 'P'
+STRIKE_CODE = 'XP'
 # special task code for general strikes.
-GENERAL_STRIKE_CODE = 'PG'
+GENERAL_STRIKE_CODE = 'XPG'
 # special task code for syndical leave
-UNION_LEAVE_CODE = 'LS'
+UNION_LEAVE_CODE = 'XLS'
 # special task code for early leaving
-EARLY_LEAVE_CODE = 'SA'
+EARLY_LEAVE_CODE = 'XSA'
 # special code for FOCAP training
-FOCAP_TRAINING_CODE = 'FOCAP'
+FOCAP_TRAINING_CODE = 'XFOCAP'
 # special code for training
-TRAINING_CODE = 'CAP'
+TRAINING_CODE = 'XCAP'
 # antiquity leave
-ANTIQUITY_LEAVE_CODE = 'LA'
+ANTIQUITY_LEAVE_CODE = 'XLA'
 # postobra
 POST_OBRA_CODE = 'POST'
 # rain
@@ -120,3 +120,12 @@ DIAS_DE_HORAS_EXTRA = ["07/05/2021", "01/05/2020", "02/05/2020", "03/05/2020"]
 
 
 TAREAS_QUE_NO_SUMAN = ["AS", "DS", "E", "F", "FA", "LD", "LE", "LHD", "LL", "LM", "LP", "P", "PG", "SA", "FOCAP", "FC", "T", "LA", "S", "XAS", "XDS", "XE", "XF", "XFA", "XLD", "XLE", "XLHD", "XLM", "XLP", "XP", "XPG", "XSA", "XFOCAP", "XFC", "XT", "XLA", "XS"];
+
+
+TAREAS_VARIOS_TRABAJADORES = ["XP", "XPG", "XAS", "XCH", "LL"];
+
+
+TAREAS_ESPECIALES_TODO_EL_DIA = ["XDS", "XE", "XF", "XFA", "XLD", "XLE", "XLM", "XLP", "XPG", "XFC", "XT", "XLA", "XS"];
+
+
+TAREAS_ESPECIALES = ["AS", "DS", "E", "F", "FA", "LD", "LE", "LHD", "LL", "LM", "LP", "P", "PG", "SA", "FOCAP", "FC", "T", "LA", "S", "XAS", "XDS", "XE", "XF", "XFA", "XLD", "XLE", "XLHD", "XLM", "XLP", "XP", "XPG", "XSA", "XFOCAP", "XFC", "XT", "XLA", "XS", "POST"];

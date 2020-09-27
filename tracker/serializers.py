@@ -3,7 +3,7 @@ def serialize_task(task, with_logs=False):
         'id': task.id,
         'code': task.code,
         'name': task.name,
-        'category': task.category.name,
+        'category': task.category.name.upper(),
         'description': task.description,
         'requires_comment': task.requires_comment,
         'is_boolean': task.is_boolean
@@ -45,7 +45,8 @@ def serialize_worker_with_logs(worker):
         'logs': serialize_logs(worker.logs, with_workers=False, with_tasks=True),
         'passes_controls': worker.passes_controls,
         'hours_percent': worker.hours_percent,
-        'passes_controls_string': worker.passes_controls_string
+        'passes_controls_string': worker.passes_controls_string,
+        'tiene_tarea_especial_todo_el_dia': worker.tiene_tarea_especial_todo_el_dia
     }
 
 

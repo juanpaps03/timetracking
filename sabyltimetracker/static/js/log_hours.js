@@ -3,17 +3,44 @@
 function get_datatable_info(table){
     let hours_list = [];
     let error = false;
-    table.$('input').each(function (i, el) {
+    table.$('.hours-input').each(function (i, el) {
         let htmlElement = $(el);
+        console.log(htmlElement.val());
         let hours = parseFloat(htmlElement.val());
         let workerCode = htmlElement[0].name;
         let comment = $('#'+workerCode+'-comment').val();
-        //Se controla que las horas ingresadas sean múltimplo de 0.5
+
+        if ($('#div-hours-many-workers').is(':visible')){
+            if ($('#'+workerCode+'-select-many-workers').is(':checked')){
+                console.log(workerCode + " - tiene check activo");
+                hours = parseFloat($('#hours-many-workers').val());
+                comment = $('#comment-many-workers').val();
+            } else {
+                console.log(workerCode + " - tiene check inactivo");
+            }
+
+        }
+
+        //Se controla que las horas ingresadas sean múltiplo de 0.5
         if (hours*2%1!==0) {
             error = true;
         } else {
-            if (htmlElement.attr('type') === 'checkbox')
-                hours = (htmlElement.prop('checked') ? 9 : 0);
+            if (htmlElement.attr('type') === 'checkbox'){
+//                if (is_expected_eight_hours == true){
+//                    hours = (htmlElement.prop('checked') ? 8 : 0);
+//                } else {
+//                    hours = (htmlElement.prop('checked') ? 9 : 0);
+//                }
+
+                console.log('expected: ' + expected);
+                if (expected == 8){
+                    console.log('expected es 8');
+                    hours = (htmlElement.prop('checked') ? 8 : 0);
+                } else {
+                    console.log('expected es 9');
+                    hours = (htmlElement.prop('checked') ? 9 : 0);
+                }
+            }
             let userId = htmlElement.attr('name');
             hours_list.push({'user': userId, 'amount': hours, 'comment':comment});
         }
@@ -25,20 +52,19 @@ function get_datatable_info(table){
 
 $(document).ready(function() {
     const $select_all = $('#select-all');
+    const $select_many_workers = $('#select-many-workers');
     const $task = $('#task');
     const $task_category = $('#task-category');
     const $hours_label = $('.hours-label');
     const $hours_input = $('.hours-input');
+    const $check_input = $('.check-input');
     const $submit_hours = $('#submit-hours');
-    const $comment_group = $('#comment-group');
-//    const $comment = $('#comment');
 
     var require_prompt_on_task_change = false;
     var current_category = '';
     var current_task = '';
 
     $select_all.hide();
-    //$comment_group.hide();
     $('[data-toggle="tooltip"]').tooltip();
     let table = $('#hours_per_user').DataTable( {
         "pageLength": 100,
@@ -88,29 +114,47 @@ $(document).ready(function() {
         // are defined in log_hours.html javascript_header section
         if (data.hours_list && data.hours_list.length > 0) {
 
+//            if (task.category.toLowerCase().indexOf("especial") > -1){
+//                console.log('task.category es especial');
+//                let i = 0;
+//                while (i < data.hours_list.length){
+////                    let workerCode = data.hours_list[i].user;
+////                    let input = $('#'+workerCode+'-hours');
+//                    if (data.hours_list[i].amount > 0){
+//                        if (data.hours_list[i].comment == ""){
+////                            alert(COMMENT_REQUIRED_TXT + " - userId: " + data.hours_list[i].user + " - task_id: " + task.code);
+////                            return false;
+//                            /* Se setea codigo de la tarea de forma automatica en comentario de la tarea */
+//                            data.hours_list[i].comment = task.code;
+//                        }
+//                    }
+//                    i++;
+//                }
+//            } else {
+//                console.log('task.category NO es especial');
+//            }
 
 
+
+            /** Comentario obligatorio **/
             if (task.requires_comment) {
                 let i = 0;
                 while (i < data.hours_list.length){
-
 //                    let workerCode = data.hours_list[i].user;
 //                    let input = $('#'+workerCode+'-hours');
-
                     if (data.hours_list[i].amount > 0){
                         if (data.hours_list[i].comment == ""){
-                            alert(COMMENT_REQUIRED_TXT + " - userId: " + data.hours_list[i].user);
-                            return false;
+//                            alert(COMMENT_REQUIRED_TXT + " - userId: " + data.hours_list[i].user + " - task_id: " + task.code);
+//                            return false;
+                            /* Se setea codigo de la tarea de forma automatica en comentario de la tarea */
+                            /* Por ahora se quitan los comentarios obligatorios */
+//                            data.hours_list[i].comment = task.code;
                         }
                     }
-
-
                     i++;
                 }
-
-
             }
-
+            /** Fin de Comentario obligatorio **/
 
 
 //            if (task.requires_comment && !comment) {
@@ -242,18 +286,30 @@ $(document).ready(function() {
         $hours_input.val(0);
         $hours_input.prop('checked', false);
         if (task) {
-            $hours_input.prop('disabled', false);
+            if (jQuery.inArray(task.code, tasks_many_workers) !== -1) {
+                $('#div-hours-many-workers').show();
+                $('#th-hours-many-workers').show();
+                $('.td-hours-many-workers').show();
+                $hours_input.prop('disabled', true);
+                $('.comentario').prop('disabled', true);
+            } else {
+                $('#div-hours-many-workers').hide();
+                $('#th-hours-many-workers').hide();
+                $('.td-hours-many-workers').hide();
+                $hours_input.prop('disabled', false);
+                $('.comentario').prop('disabled', false);
+            }
+
             $submit_hours.prop('disabled', false);
-            $('.comentario').prop('disabled', false);
+
             if(task.is_boolean) {
                 $hours_input.attr('type', 'checkbox');
                 $select_all.show();
-                if (task.logs) {
+                if ((task.logs) && (task.logs.length > 0)){
                     for (let i in task.logs) {
                         let log = task.logs[i];
                         $('#'+log.worker.code+'-hours').prop('checked', true);
                         $('#'+ log.worker.code +'-comment').val(log.comment);
-
                     }
                     $submit_hours.text(UPDATE_BOOLEAN_TASK_TXT+ ' '+ task.name);
                 } else {
@@ -261,7 +317,7 @@ $(document).ready(function() {
                 }
                 $hours_label.text(task.name);
             } else {
-                if (task.logs) {
+                if ((task.logs) && (task.logs.length > 0)){
                     for (let i in task.logs) {
                         let log = task.logs[i];
                         $('#'+log.worker.code+'-hours').val(log.amount);
@@ -270,14 +326,16 @@ $(document).ready(function() {
                     $submit_hours.text(UPDATE_HOURS_FOR_TXT+ ' ' + task.name);
                 } else {
                     $submit_hours.text(LOG_HOURS_FOR_TXT +' '+ task.name);
+                    for (let j in workers) {
+                        let worker = workers[j];
+                        $('#'+worker.code+'-comment').val('');
+                    }
                 }
                 $hours_label.text(HOURS_FOR_TXT + ' ' + task.name);
             }
             if (task.requires_comment) {
-                //$comment_group.show();
                 $('textarea').attr('placeholder', COMMENT_REQUIRED_TXT);
             } else {
-                //$comment_group.hide();
                 $('textarea').attr('placeholder', COMMENT_NOT_REQUIRED_TXT);
             }
 
@@ -291,12 +349,20 @@ $(document).ready(function() {
             $submit_hours.text(LOG_HOURS_TXT);
             update_logged_hours(null);
             $('.comentario').prop('disabled', true);
+            $('#div-hours-many-workers').hide();
+            $('#th-hours-many-workers').hide();
+            $('.td-hours-many-workers').hide();
         }
     });
 
     $select_all.change( () => {
         $hours_input.prop('checked', $select_all.prop('checked'));
     });
+
+    $select_many_workers.change( () => {
+        $check_input.prop('checked', $select_many_workers.prop('checked'));
+    });
+
 
     $hours_input.change( () => {
         require_prompt_on_task_change = true;
@@ -388,13 +454,26 @@ function update_logged_hours(excluded_task_id) {
     for (i in workers) {
         let worker = workers[i];
         let sum = 0;
+        let sum_tarea_especial_todo_el_dia = 0;
+        let tiene_tarea_especial_todo_el_dia = false
         for (j in worker.logs) {
             let log = worker.logs[j];
+            // Si el codigo de tarea no pertenece al arreglo tareas_que_no_suman, se siguen sumando los logs
             if (jQuery.inArray(log.task.code, tareas_que_no_suman) == -1) {
                 sum += log.amount;
             }
+            // Si el codigo de tarea pertenece al arreglo tareas_especiales_todo_el_dia se obtiene las horas de logs
+            if (jQuery.inArray(log.task.code, tareas_especiales_todo_el_dia) > -1) {
+                sum_tarea_especial_todo_el_dia += log.amount;
+                tiene_tarea_especial_todo_el_dia = true;
+            }
         }
-        $('#'+worker.code+'-logged-hours').text(sum);
+
+        if (tiene_tarea_especial_todo_el_dia){
+            $('#'+worker.code+'-logged-hours').text(sum_tarea_especial_todo_el_dia);
+        } else {
+            $('#'+worker.code+'-logged-hours').text(sum);
+        }
     }
     let $logged_hours_label = $('.logged-hours-label');
     if(excluded_task_id)
