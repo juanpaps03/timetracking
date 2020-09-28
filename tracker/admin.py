@@ -17,7 +17,6 @@ from tracker.models import Building, Workday, LogHour, Task, TaskCategory, Worke
 from .models import User
 from django.db import IntegrityError
 from import_export import resources
-from tracker.models import TaskCategory
 
 # Admin Site Config
 admin.sites.AdminSite.site_header = _('Sabyl TimeTracker')
@@ -27,16 +26,25 @@ admin.sites.AdminSite.index_title = _('Home')
 
 admin.site.unregister(Group)
 admin.site.register(LogHour)
-admin.site.register(Task)
+# admin.site.register(Task)
 admin.site.register(TaskCategory)
 admin.site.register(WorkerCategory)
-admin.site.register(Worker)
+# admin.site.register(Worker)
 
+
+@admin.register(Task)
+class TaskAdmin(admin.ModelAdmin):
+    ordering = ['code']
+
+@admin.register(Worker)
+class WorkerAdmin(admin.ModelAdmin):
+    ordering = ['code']
 
 @admin.register(Building)
 class BuildingAdmin(admin.ModelAdmin):
     list_display = ('code', 'address', 'report_buttons')
     filter_horizontal = ('workers', 'tasks')
+    ordering = ['code']
 
     def report_buttons(self, obj):
         return format_html('<a class="button" target="_blank" href="{}">{}</a>',
