@@ -71,10 +71,10 @@
           <h3 class="menu-title">{% trans 'Menu' %}</h3><!-- /.menu-title -->
           <li><a href="{% url 'tracker:past_days' request.user.username %}"><i class="menu-icon fa fa-calendar"></i>{% trans 'Past Days' %}</a></li>
           <li><a href="{% url 'tracker:dht_report' request.user.username %}"><i class="menu-icon fa fa-table"></i>{% trans 'DHT General' %}</a></li>
-          <li><a href="{% url 'tracker:dht_tasks_report' request.user.username %}"><i class="menu-icon fa fa-table"></i>{% trans 'DHT Tareas' %}</a></li>
+          <li><a href="{% url 'tracker:dht_prod_report' request.user.username %}"><i class="menu-icon fa fa-table"></i>{% trans 'DHT Producción' %}</a></li>
           {%  if request.user.is_superuser or request.user.is_staff %}
+            <li><a href="{% url 'tracker:dht_tasks_report' request.user.username %}"><i class="menu-icon fa fa-table"></i>{% trans 'DHT Tareas' %}</a></li>
             <li><a href="{% url 'tracker:dht_tasks_report_resumen' request.user.username %}"><i class="menu-icon fa fa-table"></i>{% trans 'DHT Tareas Resumen' %}</a></li>
-            <li><a href="{% url 'tracker:dht_prod_report' request.user.username %}"><i class="menu-icon fa fa-table"></i>{% trans 'DHT Producción' %}</a></li>
             <li><a href="{% url 'tracker:dht_lluvias_report' request.user.username %}"><i class="menu-icon fa fa-table"></i>{% trans 'DHT Lluvias' %}</a></li>
             <li><a href="{% url 'admin:index' %}"><i class="menu-icon fa fa-table"></i>{% trans 'Administración' %}</a></li>
           {% endif %}
