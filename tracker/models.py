@@ -2190,17 +2190,17 @@ class Building(models.Model):
 
             # print("SE IMPRIME LISTA DE WORKERS FINAL DE UNA TAREA (filas de una tarea a imprimir)")
             for w in lista_workers_final:
-                r.write('B%d' % fila, tar, header_center_without_bg)
-                r.write('C%d' % fila, w.wkr.code, header_center_without_bg)
-                r.write('D%d' % fila, w.wkr.full_name(), format_align_left)
-                r.write('E%d' % fila, str(w.wkr.category.code), header_center_without_bg)
-                r.write_formula('I%d' % fila, '=sum(U%d:%s%d)' % (fila, letterBikeekyEnd, fila),
+                # r.write('B%d' % fila, tar, header_center_without_bg)
+                r.write('B%d' % fila, w.wkr.code, header_center_without_bg)
+                r.write('C%d' % fila, w.wkr.full_name(), format_align_left)
+                r.write('D%d' % fila, str(w.wkr.category.code), header_center_without_bg)
+                r.write_formula('H%d' % fila, '=sum(T%d:%s%d)' % (fila, letterBikeekyEnd, fila),
                                 number_format)  # total hours first biweekly
                 if esConsultaDosQuincenas:
-                    r.write_formula('J%d' % fila,
+                    r.write_formula('I%d' % fila,
                                     '=sum(%s%d:%s%d)' % (letterSecondBikeekyStart, fila, letterEnd, fila),
                                     number_format)  # total hours second biweekly
-                r.write_formula('K%d' % fila, '=sum(I%d:J%d)' % (fila, fila), number_format)  # total hours
+                r.write_formula('J%d' % fila, '=sum(H%d:I%d)' % (fila, fila), number_format)  # total hours
 
                 for nodo in w.lista_columna_monto:
                     r.write('%s%d' % (nodo.col, fila), nodo.monto, number_format)
