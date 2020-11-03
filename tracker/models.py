@@ -449,6 +449,8 @@ class Building(models.Model):
         header = workbook.add_format({'bg_color': '#F7F7F7', 'color': 'black', 'align': 'left', 'border': 1})
         header_center = workbook.add_format({'bg_color': '#F7F7F7', 'color': 'black', 'align': 'center', 'border': 1})
         header_center_without_bg = workbook.add_format({'color': 'black', 'align': 'center', 'border': 1})
+        code_header_center_without_bg = workbook.add_format({'color': 'black', 'align': 'center', 'border': 1})
+        code_header_center_without_bg.set_num_format(1)
         format_align_left = workbook.add_format({'color': 'black', 'align': 'left', 'border': 1})
         number_format = workbook.add_format()
         number_format.set_num_format(2)
@@ -787,7 +789,7 @@ class Building(models.Model):
         letterEnd = utils.column_letter(col-1)
         print("letra final: " + letterEnd)
         for worker in workers_ordenados:
-            r.write('B%d' % rowNames, worker.code, header_center_without_bg)
+            r.write('B%d' % rowNames, worker.code, code_header_center_without_bg)
             r.write('C%d' % rowNames, worker.full_name(), format_align_left)
             r.write('D%d' % rowNames, str(worker.category.code), header_center_without_bg)
             r.write_formula('H%d' % rowNames, '=sum(T%d:%s%d)' % (rowNames, letterBikeekyEnd, rowNames), number_format)  # total hours first biweekly
@@ -842,6 +844,8 @@ class Building(models.Model):
         header = workbook.add_format({'bg_color': '#F7F7F7', 'color': 'black', 'align': 'left', 'border': 1})
         header_center = workbook.add_format({'bg_color': '#F7F7F7', 'color': 'black', 'align': 'center', 'border': 1})
         header_center_without_bg = workbook.add_format({'color': 'black', 'align': 'center', 'border': 1})
+        code_header_center_without_bg = workbook.add_format({'color': 'black', 'align': 'center', 'border': 1})
+        code_header_center_without_bg.set_num_format(1)
         format_align_left = workbook.add_format({'color': 'black', 'align': 'left', 'border': 1})
         number_format = workbook.add_format()
         number_format.set_num_format(2)
@@ -1175,7 +1179,7 @@ class Building(models.Model):
             # print("SE IMPRIME LISTA DE WORKERS FINAL DE UNA TAREA (filas de una tarea a imprimir)")
             for w in lista_workers_final:
                 r.write('B%d' % fila, tar, header_center_without_bg)
-                r.write('C%d' % fila, w.wkr.code, header_center_without_bg)
+                r.write('C%d' % fila, w.wkr.code, code_header_center_without_bg)
                 r.write('D%d' % fila, w.wkr.full_name(), format_align_left)
                 r.write('E%d' % fila, str(w.wkr.category.code), header_center_without_bg)
                 r.write_formula('I%d' % fila, '=sum(U%d:%s%d)' % (fila, letterBikeekyEnd, fila), number_format)  # total hours first biweekly
@@ -1484,6 +1488,8 @@ class Building(models.Model):
         header = workbook.add_format({'bg_color': '#F7F7F7', 'color': 'black', 'align': 'left', 'border': 1})
         header_center = workbook.add_format({'bg_color': '#F7F7F7', 'color': 'black', 'align': 'center', 'border': 1})
         header_center_without_bg = workbook.add_format({'color': 'black', 'align': 'center', 'border': 1})
+        code_header_center_without_bg = workbook.add_format({'color': 'black', 'align': 'center', 'border': 1})
+        code_header_center_without_bg.set_num_format(1)
         format_align_left = workbook.add_format({'color': 'black', 'align': 'left', 'border': 1})
         number_format = workbook.add_format()
         number_format.set_num_format(2)
@@ -1821,7 +1827,7 @@ class Building(models.Model):
             # print("SE IMPRIME LISTA DE WORKERS FINAL DE UNA TAREA (filas de una tarea a imprimir)")
             for w in lista_workers_final:
                 r.write('B%d' % fila, tar, header_center_without_bg)
-                r.write('C%d' % fila, w.wkr.code, header_center_without_bg)
+                r.write('C%d' % fila, w.wkr.code, code_header_center_without_bg)
                 r.write('D%d' % fila, w.wkr.full_name(), format_align_left)
                 r.write('E%d' % fila, str(w.wkr.category.code), header_center_without_bg)
                 r.write_formula('I%d' % fila, '=sum(U%d:%s%d)' % (fila, letterBikeekyEnd, fila), number_format)  # total hours first biweekly
@@ -1867,9 +1873,10 @@ class Building(models.Model):
         r = workbook.add_worksheet(__("Reporte"))
         title = workbook.add_format({'bold': True, 'font_size': 14, 'align': 'left'})
         header = workbook.add_format({'bg_color': '#F7F7F7', 'color': 'black', 'align': 'left', 'border': 1})
-        header_center = workbook.add_format(
-            {'bg_color': '#F7F7F7', 'color': 'black', 'align': 'center', 'border': 1})
+        header_center = workbook.add_format({'bg_color': '#F7F7F7', 'color': 'black', 'align': 'center', 'border': 1})
         header_center_without_bg = workbook.add_format({'color': 'black', 'align': 'center', 'border': 1})
+        code_header_center_without_bg = workbook.add_format({'color': 'black', 'align': 'center', 'border': 1})
+        code_header_center_without_bg.set_num_format(1)
         format_align_left = workbook.add_format({'color': 'black', 'align': 'left', 'border': 1})
         number_format = workbook.add_format()
         number_format.set_num_format(2)
@@ -2191,7 +2198,7 @@ class Building(models.Model):
             # print("SE IMPRIME LISTA DE WORKERS FINAL DE UNA TAREA (filas de una tarea a imprimir)")
             for w in lista_workers_final:
                 # r.write('B%d' % fila, tar, header_center_without_bg)
-                r.write('B%d' % fila, w.wkr.code, header_center_without_bg)
+                r.write('B%d' % fila, w.wkr.code, code_header_center_without_bg)
                 r.write('C%d' % fila, w.wkr.full_name(), format_align_left)
                 r.write('D%d' % fila, str(w.wkr.category.code), header_center_without_bg)
                 r.write_formula('H%d' % fila, '=sum(T%d:%s%d)' % (fila, letterBikeekyEnd, fila),
@@ -2385,6 +2392,8 @@ class Workday(models.Model):
         r = workbook.add_worksheet(__("Daily Report"))
         title = workbook.add_format({'bold': True, 'font_size': 14, 'align': 'left'})
         header = workbook.add_format({'bg_color': '#F7F7F7', 'color': 'black', 'align': 'left', 'border': 1})
+        code_header = workbook.add_format({'bg_color': '#F7F7F7', 'color': 'black', 'align': 'center', 'border': 1})
+        code_header.set_num_format(1)
         task_header = workbook.add_format({'bg_color': '#F7F7F7', 'color': 'black', 'align': 'center', 'border': 1})
         number_format = workbook.add_format()
         number_format.set_num_format(2)
@@ -2435,7 +2444,7 @@ class Workday(models.Model):
         columns_no_empty = []
         columns_empty = []
         for worker in workers_ordenados:
-            r.write('A%d' % row, worker.code, header)
+            r.write('A%d' % row, worker.code, code_header)
             if len(worker.code) > code_width:
                 code_width = len(worker.code)
             r.write('B%d' % row, worker.full_name(), header)

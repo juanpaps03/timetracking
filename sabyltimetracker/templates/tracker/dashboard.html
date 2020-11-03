@@ -57,11 +57,20 @@
                 <div class="stat-digit">{{ workers_missing_logs|length }}</div>
             {% else %}
               <div class="stat-text">
-                {% trans "All workers have logs to match their hours. When you are sure everything is done, you can end the day." %}
+                Todos los trabajadores tienen registros correspondientes a sus horas. Cuando esté seguro de que todo está hecho, puede terminar el día.
               </div>
             {% endif %}
           </div>
         </div>
+
+        {% if workers_missing_logs %}
+            <div class="mt-2">
+                <span>Códigos: </span>
+                {% for workerml in workers_missing_logs %}
+                    <span>{{ workerml.code }},</span>
+                {% endfor %}
+            </div>
+        {% endif %}
       </div>
     </div>
   </div>
