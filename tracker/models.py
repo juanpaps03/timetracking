@@ -715,8 +715,14 @@ class Building(models.Model):
                                 arreglo_tareas_varios_trabajadores.append(log.task.code)
                                 if comentario_del_dia:
                                     comentario_del_dia = comentario_del_dia + " ** " + log.task.code + " - " + log.comment
+                                    print("comentario_del_dia")
+                                    print(comentario_del_dia)
                                 else:
                                     comentario_del_dia = log.task.code + " - " + log.comment
+                                    print("comentario_del_dia")
+                                    print(comentario_del_dia)
+                                print("algooo66")
+
                         else:
                             if log.task.code in constants.TAREAS_ESPECIALES:
                                 print("algooo7")
