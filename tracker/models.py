@@ -717,19 +717,21 @@ class Building(models.Model):
                                 print(log)
                                 print(log.task)
                                 print(log.task.code)
+                                comentario = ""
                                 if log.comment:
                                     print(log.comment)
+                                    comentario = log.comment
                                 else:
                                     print("no hay comentario")
                                 arreglo_tareas_varios_trabajadores.append(log.task.code)
                                 if comentario_del_dia:
                                     print("algo61")
-                                    comentario_del_dia = comentario_del_dia + " ** " + log.task.code + " - " + log.comment
+                                    comentario_del_dia = comentario_del_dia + " ** " + log.task.code + " - " + comentario
                                     print("comentario_del_dia")
                                     print(comentario_del_dia)
                                 else:
                                     print("algo62")
-                                    comentario_del_dia = log.task.code + " - " + log.comment
+                                    comentario_del_dia = log.task.code + " - " + comentario
                                     print("comentario_del_dia")
                                     print(comentario_del_dia)
                                 print("algooo66")
