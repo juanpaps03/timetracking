@@ -680,6 +680,8 @@ class Building(models.Model):
                 row = 6
                 for worker in workers_ordenados:
                     print("Entro a for de los workers_ordenados")
+                    print(worker)
+                    print(worker.code)
                     worker.logs = list(workday.logs.filter(worker=worker))
                     suma = 0
                     comentario = ""
@@ -712,6 +714,9 @@ class Building(models.Model):
                             print("algooo5")
                             if log.task.code not in arreglo_tareas_varios_trabajadores:
                                 print("algooo6")
+                                print(log)
+                                print(log.task)
+                                print(log.task.code)
                                 arreglo_tareas_varios_trabajadores.append(log.task.code)
                                 if comentario_del_dia:
                                     comentario_del_dia = comentario_del_dia + " ** " + log.task.code + " - " + log.comment
