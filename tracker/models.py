@@ -679,15 +679,18 @@ class Building(models.Model):
                 # Se cargan logs de los trabajadores
                 row = 6
                 for worker in workers_ordenados:
-                    # print("Entro a for de los workers_ordenados")
+                    print("Entro a for de los workers_ordenados")
                     worker.logs = list(workday.logs.filter(worker=worker))
                     suma = 0
                     comentario = ""
+                    print("algooo1")
                     for log in worker.logs:
                         # col = None
                         if log.task.whole_day:
                             # se obtienen las horas esperadas para el día workday
                             text = log.workday.expected_hours()
+
+                            print("algooo2")
 
                             # se controla tareas que no suman
                             if log.task.code not in constants.TAREAS_QUE_NO_SUMAN:
@@ -697,14 +700,18 @@ class Building(models.Model):
                                     suma = 8
 
                         else:
+                            print("algooo3")
                             text = log.amount
                             # se controla tareas que no suman
                             if log.task.code not in constants.TAREAS_QUE_NO_SUMAN:
                                 suma = suma + text
 
+                        print("algooo4")
                         # Se cargan las notas. Si es una tarea especial se agrega el codigo de la tarea en el comentario.
                         if log.task.code in constants.TAREAS_VARIOS_TRABAJADORES:
+                            print("algooo5")
                             if log.task.code not in arreglo_tareas_varios_trabajadores:
+                                print("algooo6")
                                 arreglo_tareas_varios_trabajadores.append(log.task.code)
                                 if comentario_del_dia:
                                     comentario_del_dia = comentario_del_dia + " ** " + log.task.code + " - " + log.comment
@@ -712,6 +719,7 @@ class Building(models.Model):
                                     comentario_del_dia = log.task.code + " - " + log.comment
                         else:
                             if log.task.code in constants.TAREAS_ESPECIALES:
+                                print("algooo7")
                                 if log.comment:
                                     if comentario:
                                         comentario = comentario + " ** " + log.task.code + " - " + log.comment
@@ -720,6 +728,7 @@ class Building(models.Model):
                                 else:
                                     comentario = log.task.code
                             else:
+                                print("algooo8")
                                 if log.comment:
                                     if comentario:
                                         comentario = comentario + " ** " + log.comment
@@ -727,13 +736,16 @@ class Building(models.Model):
                                         comentario = log.comment
 
                     expected = workday.expected_hours()
+                    print("algooo9")
 
                     # Se agrega la nota
                     if comentario:
                         r.write_comment('%s%d' % (letter, row), comentario)
+                    print("algooo10")
 
                     if comentario_del_dia:
                         r.write_comment('%s5' % letter, comentario_del_dia)
+                    print("algooo11")
 
                     # Se controla si se pinta la celda o no
                     if suma != expected:
@@ -741,11 +753,12 @@ class Building(models.Model):
                     else:
                         format_cell = number_format
 
+                    print("algooo12")
                     r.write('%s%d' % (letter, row), suma, format_cell)
 
                     # Para contar horas extras
                     if esPrimeraQuincena:
-                        # print("esPrimeraQuincena")
+                        print("esPrimeraQuincenaaaa")
                         if row in diccionarioPrimeraQuincena:
                             if suma > expected:
                                 diccionarioPrimeraQuincena[row] = diccionarioPrimeraQuincena[row] + (suma - expected)
@@ -754,7 +767,7 @@ class Building(models.Model):
                             if suma > expected:
                                 diccionarioPrimeraQuincena[row] = diccionarioPrimeraQuincena[row] + (suma - expected)
                     else:
-                        # print("esSegundaQuincena")
+                        print("esSegundaQuincenaaaaaa")
                         if row in diccionarioSegundaQuincena:
                             if suma > expected:
                                 diccionarioSegundaQuincena[row] = diccionarioSegundaQuincena[row] + (suma - expected)
@@ -765,23 +778,26 @@ class Building(models.Model):
 
                     row += 1
 
+            print("algooo20")
             if day == end_date_biweekly:
                 colFinPrimeraQuincena = col
                 esPrimeraQuincena = False
 
             arreglo_tareas_varios_trabajadores.clear()
             day = day + timedelta(days=1)
+            print("algooo21")
             col += 1
 
-
+        print("algooo22")
         #Se obtiene letra de columna de fin de primera quincena
-        letterBikeekyEnd = utils.column_letter(colFinPrimeraQuincena)
-        print("letterBikeekyEnd: " + letterBikeekyEnd)
+        letterBiweeklyEnd = utils.column_letter(colFinPrimeraQuincena)
+        print("letterBiweeklyEnd: " + letterBiweeklyEnd)
+
 
         # Se obtiene letra de columna de comienzo de segunda quincena
         if esConsultaDosQuincenas:
-            letterSecondBikeekyStart = utils.column_letter(colFinPrimeraQuincena+1)
-            print("letterSecondBikeekyStart: " + letterSecondBikeekyStart)
+            letterSecondBiweeklyStart = utils.column_letter(colFinPrimeraQuincena+1)
+            print("letterSecondBiweeklyStart: " + letterSecondBiweeklyStart)
 
 
         # Se cargan los nombres de los trabajadores
@@ -792,9 +808,9 @@ class Building(models.Model):
             r.write('B%d' % rowNames, worker.code, code_header_center_without_bg)
             r.write('C%d' % rowNames, worker.full_name(), format_align_left)
             r.write('D%d' % rowNames, str(worker.category.code), header_center_without_bg)
-            r.write_formula('H%d' % rowNames, '=sum(T%d:%s%d)' % (rowNames, letterBikeekyEnd, rowNames), number_format)  # total hours first biweekly
+            r.write_formula('H%d' % rowNames, '=sum(T%d:%s%d)' % (rowNames, letterBiweeklyEnd, rowNames), number_format)  # total hours first biweekly
             if esConsultaDosQuincenas:
-                r.write_formula('I%d' % rowNames, '=sum(%s%d:%s%d)' % (letterSecondBikeekyStart, rowNames, letterEnd, rowNames), number_format)  # total hours second biweekly
+                r.write_formula('I%d' % rowNames, '=sum(%s%d:%s%d)' % (letterSecondBiweeklyStart, rowNames, letterEnd, rowNames), number_format)  # total hours second biweekly
             r.write_formula('J%d' % rowNames, '=sum(T%d:%s%d)' % (rowNames, letterEnd, rowNames), number_format)  # total hours
 
             # Se imprimen horas extras cargadas en los diccionarios
