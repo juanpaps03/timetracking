@@ -513,12 +513,16 @@ class ExistWorkday(APIView):
                 print(date)
 
                 try:
+                    print("antes de obtener workday")
                     workday = Workday.objects.get(building=building, date=date)
+                    print("despues de obtener workday")
                 except Workday.DoesNotExist:
                     workday = None
 
                 if workday:
+                    print("antes de imprimir workday")
                     print(workday)
+                    print("despues de imprimir workday")
                     return JsonResponse({'message': 'Exito, se obtuvo workday'}, status=200)
                 else:
                     print('No se obtuvo workday')
