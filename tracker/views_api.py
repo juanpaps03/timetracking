@@ -518,6 +518,9 @@ class ExistWorkday(APIView):
                     print("despues de obtener workday")
                 except Workday.DoesNotExist:
                     workday = None
+                except Exception:
+                    print("entra en excepcion general porque fallo el obtener workday")
+                    return JsonResponse({'message': 'Algo salió mal. Intente nuevamente.'}, status=500)
 
                 if workday:
                     print("antes de imprimir workday")
