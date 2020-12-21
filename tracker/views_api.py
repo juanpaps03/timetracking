@@ -490,6 +490,8 @@ class ExistWorkday(APIView):
             print(user.full_name())
             print(user.email)
 
+            print("Antes del if del wd")
+
             if wd:
                 # partes1 = initialDay.split("_")
                 # dia1 = partes1[0]
