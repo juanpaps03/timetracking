@@ -504,7 +504,12 @@ class ExistWorkday(APIView):
                 # wd = str(anio) + "-" + str(mes) + "-" + str(dia)
 
                 # date = datetime.datetime.strptime(wd, "%Y-%m-%d").date()
+                print("existe wd")
+                print(wd)
                 date = datetime.datetime.strptime(wd, "%d/%m/%Y").date()
+                print("luego de obtener date")
+                print(date)
+
                 try:
                     workday = Workday.objects.get(building=building, date=date)
                 except Workday.DoesNotExist:
