@@ -2534,10 +2534,10 @@ class Workday(models.Model):
                             notas_generales[log.task.code] = (log.task, comentario)
                     else:
                         if worker.code not in notes:
-                            notes[worker.code] = worker.code + " - " + worker.full_name() + ": " + comentario
+                            notes[worker.code] = worker.code + " - " + worker.full_name() + ": " + comentario + " (" + log.task.code + ")"
                         else:
                             com = notes[worker.code]
-                            com = com + " ** " + comentario
+                            com = com + " ** " + comentario + " (" + log.task.code + ")"
                             notes[worker.code] = com
 
 
