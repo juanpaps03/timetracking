@@ -114,18 +114,17 @@ MANAGERS = ADMINS
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#databases
 # Uses django-environ to accept uri format
 # See: https://django-environ.readthedocs.io/en/latest/#supported-types
-DATABASES = {
-   'default': env.db('DATABASE_URL', default='postgres:///sabyltimetracker'),
-}
-
-DATABASES['default']['ATOMIC_REQUESTS'] = True
+# DATABASES = {
+#    'default': env.db('DATABASE_URL', default='postgres:///sabyltimetracker'),
+# }
+#
+# DATABASES['default']['ATOMIC_REQUESTS'] = True
 
 
 # GENERAL CONFIGURATION
 # ------------------------------------------------------------------------------
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
-# although not all choices may be available on all operating systems.
 # In a Windows environment this must be set to your system time zone.
 TIME_ZONE = 'America/Montevideo'
 

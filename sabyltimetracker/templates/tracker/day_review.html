@@ -148,7 +148,7 @@
                         {% trans 'To end a day without all workers having their required hours logged, a written comment is mandatory.' %}
                       </p>
                       <form method="post" action="{% url 'tracker:api_end_day' request.user.username %}">{% csrf_token %}
-                        <textarea name="comment" required rows="6" placeholder="{% trans 'Comment (required)' %}" class="form-control"></textarea>
+                        <textarea name="comment" required rows="6" placeholder="{% trans 'Comment (required)' %}" class="form-control">{{ comentario }}</textarea>
                         <br>
                         <button type="submit" class="btn btn-lg btn-block btn-outline-success">{% trans "Confirm and End Day" %}</button>
                       </form>

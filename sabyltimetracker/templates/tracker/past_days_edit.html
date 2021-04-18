@@ -306,6 +306,71 @@
           </div>
         </div>
       </div>
+      {% if mostrarUteOse %}
+        <div id="comment-ute" class="row">
+          <div class="col-xs-6 col-lg-12">
+            <div class="card">
+              <div class="card-header">
+                <strong>UTE</strong>
+              </div>
+              <div class="card-body card-block">
+                <div class="form-group row">
+                  <label for="entrada-activa" class="col-md-2 col-form-label">Entrada activa:</label>
+                  <div class="col-md-3">
+                    <input id="entrada-activa" name="entrada-activa" value="{{ entrada_activa }}" class="form-control">
+                  </div>
+                  <div class="col-md-1">
+                  </div>
+                  <label for="entrada-reactiva" class="col-md-2 col-form-label">Entrada reactiva:</label>
+                  <div class="col-md-3">
+                    <input id="entrada-reactiva" name="entrada-reactiva" value="{{ entrada_reactiva }}" class="form-control">
+                  </div>
+                </div>
+
+                <div class="form-group row">
+                  <label for="salida-activa" class="col-md-2 col-form-label">Salida activa:</label>
+                  <div class="col-md-3">
+                    <input id="salida-activa" name="salida-activa" value="{{ salida_activa }}" class="form-control">
+                  </div>
+                  <div class="col-md-1">
+                  </div>
+                  <label for="salida-reactiva" class="col-md-2 col-form-label">Salida reactiva:</label>
+                  <div class="col-md-3">
+                    <input id="salida-reactiva" name="salida-reactiva" value="{{ salida_reactiva }}" class="form-control">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="comment-ose" class="row">
+          <div class="col-xs-6 col-lg-12">
+            <div class="card">
+              <div class="card-header">
+                <strong>OSE</strong>
+              </div>
+              <div class="card-body card-block">
+                <div class="form-group row">
+                  <label for="ose" class="col-md-2 col-form-label">Consumo:</label>
+                  <div class="col-md-3">
+                    <input id="ose" name="ose" value="{{ ose }}" class="form-control">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-xs-6 col-lg-12">
+            <div class="card">
+              <div class="card-body card-block">
+                <button id="submit-ute-ose" type="submit" disabled class="btn btn-lg btn-block btn-success">Registrar UTE-OSE</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      {% endif %}
   {% endif %}
 
 {% endblock content%}

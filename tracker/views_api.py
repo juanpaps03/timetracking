@@ -14,6 +14,7 @@ from config import messages
 import datetime
 import convertapi
 
+
 convertapi.api_secret = 'OeuVcz0cyMNL9tTh'
 
 
@@ -93,6 +94,24 @@ class EndDay(APIView):
         comment = request.data.get('comment', None)
         if comment == '':
             comment = None
+        else:
+            # Chequear si tiene comentarios de ute y ose. Si tiene, hay que declarar comment = None
+            # para que se pueda controlar el comentario obligatrio para poder cerrar el workday
+            if 'utefin' in comment:
+                partes = comment.split("utefin")
+                if partes[1] == '':
+                    comment = None
+                else:
+                    if 'osefin' in partes[1]:
+                        partes2 = partes[1].split("osefin")
+                        if partes2[1] == '':
+                            comment = None
+            else:
+                if 'osefin' in comment:
+                    partes3 = comment.split("osefin")
+                    if partes3[1] == '':
+                        comment = None
+
         # comment is empty unless the day end needs to bypass controls.
         try:
             workday = Workday.objects.filter(building=building, finished=False).order_by('-date')[0]
@@ -271,6 +290,12 @@ class DhtReportApi(APIView):
                 # workday = Workday.objects.get(building=building, date=dateInitial)
                 response = HttpResponse(content_type='application/vnd.ms-excel')
                 response['Content-Disposition'] = 'attachment; filename=%s_%s_%s.xlsx' % (_('DHT_General'), building, rango)
+
+                #q = Queue(connection=conn)
+                #data = {"fechaInicial": fechaInicial, "fechaFinalQuincena": fechaFinalQuincena, "fechaFinal": fechaFinal}
+                #xlsx_data = q.enqueue(building.get_dht_report_biweekly, data)
+
+
                 xlsx_data = building.get_dht_report_biweekly(fechaInicial, fechaFinalQuincena, fechaFinal)
                 response.write(xlsx_data)
                 return response
@@ -691,3 +716,49 @@ class DhtLluviasReportApi(APIView):
             except Exception:
                 return JsonResponse({'message': messages.GENERIC_ERROR}, status=500)
         return JsonResponse({'message': messages.INPUT_DHT_GENERAL_ERROR}, status=400)
+
+
+class UpdateUteOse(APIView):
+    def post(self, request, username):
+        print("UpdateUteOse")
+        user = request.user
+        building = Building.objects.get_by_overseer(user)
+        entrada_activa = request.data.get('entrada_activa', None)
+        entrada_reactiva = request.data.get('entrada_reactiva', None)
+        salida_activa = request.data.get('salida_activa', None)
+        salida_reactiva = request.data.get('salida_reactiva', None)
+        ose = request.data.get('ose', None)
+
+        comentarioUteOse = "eact"+entrada_activa+"eactsact"+salida_activa+"sactereact"+entrada_reactiva+"ereactsreact"+salida_reactiva+"sreactutefin"+ose+"osefin"
+
+        print("UpdateUteOse - comentarioUteOse: " + comentarioUteOse)
+        # comment is empty unless the day end needs to bypass controls.
+        try:
+            workday = Workday.objects.filter(building=building, finished=False).order_by('-date')[0]
+
+            comentarioDelDia = ""
+            texto = workday.comment
+            if texto != None:
+                if "utefin" in texto:
+                    partes = texto.split("utefin")
+                    if partes[1] != None:
+                        if "osefin" in partes[1]:
+                            partes2 = texto.split("osefin")
+                            if partes2[1] != None:
+                                comentarioDelDia = partes2[1]
+                else:
+                    if "osefin" in texto:
+                        partes3 = texto.split("osefin")
+                        if partes3[1] != None:
+                            comentarioDelDia = partes3[1]
+            if workday.updateUteOse(comentarioUteOse, comentarioDelDia):
+                print("UpdateUteOse - entro en if workday updateUteOse")
+                django_messages.success(request, messages.UTE_OSE_EMPTY_UPDATE_OK)
+                return redirect('tracker:log_hours', username=username)
+            else:
+                django_messages.warning(request, messages.UTE_OSE_EMPTY)
+                return redirect('tracker:log_hours', username=username)
+        except IndexError:
+            return JsonResponse({'message': messages.WORKDAY_NOT_FOUND}, status=400)
+        except Exception:
+            return JsonResponse({'message': messages.GENERIC_ERROR}, status=500)

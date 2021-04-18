@@ -104,8 +104,6 @@ $(document).ready(function() {
     update_logged_hours(null);
 
 
-
-
     $('#entrada-activa').change( () => {
         console.log("entrada_activa change");
         $submit_ute_ose.prop('disabled', false);
@@ -126,6 +124,7 @@ $(document).ready(function() {
         console.log("ose change");
         $submit_ute_ose.prop('disabled', false);
     });
+
 
 
     $submit_hours.click( function() {
@@ -308,7 +307,7 @@ $(document).ready(function() {
         let option = $('#task').find(":selected");
         let id = parseInt($(option).val());
         let task = find_task(id);
-        $hours_input.attr('type', 'number');
+//        $hours_input.attr('type', 'number');
         $select_all.hide();
         $hours_input.val(0);
         $hours_input.prop('checked', false);
@@ -318,12 +317,12 @@ $(document).ready(function() {
                 $('#th-hours-many-workers').show();
                 $('.td-hours-many-workers').show();
                 $hours_input.prop('disabled', true);
-                $('.comentario').prop('disabled', true);
+                $('.comentario').prop('disabled', false);
             } else {
                 $('#div-hours-many-workers').hide();
                 $('#th-hours-many-workers').hide();
                 $('.td-hours-many-workers').hide();
-                $hours_input.prop('disabled', false);
+//                $hours_input.prop('disabled', false);
                 $('.comentario').prop('disabled', false);
             }
 
@@ -360,11 +359,11 @@ $(document).ready(function() {
                 }
                 $hours_label.text(HOURS_FOR_TXT + ' ' + task.name);
             }
-            if (task.requires_comment) {
-                $('textarea').attr('placeholder', COMMENT_REQUIRED_TXT);
-            } else {
-                $('textarea').attr('placeholder', COMMENT_NOT_REQUIRED_TXT);
-            }
+//            if (task.requires_comment) {
+//                $('textarea').attr('placeholder', COMMENT_REQUIRED_TXT);
+//            } else {
+//                $('textarea').attr('placeholder', COMMENT_NOT_REQUIRED_TXT);
+//            }
 
 
 
@@ -463,46 +462,46 @@ $(document).ready(function() {
 
 
 
-    $('#submit-ute-ose').click(function() {
+    $submit_ute_ose.click(function() {
         let entrada_activa = $('#entrada-activa').val();
         let entrada_reactiva = $('#entrada-reactiva').val();
         let salida_activa = $('#salida-activa').val();
         let salida_reactiva = $('#salida-reactiva').val();
         let ose = $('#ose').val();
 
-        if ((entrada_activa == "") || (entrada_activa === null)) {
-            entrada_activa_es_vacia = true;
-        } else {
-            console.log("entrada activa no es vacia "+entrada_activa)
+        if ((entrada_activa == "") || (entrada_activa !== null)) {
+            console.log("entrada activa no es vacia")
             entrada_activa_es_vacia = false;
+        } else {
+            entrada_activa_es_vacia = true;
         }
 
-        if ((entrada_reactiva == "") || (entrada_reactiva === null)) {
-            entrada_reactiva_es_vacia = true;
-        } else {
-            console.log("entrada reactiva no es vacia " + entrada_reactiva)
+        if ((entrada_reactiva == "") || (entrada_reactiva !== null)) {
+            console.log("entrada reactiva no es vacia")
             entrada_reactiva_es_vacia = false;
+        } else {
+            entrada_reactiva_es_vacia = true;
         }
 
-        if ((salida_activa == "") || (salida_activa === null)) {
-            salida_activa_es_vacia = true;
-        } else {
-            console.log("salida activa no es vacia " + salida_activa)
+        if ((salida_activa == "") || (salida_activa !== null)) {
+            console.log("salida activa no es vacia")
             salida_activa_es_vacia = false;
+        } else {
+            salida_activa_es_vacia = true;
         }
 
-        if ((salida_reactiva == "") || (salida_reactiva === null)) {
-            salida_reactiva_es_vacia = true;
-        } else {
-            console.log("salida reactiva no es vacia " + salida_reactiva)
+        if ((salida_reactiva == "") || (salida_reactiva !== null)) {
+            console.log("salida reactiva no es vacia")
             salida_reactiva_es_vacia = false;
+        } else {
+            salida_reactiva_es_vacia = true;
         }
 
         if ((ose == "") || (ose !== null)) {
-            ose_es_vacia = true;
-        } else {
             console.log("ose no es vacia")
             ose_es_vacia = false;
+        } else {
+            ose_es_vacia = true;
         }
 
         var todos_vacios = false;
@@ -522,7 +521,7 @@ $(document).ready(function() {
             });
             $.ajax({
               type : "POST",
-              url : post_url_ute_ose,
+              url : post_url,
               data : JSON.stringify(data),
               headers: {
                 'Accept': 'application/json',

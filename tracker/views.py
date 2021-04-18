@@ -173,6 +173,234 @@ class LogHours(View):
                 for task in tasks:
                     task.logs = list(logs.filter(task=task))
 
+                entrada_activa = ""
+                entrada_reactiva = ""
+                salida_activa = ""
+                salida_reactiva = ""
+                ose = ""
+                texto = workday.comment
+                if texto != None:
+                    if "utefin" in texto:
+                        partes = texto.split("utefin")
+                        texto_ute = partes[0]
+
+                        if "eact" in texto_ute:
+                            partes_eact = texto_ute.split("eact")
+                            entrada_activa = partes_eact[1]
+
+                        if "sact" in texto_ute:
+                            partes_sact = texto_ute.split("sact")
+                            salida_activa = partes_sact[1]
+
+                        if "ereact" in texto_ute:
+                            partes_ereact = texto_ute.split("ereact")
+                            entrada_reactiva = partes_ereact[1]
+
+                        if "sreact" in texto_ute:
+                            partes_sreact = texto_ute.split("sreact")
+                            salida_reactiva = partes_sreact[1]
+
+                        texto_restante = partes[1]
+                        if "osefin" in texto_restante:
+                            texto_ose = texto_restante.split("osefin")
+                            ose = texto_ose[0]
+
+                    else:
+                        if "osefin" in texto:
+                            texto_ose2 = texto.split("osefin")
+                            ose = texto_ose2[0]
+
+
+
+
+            except IndexError:
+                return JsonResponse({'message': messages.WORKDAY_NOT_FOUND}, status=400)
+        # filter out useless data
+        tasks = serialize_tasks_with_logs(tasks)
+        keyfunc = itemgetter("category")
+        grouped_tasks = [{'name': key, 'tasks': list(grp)} for key, grp in groupby(sorted(tasks, key=keyfunc), key=keyfunc)]
+        print("+++++++ GROUPED TASKS +++++++")
+        # print(grouped_tasks)
+        for gt in tasks:
+            print(gt['code'] + " - " + gt['name'])
+        tareas_que_no_suman = constants.TAREAS_QUE_NO_SUMAN
+        tareas_varios_trabajadores = constants.TAREAS_VARIOS_TRABAJADORES
+        tareas_especiales_todo_el_dia = constants.TAREAS_ESPECIALES_TODO_EL_DIA
+
+        mostrarUteOse = constants.MOSTRAR_UTE_OSE
+
+        context = {
+            'grouped_tasks': grouped_tasks,
+            'tasks': tasks,
+            'workers': serialize_workers_with_logs(workers_ordenados),
+            'expected': expected,
+            'workday': workday,
+            'is_old_workday': is_old_workday,
+            'tareas_que_no_suman': tareas_que_no_suman,
+            'tareas_varios_trabajadores': tareas_varios_trabajadores,
+            'tareas_especiales_todo_el_dia': tareas_especiales_todo_el_dia,
+            'entrada_activa': entrada_activa,
+            'entrada_reactiva': entrada_reactiva,
+            'salida_activa': salida_activa,
+            'salida_reactiva': salida_reactiva,
+            'ose': ose,
+            'mostrarUteOse': mostrarUteOse
+        }
+
+        return render(request, 'tracker/log_hours.html', context)
+
+class LogHoursVista(View):
+    def post(self, request, username):
+        tasks = []
+        # workers = []
+        user = request.user
+        is_old_workday = False
+
+        print("se obtiene user")
+        user = request.user
+        building = None
+
+        mostrarUteOse = constants.MOSTRAR_UTE_OSE
+
+        # codigo_obra_seleccionada = request.data.get('obra')
+        codigo_obra_seleccionada = request.POST['obra']
+        print("obra: ")
+        print(codigo_obra_seleccionada)
+        building = Building.objects.get(code=codigo_obra_seleccionada)
+
+        # Select the building related to the overseer then obtain its tasks and workers
+        #building = Building.objects.get_by_overseer(user)
+        if building:
+            tasks = building.tasks.all()
+
+            tasks = sorted(tasks, key=attrgetter('code'))
+
+            workers = building.workers.all()
+            workers_objetos = []
+            for w1 in workers:
+                workers_objetos.append(w1)
+
+            date = timezone.localdate(timezone.now())
+            try:
+                workday = Workday.objects.filter(building=building, finished=False).order_by('-date')[0]
+                if workday.date != date:
+                    django_messages.warning(request, messages.OLD_UNFINISHED_WORKDAY)
+                    is_old_workday = True
+                expected = workday.expected_hours()
+
+                logs = LogHour.objects.all().filter(workday=workday)
+                for log in logs:
+                    if log.worker not in workers_objetos:
+                        workers_objetos.append(log.worker)
+
+
+                # Se ordenan los workers
+                codigos_workers = []
+                for w in workers_objetos:
+                    codigos_workers.append(int(w.code))
+
+                codigos_workers.sort();
+
+                workers_ordenados = []
+                for codigo in codigos_workers:
+                    for w2 in workers_objetos:
+                        if (codigo == int(w2.code)):
+                            workers_ordenados.append(w2)
+
+
+                for worker in workers_ordenados:
+                    worker.logs = list(logs.filter(worker=worker))
+                    worker.passes_controls = LogHour.worker_passes_controls(workday, worker.logs)
+                    worker.passes_controls_string = LogHour.worker_passes_controls_string(workday, worker.logs)
+                    worker.tiene_tarea_especial_todo_el_dia = LogHour.tiene_tarea_especial_todo_el_dia(worker.logs)
+                    # expected = 0
+                    # if expected > 0:
+                    #     percent = round(100 * LogHour.sum_hours(worker.logs) / expected)
+                    #     if (percent >= 100):
+                    #         worker.hours_percent = 100
+                    #     else:
+                    #         worker.hours_percent = percent
+                    # else:
+                    #     worker.hours_percent = 100
+
+                    # print("******************************************")
+                    # print(workday.date.day)
+
+                    day = str(workday.date.day)
+                    if day.__len__() == 1:
+                        day = "0" + day
+                    month = str(workday.date.month)
+                    if month.__len__() == 1:
+                        month = "0" + month
+                    year = str(workday.date.year)
+                    dia = day + "/" + month + "/" + year
+
+                    # print("dia es: " + dia)
+
+                    if ((dia in constants.DIAS_DE_HORAS_EXTRA) or (workday.date.weekday() == 5 or workday.date.weekday() == 6)):
+                        worker.passes_controls_string = "mayor"
+                        expected = 9
+                        percent = round(100 * LogHour.sum_hours(worker.logs) / expected)
+                        if (percent >= 100):
+                            worker.hours_percent = 100
+                        else:
+                            worker.hours_percent = percent
+
+                    else:
+                        if expected > 0:
+                            percent = round(100 * LogHour.sum_hours(worker.logs) / expected)
+                            if (percent >= 100):
+                                worker.hours_percent = 100
+                            else:
+                                worker.hours_percent = percent
+                        else:
+                            #Si entra en el else es porque hubo un error, hay que imprimir el error
+                            worker.hours_percent = 100
+
+
+                for task in tasks:
+                    task.logs = list(logs.filter(task=task))
+
+                entrada_activa = ""
+                entrada_reactiva = ""
+                salida_activa = ""
+                salida_reactiva = ""
+                ose = ""
+                texto = workday.comment
+                if texto != None:
+                    if texto.find("utefin") != -1:
+                        partes = texto.split("utefin")
+                        texto_ute = partes[0]
+
+                        if "eact" in texto_ute:
+                            partes_eact = texto_ute.split("eact")
+                            entrada_activa = partes_eact[1]
+
+                        if "sact" in texto_ute:
+                            partes_sact = texto_ute.split("sact")
+                            salida_activa = partes_sact[1]
+
+                        if "ereact" in texto_ute:
+                            partes_ereact = texto_ute.split("ereact")
+                            entrada_reactiva = partes_ereact[1]
+
+                        if "sreact" in texto_ute:
+                            partes_sreact = texto_ute.split("sreact")
+                            salida_reactiva = partes_sreact[1]
+
+                        texto_restante = partes[1]
+                        if "osefin" in texto_restante:
+                            texto_ose = texto_restante.split("osefin")
+                            ose = texto_ose[0]
+
+                    else:
+                        if "osefin" in texto:
+                            texto_ose2 = texto.split("osefin")
+                            ose = texto_ose2[0]
+
+
+
+
             except IndexError:
                 return JsonResponse({'message': messages.WORKDAY_NOT_FOUND}, status=400)
         # filter out useless data
@@ -196,11 +424,15 @@ class LogHours(View):
             'is_old_workday': is_old_workday,
             'tareas_que_no_suman': tareas_que_no_suman,
             'tareas_varios_trabajadores': tareas_varios_trabajadores,
-            'tareas_especiales_todo_el_dia': tareas_especiales_todo_el_dia
+            'tareas_especiales_todo_el_dia': tareas_especiales_todo_el_dia,
+            'entrada_activa': entrada_activa,
+            'entrada_reactiva': entrada_reactiva,
+            'salida_activa': salida_activa,
+            'salida_reactiva': salida_reactiva,
+            'ose': ose,
+            'mostrarUteOse': mostrarUteOse
         }
-
-        return render(request, 'tracker/log_hours.html', context)
-
+        return render(request, 'tracker/log_hours_vista.html', context)
 
 class DayReview(View):
     def get(self, request, username):
@@ -215,6 +447,25 @@ class DayReview(View):
             date = timezone.localdate(timezone.now())
             try:
                 workday = Workday.objects.filter(building=building, finished=False).order_by('-date')[0]
+
+                # borrar
+                texto = workday.comment
+                comentario = ""
+                if texto != None:
+                    if "utefin" in texto:
+                        partes = texto.split("utefin")
+                        texto_restante = partes[1]
+                        if "osefin" in texto_restante:
+                            texto_ose = texto_restante.split("osefin")
+                            comentario = texto_ose[1]
+
+                    else:
+                        if "osefin" in texto:
+                            texto_ose2 = texto.split("osefin")
+                            comentario = texto_ose2[1]
+
+                #fin borrar
+
                 if workday.date != date:
                     django_messages.warning(request, messages.OLD_UNFINISHED_WORKDAY)
                     is_old_workday = True
@@ -230,10 +481,21 @@ class DayReview(View):
             'logs': serialize_logs(logs, with_workers=True, with_tasks=True),
             'workers_missing_logs': workers_missing_logs,
             'workday': workday,
-            'is_old_workday': is_old_workday
+            'is_old_workday': is_old_workday,
+            'comentario': comentario
         }
 
         return render(request, 'tracker/day_review.html', context)
+
+
+class DayReviewSelect(View):
+    def get(self, request, username):
+        user = request.user
+        # view_threshold = timezone.localdate(timezone.now()) - timezone.timedelta(days=config.DAYS_ABLE_TO_VIEW)
+        # workdays = Workday.objects.filter(overseer=user, date__lte=timezone.localdate(timezone.now()), date__gte=view_threshold)
+        buildings = Building.objects.all()
+        context = {'obras': buildings}
+        return render(request, 'tracker/day_review_select.html', context)
 
 
 class PastDays(View):
@@ -259,6 +521,8 @@ class PastDaysEdit(View):
         print("Entra en PastDaysEdit!!!")
         print(user)
         print(request)
+
+        mostrarUteOse = constants.MOSTRAR_UTE_OSE
 
         dia = request.GET['wkday']
         print("diaaaa")
@@ -362,6 +626,44 @@ class PastDaysEdit(View):
                     #     worker.hours_percent = 100
                 for task in tasks:
                     task.logs = list(logs.filter(task=task))
+
+                entrada_activa = ""
+                entrada_reactiva = ""
+                salida_activa = ""
+                salida_reactiva = ""
+                ose = ""
+                texto = workday.comment
+                if texto != None:
+                    if texto.find("utefin") != -1:
+                        partes = texto.split("utefin")
+                        texto_ute = partes[0]
+
+                        if "eact" in texto_ute:
+                            partes_eact = texto_ute.split("eact")
+                            entrada_activa = partes_eact[1]
+
+                        if "sact" in texto_ute:
+                            partes_sact = texto_ute.split("sact")
+                            salida_activa = partes_sact[1]
+
+                        if "ereact" in texto_ute:
+                            partes_ereact = texto_ute.split("ereact")
+                            entrada_reactiva = partes_ereact[1]
+
+                        if "sreact" in texto_ute:
+                            partes_sreact = texto_ute.split("sreact")
+                            salida_reactiva = partes_sreact[1]
+
+                        texto_restante = partes[1]
+                        if "osefin" in texto_restante:
+                            texto_ose = texto_restante.split("osefin")
+                            ose = texto_ose[0]
+
+                    else:
+                        if "osefin" in texto:
+                            texto_ose2 = texto.split("osefin")
+                            ose = texto_ose2[0]
+
             else:
                 print('Error al obtener el workday')
                 mensaje_error = messages.WORKDAY_NOT_FOUND
@@ -408,7 +710,13 @@ class PastDaysEdit(View):
             'hayError': hayError,
             'tareas_que_no_suman': tareas_que_no_suman,
             'tareas_varios_trabajadores': tareas_varios_trabajadores,
-            'tareas_especiales_todo_el_dia': tareas_especiales_todo_el_dia
+            'tareas_especiales_todo_el_dia': tareas_especiales_todo_el_dia,
+            'entrada_activa': entrada_activa,
+            'entrada_reactiva': entrada_reactiva,
+            'salida_activa': salida_activa,
+            'salida_reactiva': salida_reactiva,
+            'ose': ose,
+            'mostrarUteOse': mostrarUteOse
         }
 
         return render(request, 'tracker/past_days_edit.html', context)

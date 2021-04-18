@@ -141,43 +141,43 @@
         <div class="card-body card-block">
           <p>{% trans 'Each worker is expected to work' %} {{ expected }} {% trans 'hours.' %}</p>
 
-          <div id="div-hours-many-workers" class="row" style="display:none;">
-            <div class="col-md-5">
-                <span>Cantidad de horas que se asignarán a todos los trabajadores: </span>
-            </div>
-            <div class="col-md-2">
-                <input type="number" min="0" max="24" step="0.5" class="form-control checkbox-lg" id="hours-many-workers" name="hours-many-workers" value="0">
-            </div>
-            <div class="col-md-3">
-              <button data-toggle="modal" data-target="#comment-modal-many-workers" type="button" class="btn btn-secondary">
-                      Agregar comentario
-              </button>
-            </div>
-                <div class="modal fade" id="comment-modal-many-workers" tabindex="-1" role="dialog" aria-labelledby="label" aria-hidden="true">
-                  <div class="modal-dialog modal-md" role="document">
-                    <div class="modal-content">
-                      <div class="modal-header">
-                        <h5 class="modal-title" id="label-comment-many-workers">Comentario para todos los trabajadores</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="{% trans 'Close' %}">
-                          <span aria-hidden="true">&times;</span>
-                        </button>
-                      </div>
-                      <div class="modal-body" style="margin-left: 4%;">
-                        <div id="comment-group-many-workers" class="row">
-                          <div class="col-xs-6 col-lg-12">
-                              <div class="form-group">
-                                <textarea id="comment-many-workers" name="comment-many-workers" rows="2" placeholder="Ingrese un comentario" class="form-control"></textarea>
-                              </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="modal-footer">
-                        <button type="button" class="btn btn-lg btn-block btn-secondary" data-dismiss="modal">{% trans 'Close' %}</button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-          </div>
+<!--          <div id="div-hours-many-workers" class="row" style="display:none;">-->
+<!--            <div class="col-md-5">-->
+<!--                <span>Cantidad de horas que se asignarán a todos los trabajadores: </span>-->
+<!--            </div>-->
+<!--            <div class="col-md-2">-->
+<!--                <input type="number" min="0" max="24" step="0.5" class="form-control checkbox-lg" id="hours-many-workers" name="hours-many-workers" value="0">-->
+<!--            </div>-->
+<!--            <div class="col-md-3">-->
+<!--              <button data-toggle="modal" data-target="#comment-modal-many-workers" type="button" class="btn btn-secondary">-->
+<!--                      Ver comentario-->
+<!--              </button>-->
+<!--            </div>-->
+<!--                <div class="modal fade" id="comment-modal-many-workers" tabindex="-1" role="dialog" aria-labelledby="label" aria-hidden="true">-->
+<!--                  <div class="modal-dialog modal-md" role="document">-->
+<!--                    <div class="modal-content">-->
+<!--                      <div class="modal-header">-->
+<!--                        <h5 class="modal-title" id="label-comment-many-workers">Comentario para todos los trabajadores</h5>-->
+<!--                        <button type="button" class="close" data-dismiss="modal" aria-label="{% trans 'Close' %}">-->
+<!--                          <span aria-hidden="true">&times;</span>-->
+<!--                        </button>-->
+<!--                      </div>-->
+<!--                      <div class="modal-body" style="margin-left: 4%;">-->
+<!--                        <div id="comment-group-many-workers" class="row">-->
+<!--                          <div class="col-xs-6 col-lg-12">-->
+<!--                              <div class="form-group">-->
+<!--                                <textarea id="comment-many-workers" name="comment-many-workers" rows="2" class="form-control" disabled></textarea>-->
+<!--                              </div>-->
+<!--                          </div>-->
+<!--                        </div>-->
+<!--                      </div>-->
+<!--                      <div class="modal-footer">-->
+<!--                        <button type="button" class="btn btn-lg btn-block btn-secondary" data-dismiss="modal">{% trans 'Close' %}</button>-->
+<!--                      </div>-->
+<!--                    </div>-->
+<!--                  </div>-->
+<!--                </div>-->
+<!--          </div>-->
 
           <table id="hours_per_user" class="table table-striped table-bordered">
             <thead>
@@ -186,13 +186,13 @@
               <th>{% trans "Category" %}</th>
               <th>{% trans "Full Name" %}</th>
 
-              <th id="th-hours-many-workers" style="display:none;">
-                <span class="hours-label-many-workers">{% trans "Seleccionar" %}</span>
-                <input id="select-many-workers" type="checkbox" class="form-control checkbox-lg"/>
-              </th>
+<!--              <th id="th-hours-many-workers" style="display:none;">-->
+<!--                <span class="hours-label-many-workers">{% trans "Seleccionar" %}</span>-->
+<!--                <input id="select-many-workers" type="checkbox" class="form-control checkbox-lg"/>-->
+<!--              </th>-->
               <th>
                 <span class="hours-label">{% trans "Select a task" %}</span>
-                <input id="select-all" type="checkbox" class="form-control checkbox-lg"/>
+<!--                <input id="select-all" type="checkbox" class="form-control checkbox-lg"/>-->
               </th>
               <th>{% trans "Comment" %}</th>
               <th class="logged-hours-label">{% trans "Total hours logged" %}</th>
@@ -204,11 +204,11 @@
                 <td>{{ worker.code }}</td>
                 <td>{{ worker.category.code }}</td>
                 <td>{{ worker.last_name }}, {{ worker.first_name }}</td>
-                <td class="td-hours-many-workers" style="display:none;">
-                  <input type="checkbox" class="form-control checkbox-lg check-input" id="{{ worker.code }}-select-many-workers">
-                </td>
+<!--                <td class="td-hours-many-workers" style="display:none;">-->
+<!--                  <input type="checkbox" class="form-control checkbox-lg check-input" id="{{ worker.code }}-select-many-workers">-->
+<!--                </td>-->
                 <td>
-                  <input type="number" min="0" max="24" step="0.5" class="hours-input form-control checkbox-lg"
+                  <input class="hours-input checkbox-lg" style="text-align: center;"
                          id="{{ worker.code }}-hours"
                          name="{{ worker.code }}"
                          value="0"
@@ -216,8 +216,8 @@
                   />
                 </td>
                 <td>
-                  <button data-toggle="modal" data-target="#{{ worker.code }}-comment-modal" type="button" class="btn btn-secondary comentario">
-                          Agregar
+                  <button data-toggle="modal" data-target="#{{ worker.code }}-comment-modal" type="button" class="btn btn-secondary comentario" style="width: 100%;">
+                          Ver
                   </button>
                 </td>
                 <div class="modal fade" id="{{ worker.code }}-comment-modal" tabindex="-1" role="dialog" aria-labelledby="{{ worker.code }}-label" aria-hidden="true">
@@ -233,7 +233,7 @@
                         <div class="row">
                           <div class="col-xs-6 col-lg-12">
                               <div class="form-group">
-                                <textarea id="{{ worker.code }}-comment" name="comment" rows="2" placeholder="{% trans 'Comment (optional)' %}" class="form-control"></textarea>
+                                <textarea id="{{ worker.code }}-comment" name="comment" rows="2" class="form-control" disabled></textarea>
                               </div>
                           </div>
                         </div>
@@ -319,17 +319,6 @@
     </div>
   </div>
 
-  <div class="row">
-    <div class="col-xs-6 col-lg-12">
-      <div class="card">
-        <div class="card-body card-block">
-          <button id="submit-hours" type="submit" disabled class="btn btn-lg btn-block btn-success">{% trans "Log Hours" %}</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-
   {% if mostrarUteOse %}
     <div id="comment-ute" class="row">
       <div class="col-xs-6 col-lg-12">
@@ -339,28 +328,28 @@
           </div>
           <div class="card-body card-block">
             <div class="form-group row">
-              <label for="entrada-activa" class="col-md-2 col-form-label">Entrada activa:</label>
+              <label class="col-md-2 col-form-label">Entrada activa:</label>
               <div class="col-md-3">
-                <input id="entrada-activa" name="entrada-activa" value="{{ entrada_activa }}" class="form-control">
+                <input id="entrada-activa" name="entrada-activa" class="form-control" value="{{ entrada_activa }}" disabled>
               </div>
               <div class="col-md-1">
               </div>
-              <label for="entrada-reactiva" class="col-md-2 col-form-label">Entrada reactiva:</label>
+              <label class="col-md-2 col-form-label">Entrada reactiva:</label>
               <div class="col-md-3">
-                <input id="entrada-reactiva" name="entrada-reactiva" value="{{ entrada_reactiva }}" class="form-control">
+                <input id="entrada-reactiva" name="entrada-reactiva" class="form-control" value="{{ entrada_reactiva }}" disabled>
               </div>
             </div>
 
             <div class="form-group row">
-              <label for="salida-activa" class="col-md-2 col-form-label">Salida activa:</label>
+              <label class="col-md-2 col-form-label">Salida activa:</label>
               <div class="col-md-3">
-                <input id="salida-activa" name="salida-activa" value="{{ salida_activa }}" class="form-control">
+                <input id="salida-activa" name="salida-activa" class="form-control" value="{{ salida_activa }}" disabled>
               </div>
               <div class="col-md-1">
               </div>
-              <label for="salida-reactiva" class="col-md-2 col-form-label">Salida reactiva:</label>
+              <label class="col-md-2 col-form-label">Salida reactiva:</label>
               <div class="col-md-3">
-                <input id="salida-reactiva" name="salida-reactiva" value="{{ salida_reactiva }}" class="form-control">
+                <input id="salida-reactiva" name="salida-reactiva" class="form-control" value="{{ salida_reactiva }}" disabled>
               </div>
             </div>
           </div>
@@ -375,21 +364,11 @@
           </div>
           <div class="card-body card-block">
             <div class="form-group row">
-              <label for="ose" class="col-md-2 col-form-label">Consumo:</label>
+              <label class="col-md-2 col-form-label">Consumo:</label>
               <div class="col-md-3">
-                <input id="ose" name="ose" value="{{ ose }}" class="form-control">
+                <input id="ose" name="ose" class="form-control" value="{{ ose }}" disabled>
               </div>
             </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="col-xs-6 col-lg-12">
-        <div class="card">
-          <div class="card-body card-block">
-            <button id="submit-ute-ose" type="submit" disabled class="btn btn-lg btn-block btn-success">Registrar UTE-OSE</button>
           </div>
         </div>
       </div>
@@ -400,7 +379,7 @@
 
 {% block javascript %}
   {{ block.super }}
-  <script type="text/javascript" src="{% static 'js/log_hours.js' %}"></script>
+  <script type="text/javascript" src="{% static 'js/log_hours_vista.js' %}"></script>
 
   <script type="text/javascript" charset="utf8" src="{% static 'js/datatables.js' %}"></script>
 
