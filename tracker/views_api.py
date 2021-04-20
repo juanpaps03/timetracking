@@ -92,25 +92,27 @@ class EndDay(APIView):
         user = request.user
         building = Building.objects.get_by_overseer(user)
         comment = request.data.get('comment', None)
-        if comment == '':
-            comment = None
-        else:
-            # Chequear si tiene comentarios de ute y ose. Si tiene, hay que declarar comment = None
-            # para que se pueda controlar el comentario obligatrio para poder cerrar el workday
-            if 'utefin' in comment:
-                partes = comment.split("utefin")
-                if partes[1] == '':
-                    comment = None
-                else:
-                    if 'osefin' in partes[1]:
-                        partes2 = partes[1].split("osefin")
-                        if partes2[1] == '':
-                            comment = None
+
+        if comment is not None:
+            if comment == '':
+                comment = None
             else:
-                if 'osefin' in comment:
-                    partes3 = comment.split("osefin")
-                    if partes3[1] == '':
+                # Chequear si tiene comentarios de ute y ose. Si tiene, hay que declarar comment = None
+                # para que se pueda controlar el comentario obligatrio para poder cerrar el workday
+                if 'utefin' in comment:
+                    partes = comment.split("utefin")
+                    if partes[1] == '':
                         comment = None
+                    else:
+                        if 'osefin' in partes[1]:
+                            partes2 = partes[1].split("osefin")
+                            if partes2[1] == '':
+                                comment = None
+                else:
+                    if 'osefin' in comment:
+                        partes3 = comment.split("osefin")
+                        if partes3[1] == '':
+                            comment = None
 
         # comment is empty unless the day end needs to bypass controls.
         try:
