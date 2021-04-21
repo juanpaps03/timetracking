@@ -21,6 +21,13 @@
   </div>
 {%  endblock breadcrumbs %}
 
+{% block javascript_header %}
+  <script>
+    var csrf = "{{ csrf_token }}";
+    var post_url_consultar_workday = "{% url 'tracker:api_exist_workday' request.user.username %}";
+  </script>
+{% endblock javascript_header %}
+
 {% block content %}
 <form method="post" autocomplete="off" action="{% url 'tracker:log_hours_vista' request.user.username %}">{% csrf_token %}
   {%  if request.user.is_superuser or request.user.is_staff %}
@@ -58,7 +65,7 @@
       <div class="card">
         <div class="card-body card-block">
             <div class="col-sm-6 col-12">
-              <button id="ver" class="btn btn-lg btn-block btn-primary" type="submit">{% trans "Ver" %}</button>
+              <button id="ver" class="btn btn-lg btn-block btn-primary" type="submit" disabled>{% trans "Ver" %}</button>
             </div>
         </div>
       </div>
@@ -107,16 +114,66 @@
     });
 
 
-    $("#finishDay").datepicker("option", "disabled", true);
 
-    $("#finishBiweeklyDay").change(function(){
-      let valor = $("#finishBiweeklyDay").val();
-      console.log("valor: " + valor)
-      if ((valor != null) && (valor != "")){
-        $("#finishDay").datepicker("option", "disabled", false);
-      } else {
-        $("#finishDay").datepicker("option", "disabled", true);
-      }
+    $("#day").change(function(){
+        var fecha = $('#day').val();
+        let obra = $('#obra').children("option:selected").val();
+        console.log('obra:');
+        console.log(obra);
+
+
+        //llamada con fetch
+        let datos = {'fecha': fecha, 'obra': obra};
+        var myHeaders = new Headers({
+              'X-CSRFToken': csrf,
+              'Accept': 'application/json',
+              'Content-Type': 'application/json',
+            });
+
+        var myInit = { method: 'POST',
+                       headers: myHeaders,
+                       body: JSON.stringify(datos)};
+
+        fetch(post_url_consultar_workday, myInit)
+        .then(function(response) {
+            if(response.ok) {
+                console.log(response);
+                response.json().then(function(respuesta) {
+                    console.log(respuesta);
+                    /*Chequear si existe el workday*/
+                    $('#loading').removeClass('is-active');
+                    $('#div-mensaje-error').hide();
+
+                    /*Si existe el workday, entonces se habilitan los botones*/
+                    let valor = $("#day").val();
+                    console.log("valor: " + valor)
+                    if ((valor != null) && (valor != "")){
+                      $("#ver").attr("disabled", false);
+                    } else {
+                      $("#ver").attr("disabled", true);
+                    }
+
+                });
+            } else {
+                response.json().then(function(respuesta) {
+                    console.log(respuesta);
+                    console.log('Respuesta de red OK pero respuesta HTTP no OK');
+                    $('#loading').removeClass('is-active');
+                    $('#div-mensaje-error').show();
+                    $('#mensaje-error').html(respuesta.message);
+                    $("#ver").attr("disabled", true);
+                });
+            }
+        })
+        .catch(function(error) {
+          console.log('Hubo un problema con la petición Fetch:' + error.message);
+          $('#loading').removeClass('is-active');
+          $('#div-mensaje-error').show();
+          $('#mensaje-error').html("Intente nuevamente.");
+          $("#ver").attr("disabled", true);
+        });
+        //fin llamada con fetch
+
     });
 
 </script>

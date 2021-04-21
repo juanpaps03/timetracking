@@ -251,6 +251,7 @@ class LogHours(View):
 
 class LogHoursVista(View):
     def post(self, request, username):
+        print("LogHoursVista!")
         tasks = []
         # workers = []
         user = request.user
@@ -268,6 +269,10 @@ class LogHoursVista(View):
         print(codigo_obra_seleccionada)
         building = Building.objects.get(code=codigo_obra_seleccionada)
 
+        wday = request.POST['day']
+        print("wday: ")
+        print(wday)
+
         # Select the building related to the overseer then obtain its tasks and workers
         #building = Building.objects.get_by_overseer(user)
         if building:
@@ -282,7 +287,8 @@ class LogHoursVista(View):
 
             date = timezone.localdate(timezone.now())
             try:
-                workday = Workday.objects.filter(building=building, finished=False).order_by('-date')[0]
+                wdayDate = datetime.datetime.strptime(wday, "%d/%m/%Y").date()
+                workday = Workday.objects.get(building=building, date=wdayDate)
                 if workday.date != date:
                     django_messages.warning(request, messages.OLD_UNFINISHED_WORKDAY)
                     is_old_workday = True
