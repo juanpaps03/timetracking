@@ -130,4 +130,4 @@ TAREAS_ESPECIALES_TODO_EL_DIA = ["XDS", "XE", "XF", "XFA", "XLD", "XLE", "XLM", 
 
 TAREAS_ESPECIALES = ["AS", "DS", "E", "F", "FA", "LD", "LE", "LHD", "LL", "LM", "LP", "P", "PG", "SA", "FOCAP", "FC", "T", "LA", "S", "XAS", "XDS", "XE", "XF", "XFA", "XLD", "XLE", "XLHD", "XLM", "XLP", "XP", "XPG", "XSA", "XFOCAP", "XFC", "XT", "XLA", "XS", "POST"];
 
-MOSTRAR_UTE_OSE = False
+MOSTRAR_UTE_OSE = True

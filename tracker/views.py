@@ -15,7 +15,6 @@ from tracker.serializers import *
 
 from constance import config
 import datetime
-import re
 
 class Dashboard(View):
     def get(self, request, username):
@@ -90,10 +89,65 @@ class LogHours(View):
             workers = building.workers.all()
             workers_objetos = []
             for w1 in workers:
+                print(w1)
                 workers_objetos.append(w1)
 
             date = timezone.localdate(timezone.now())
             try:
+                workdayAnterior = Workday.objects.filter(building=building, finished=True).order_by('-date')[0]
+
+                print('**wd anterior**')
+                print(workdayAnterior)
+                print('**fin wd anterior**')
+                wda_entrada_activa = ""
+                wda_entrada_reactiva = ""
+                wda_salida_activa = ""
+                wda_salida_reactiva = ""
+                wda_ose_entrada = ""
+                wda_ose_salida = ""
+                wda_texto = workdayAnterior.comment
+                if wda_texto != None:
+                    if "utefin" in wda_texto:
+                        partes = wda_texto.split("utefin")
+                        texto_ute = partes[0]
+
+                        if "eact" in texto_ute:
+                            partes_eact = texto_ute.split("eact")
+                            wda_entrada_activa = partes_eact[1]
+
+                        if "sact" in texto_ute:
+                            partes_sact = texto_ute.split("sact")
+                            wda_salida_activa = partes_sact[1]
+
+                        if "ereact" in texto_ute:
+                            partes_ereact = texto_ute.split("ereact")
+                            wda_entrada_reactiva = partes_ereact[1]
+
+                        if "sreact" in texto_ute:
+                            partes_sreact = texto_ute.split("sreact")
+                            wda_salida_reactiva = partes_sreact[1]
+
+                        texto_restante = partes[1]
+                        if "osesalfin" in texto_restante:
+                            partes_ose = texto_restante.split("osesalfin")
+                            texto_ose = partes_ose[0]
+                            if "oseentfin" in texto_ose:
+                                partes_oseent = texto_ose.split("oseentfin")
+                                wda_ose_entrada = partes_oseent[0]
+                                wda_ose_salida = partes_oseent[1]
+
+
+
+                    else:
+                        if "osesalfin" in wda_texto:
+                            partes_ose = wda_texto.split("osesalfin")
+                            texto_ose = partes_ose[0]
+                            if "oseentfin" in texto_ose:
+                                partes_oseent = texto_ose.split("oseentfin")
+                                wda_ose_entrada = partes_oseent[0]
+                                wda_ose_salida = partes_oseent[1]
+
+
                 workday = Workday.objects.filter(building=building, finished=False).order_by('-date')[0]
                 if workday.date != date:
                     django_messages.warning(request, messages.OLD_UNFINISHED_WORKDAY)
@@ -177,7 +231,8 @@ class LogHours(View):
                 entrada_reactiva = ""
                 salida_activa = ""
                 salida_reactiva = ""
-                ose = ""
+                ose_entrada = ""
+                ose_salida = ""
                 texto = workday.comment
                 if texto != None:
                     if "utefin" in texto:
@@ -201,14 +256,24 @@ class LogHours(View):
                             salida_reactiva = partes_sreact[1]
 
                         texto_restante = partes[1]
-                        if "osefin" in texto_restante:
-                            texto_ose = texto_restante.split("osefin")
-                            ose = texto_ose[0]
+                        if "osesalfin" in texto_restante:
+                            partes_ose = texto_restante.split("osesalfin")
+                            texto_ose = partes_ose[0]
+                            if "oseentfin" in texto_ose:
+                                partes_oseent = texto_ose.split("oseentfin")
+                                ose_entrada = partes_oseent[0]
+                                ose_salida = partes_oseent[1]
+
+
 
                     else:
-                        if "osefin" in texto:
-                            texto_ose2 = texto.split("osefin")
-                            ose = texto_ose2[0]
+                        if "osesalfin" in texto:
+                            partes_ose = texto.split("osesalfin")
+                            texto_ose = partes_ose[0]
+                            if "oseentfin" in texto_ose:
+                                partes_oseent = texto_ose.split("oseentfin")
+                                ose_entrada = partes_oseent[0]
+                                ose_salida = partes_oseent[1]
 
 
 
@@ -221,8 +286,8 @@ class LogHours(View):
         grouped_tasks = [{'name': key, 'tasks': list(grp)} for key, grp in groupby(sorted(tasks, key=keyfunc), key=keyfunc)]
         print("+++++++ GROUPED TASKS +++++++")
         # print(grouped_tasks)
-        for gt in tasks:
-            print(gt['code'] + " - " + gt['name'])
+        #for gt in tasks:
+            #print(gt['code'] + " - " + gt['name'])
         tareas_que_no_suman = constants.TAREAS_QUE_NO_SUMAN
         tareas_varios_trabajadores = constants.TAREAS_VARIOS_TRABAJADORES
         tareas_especiales_todo_el_dia = constants.TAREAS_ESPECIALES_TODO_EL_DIA
@@ -243,8 +308,15 @@ class LogHours(View):
             'entrada_reactiva': entrada_reactiva,
             'salida_activa': salida_activa,
             'salida_reactiva': salida_reactiva,
-            'ose': ose,
-            'mostrarUteOse': mostrarUteOse
+            'ose_entrada': ose_entrada,
+            'ose_salida': ose_salida,
+            'mostrarUteOse': mostrarUteOse,
+            'wda_entrada_activa': wda_entrada_activa,
+            'wda_entrada_reactiva': wda_entrada_reactiva,
+            'wda_salida_activa': wda_salida_activa,
+            'wda_salida_reactiva': wda_salida_reactiva,
+            'wda_ose_entrada': wda_ose_entrada,
+            'wda_ose_salida': wda_ose_salida
         }
 
         return render(request, 'tracker/log_hours.html', context)
@@ -261,7 +333,6 @@ class LogHoursVista(View):
         user = request.user
         building = None
 
-        mostrarUteOse = constants.MOSTRAR_UTE_OSE
 
         # codigo_obra_seleccionada = request.data.get('obra')
         codigo_obra_seleccionada = request.POST['obra']
@@ -448,6 +519,9 @@ class DayReview(View):
         workday = None
         logs = None
         is_old_workday = False
+        hay_comentario_ute_ose = False
+        hay_comentario_ute = False
+        hay_comentario_ose = False
         if building:
             workers = building.workers.all()
             date = timezone.localdate(timezone.now())
@@ -457,20 +531,27 @@ class DayReview(View):
                 # borrar
                 texto = workday.comment
                 comentario = ""
+
                 if texto != None:
+                    print('texto: ' + texto)
                     if "utefin" in texto:
+                        hay_comentario_ute = True
                         partes = texto.split("utefin")
                         texto_restante = partes[1]
-                        if "osefin" in texto_restante:
-                            texto_ose = texto_restante.split("osefin")
+                        if "osesalfin" in texto_restante:
+                            texto_ose = texto_restante.split("osesalfin")
                             comentario = texto_ose[1]
 
                     else:
-                        if "osefin" in texto:
-                            texto_ose2 = texto.split("osefin")
+                        if "osesalfin" in texto:
+                            hay_comentario_ose = True
+                            texto_ose2 = texto.split("osesalfin")
                             comentario = texto_ose2[1]
-
+                print('comentario: ' + comentario)
                 #fin borrar
+
+                if hay_comentario_ute and hay_comentario_ose:
+                    hay_comentario_ute_ose = True;
 
                 if workday.date != date:
                     django_messages.warning(request, messages.OLD_UNFINISHED_WORKDAY)
@@ -488,7 +569,8 @@ class DayReview(View):
             'workers_missing_logs': workers_missing_logs,
             'workday': workday,
             'is_old_workday': is_old_workday,
-            'comentario': comentario
+            'comentario': comentario,
+            'hay_comentario_ute_ose': hay_comentario_ute_ose
         }
 
         return render(request, 'tracker/day_review.html', context)
@@ -506,6 +588,7 @@ class DayReviewSelect(View):
 
 class PastDays(View):
     def get(self, request, username):
+        print('PastDays() - entro en PastDays')
         user = request.user
         view_threshold = timezone.localdate(timezone.now()) - timezone.timedelta(days=config.DAYS_ABLE_TO_VIEW)
         edit_threshold = timezone.localdate(timezone.now()) - timezone.timedelta(days=config.DAYS_ABLE_TO_EDIT)
@@ -766,3 +849,14 @@ class DhtLluviasReport(View):
         buildings = Building.objects.all()
         context = {'obras': buildings}
         return render(request, 'tracker/dht_lluvias_report.html', context)
+
+
+class ReporteUteOse(View):
+    def get(self, request, username):
+        print("view - entro en ReporteUteOse")
+        user = request.user
+        view_threshold = timezone.localdate(timezone.now()) - timezone.timedelta(days=config.DAYS_ABLE_TO_VIEW)
+        workdays = Workday.objects.filter(overseer=user, date__lte=timezone.localdate(timezone.now()), date__gte=view_threshold)
+        buildings = Building.objects.all()
+        context = {'workdays': workdays, 'obras': buildings}
+        return render(request, 'tracker/ute_ose_report.html', context)

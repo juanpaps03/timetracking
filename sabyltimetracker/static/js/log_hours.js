@@ -122,8 +122,12 @@ $(document).ready(function() {
         console.log("salida_reactiva change");
         $submit_ute_ose.prop('disabled', false);
     });
-    $('#ose').change( () => {
-        console.log("ose change");
+    $('#ose-entrada').change( () => {
+        console.log("ose entrada change");
+        $submit_ute_ose.prop('disabled', false);
+    });
+    $('#ose-salida').change( () => {
+        console.log("ose salida change");
         $submit_ute_ose.prop('disabled', false);
     });
 
@@ -464,84 +468,178 @@ $(document).ready(function() {
 
 
     $('#submit-ute-ose').click(function() {
+        console.log('submit-ute-ose...');
         let entrada_activa = $('#entrada-activa').val();
         let entrada_reactiva = $('#entrada-reactiva').val();
         let salida_activa = $('#salida-activa').val();
         let salida_reactiva = $('#salida-reactiva').val();
-        let ose = $('#ose').val();
+        let ose_entrada = $('#ose-entrada').val();
+        let ose_salida = $('#ose-salida').val();
 
-        if ((entrada_activa == "") || (entrada_activa === null)) {
-            entrada_activa_es_vacia = true;
+
+        let wda_entrada_activa = $('#wda-entrada-activa').val();
+        let wda_entrada_reactiva = $('#wda-entrada-reactiva').val();
+        let wda_salida_activa = $('#wda-salida-activa').val();
+        let wda_salida_reactiva = $('#wda-salida-reactiva').val();
+        let wda_ose_entrada = $('#wda-ose-entrada').val();
+        let wda_ose_salida = $('#wda-ose-salida').val();
+
+        wda_entrada_activa_numero = parseFloat(wda_entrada_activa)
+        wda_salida_activa_numero = parseFloat(wda_salida_activa)
+        entrada_activa_numero = parseFloat(entrada_activa)
+        salida_activa_numero = parseFloat(salida_activa)
+
+        wda_entrada_reactiva_numero = parseFloat(wda_entrada_reactiva)
+        wda_salida_reactiva_numero = parseFloat(wda_salida_reactiva)
+        entrada_reactiva_numero = parseFloat(entrada_reactiva)
+        salida_reactiva_numero = parseFloat(salida_reactiva)
+
+        wda_ose_entrada_numero = parseFloat(wda_ose_entrada)
+        wda_ose_salida_numero = parseFloat(wda_ose_salida)
+        ose_entrada_numero = parseFloat(ose_entrada)
+        ose_salida_numero = parseFloat(ose_salida)
+
+
+        let hay_error_energia_activa = false;
+        let hay_error_energia_reactiva = false;
+        let hay_error_ose = false;
+
+        if (entrada_activa_numero<wda_salida_activa_numero){
+            console.log('entrada activa: ' + entrada_activa_numero + ' - wda salida activa: ' + wda_salida_activa_numero)
+            $('#div-mensaje-error-entrada-activa-menor').show();
+            hay_error_energia_activa = true;
         } else {
-            console.log("entrada activa no es vacia "+entrada_activa)
-            entrada_activa_es_vacia = false;
+            console.log(entrada_activa_numero)
+            console.log(salida_activa_numero)
+            $('#div-mensaje-error-entrada-activa-menor').hide();
+            if (entrada_activa_numero > salida_activa_numero){
+                $('#div-mensaje-error-entrada-activa-mayor-que-fin').show();
+                hay_error_energia_activa = true;
+            } else {
+                $('#div-mensaje-error-entrada-activa-mayor-que-fin').hide();
+                hay_error_energia_activa = false;
+            }
         }
 
-        if ((entrada_reactiva == "") || (entrada_reactiva === null)) {
-            entrada_reactiva_es_vacia = true;
+
+
+        if (entrada_reactiva_numero<wda_salida_reactiva_numero){
+            console.log('entrada reactiva: ' + entrada_reactiva_numero + ' - wda salida reactiva: ' + wda_salida_reactiva_numero)
+            $('#div-mensaje-error-entrada-reactiva-menor').show();
+            hay_error_energia_reactiva = true;
         } else {
-            console.log("entrada reactiva no es vacia " + entrada_reactiva)
-            entrada_reactiva_es_vacia = false;
+            console.log(entrada_reactiva_numero)
+            console.log(salida_reactiva_numero)
+            $('#div-mensaje-error-entrada-reactiva-menor').hide();
+            if (entrada_reactiva_numero > salida_reactiva_numero){
+                $('#div-mensaje-error-entrada-reactiva-mayor-que-fin').show();
+                hay_error_energia_reactiva = true;
+            } else {
+                $('#div-mensaje-error-entrada-reactiva-mayor-que-fin').hide();
+                hay_error_energia_reactiva = false;
+            }
         }
 
-        if ((salida_activa == "") || (salida_activa === null)) {
-            salida_activa_es_vacia = true;
+
+        if (ose_entrada_numero<wda_ose_salida_numero){
+            console.log('ose entrada: ' + ose_entrada_numero + ' - wda ose salida: ' + wda_ose_salida_numero)
+            $('#div-mensaje-error-ose-menor').show();
+            hay_error_ose = true;
         } else {
-            console.log("salida activa no es vacia " + salida_activa)
-            salida_activa_es_vacia = false;
+            console.log(ose_entrada_numero)
+            console.log(ose_salida_numero)
+            $('#div-mensaje-error-ose-menor').hide();
+            if (ose_entrada_numero > ose_salida_numero){
+                $('#div-mensaje-error-ose-mayor-que-fin').show();
+                hay_error_ose = true;
+            } else {
+                $('#div-mensaje-error-ose-mayor-que-fin').hide();
+                hay_error_ose = false;
+            }
         }
 
-        if ((salida_reactiva == "") || (salida_reactiva === null)) {
-            salida_reactiva_es_vacia = true;
-        } else {
-            console.log("salida reactiva no es vacia " + salida_reactiva)
-            salida_reactiva_es_vacia = false;
-        }
-
-        if ((ose == "") || (ose !== null)) {
-            ose_es_vacia = true;
-        } else {
-            console.log("ose no es vacia")
-            ose_es_vacia = false;
-        }
-
-        var todos_vacios = false;
-        if (entrada_activa_es_vacia && entrada_reactiva_es_vacia && salida_activa_es_vacia && salida_reactiva_es_vacia && ose_es_vacia){
-            todos_vacios = true;
-        }
-
-
-        // csrf and post_url are rendered in server side and
-        // are defined in log_hours.html javascript_header section
-        if (!todos_vacios) {
-
-            let data = {'entrada_activa': entrada_activa, 'entrada_reactiva': entrada_reactiva, 'salida_activa': salida_activa, 'salida_reactiva': salida_reactiva, 'ose': ose};
-
-            $.ajaxSetup({
-                headers: { "X-CSRFToken": csrf }
-            });
-            $.ajax({
-              type : "POST",
-              url : post_url_ute_ose,
-              data : JSON.stringify(data),
-              headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-                },
-              success: function(){
-                  location.reload();
-                },
-              error: function(XMLHttpRequest, textStatus, errorThrown) {
-                alert("ERROR: " + String(errorThrown) + " - " + String(textStatus) + " - " + String(XMLHttpRequest.responseText));
-                return false;
+        if (!hay_error_energia_activa && !hay_error_energia_reactiva && !hay_error_ose) {
+            if ((entrada_activa == "") || (entrada_activa === null)) {
+                    entrada_activa_es_vacia = true;
+                } else {
+                    console.log("entrada activa no es vacia "+entrada_activa)
+                    entrada_activa_es_vacia = false;
                 }
-            });
-        } else {
-            alert(UTE_OSE_NO_VACIO);
-            return false;
-        }
 
-        return true;
+                if ((entrada_reactiva == "") || (entrada_reactiva === null)) {
+                    entrada_reactiva_es_vacia = true;
+                } else {
+                    console.log("entrada reactiva no es vacia " + entrada_reactiva)
+                    entrada_reactiva_es_vacia = false;
+                }
+
+                if ((salida_activa == "") || (salida_activa === null)) {
+                    salida_activa_es_vacia = true;
+                } else {
+                    console.log("salida activa no es vacia " + salida_activa)
+                    salida_activa_es_vacia = false;
+                }
+
+                if ((salida_reactiva == "") || (salida_reactiva === null)) {
+                    salida_reactiva_es_vacia = true;
+                } else {
+                    console.log("salida reactiva no es vacia " + salida_reactiva)
+                    salida_reactiva_es_vacia = false;
+                }
+
+                if ((ose_entrada == "") || (ose_entrada !== null)) {
+                    ose_entrada_es_vacia = true;
+                } else {
+                    console.log("ose entrada no es vacia")
+                    ose_entrada_es_vacia = false;
+                }
+
+                if ((ose_salida == "") || (ose_salida !== null)) {
+                    ose_salida_es_vacia = true;
+                } else {
+                    console.log("ose salida no es vacia")
+                    ose_salida_es_vacia = false;
+                }
+
+                var todos_vacios = false;
+                if (entrada_activa_es_vacia && entrada_reactiva_es_vacia && salida_activa_es_vacia && salida_reactiva_es_vacia && ose_entrada_es_vacia && ose_salida_es_vacia){
+                    todos_vacios = true;
+                }
+
+
+                // csrf and post_url are rendered in server side and
+                // are defined in log_hours.html javascript_header section
+                if (!todos_vacios) {
+
+                    let data = {'entrada_activa': entrada_activa, 'entrada_reactiva': entrada_reactiva, 'salida_activa': salida_activa, 'salida_reactiva': salida_reactiva, 'ose_entrada': ose_entrada, 'ose_salida': ose_salida};
+
+                    console.log(data);
+                    $.ajaxSetup({
+                        headers: { "X-CSRFToken": csrf }
+                    });
+                    $.ajax({
+                      type : "POST",
+                      url : post_url_ute_ose,
+                      data : JSON.stringify(data),
+                      headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                        },
+                      success: function(){
+                          location.reload();
+                        },
+                      error: function(XMLHttpRequest, textStatus, errorThrown) {
+                        alert("ERROR: " + String(errorThrown) + " - " + String(textStatus) + " - " + String(XMLHttpRequest.responseText));
+                        return false;
+                        }
+                    });
+                } else {
+                    alert(UTE_OSE_NO_VACIO);
+                    return false;
+                }
+                return true;
+        }
+        return false;
     });
 
 });

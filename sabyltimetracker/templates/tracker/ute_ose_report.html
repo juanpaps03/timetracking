@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+{% load static i18n%}
+{% load filters %}
+
+{% block css %}
+  {{ block.super }}
+  <link rel="stylesheet" href="{% static '/css/datatable/dataTables.bootstrap.min.css' %}">
+  <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/themes/smoothness/jquery-ui.min.css" />
+
+{% endblock css %}
+
+{% block breadcrumbs %}
+  <div class="breadcrumbs">
+    <div class="col-sm-4">
+      <div class="page-header float-left">
+        <div class="page-title">
+          <h1>Reporte UTE - OSE</h1>
+        </div>
+      </div>
+    </div>
+  </div>
+{%  endblock breadcrumbs %}
+
+
+{% block javascript_header %}
+  <script>
+    var csrf = "{{ csrf_token }}";
+    var post_url = "{% url 'tracker:api_ute_ose_report' request.user.username %}";
+  </script>
+{% endblock javascript_header %}
+
+{% block content %}
+<!--<form method="post" autocomplete="off" action="{% url 'tracker:api_ute_ose_report' request.user.username %}">{% csrf_token %}-->
+  {%  if request.user.is_superuser or request.user.is_staff %}
+    <div class="row form-group">
+      <div class="col-12 col-lg-3"><label for="obra">Elegir obra:</label></div>
+      <div class="col-12 col-lg-9">
+        <select id="obra" name="obra" class="form-control">
+          <option value="">Seleccione una obra</option>
+          {% for ob in obras %}
+              <option id="{{ ob.code }}" value="{{ ob.code }}">{{ ob.code }} - {{ ob.address}}</option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+  {% endif %}
+
+  <div class="row">
+    <div class="col-xs-6 col-lg-12">
+      <div class="card">
+        <div class="card-header">
+          <strong><label class="hidden">{% trans "Elegir fecha" %}</label></strong>
+        </div>
+        <div class="card-body">
+          <div class="form-group col-md-4">
+            <label>Seleccionar fecha de inicio:</label>
+            <input id="initialDay" type="text" name="initialDay" class="form-control" autocomplete="off"/>
+          </div>
+        </div>
+
+
+        <div class="card-body">
+          <div class="form-group col-md-4">
+            <label>Seleccionar fecha de fin:</label>
+            <input id="finishDay" type="text" name="finishDay" class="form-control" autocomplete="off"/>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-xs-6 col-lg-12">
+      <div class="card">
+        <div class="card-body card-block">
+            <div class="col-sm-6 col-12">
+              <button id="report" class="btn btn-lg btn-block btn-primary">{% trans "Download Report" %}</button>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+<!--</form>-->
+{% endblock content%}
+
+{% block javascript %}
+  {{ block.super }}
+<!--  <script type="text/javascript" src="{% static 'js/past_days.js' %}"></script>-->
+
+<!--  <script src="{% static 'js/data-table/datatables.min.js' %}"></script>-->
+<!--  <script src="{% static 'js/data-table/dataTables.bootstrap.min.js' %}"></script>-->
+<!--  <script src="{% static 'js/data-table/dataTables.buttons.min.js' %}"></script>-->
+<!--  <script src="{% static 'js/data-table/buttons.bootstrap.min.js' %}"></script>-->
+<!--  <script src="{% static 'js/data-table/jszip.min.js' %}"></script>-->
+<!--  <script src="{% static 'js/data-table/pdfmake.min.js' %}"></script>-->
+<!--  <script src="{% static 'js/data-table/vfs_fonts.js' %}"></script>-->
+<!--  <script src="{% static 'js/data-table/buttons.html5.min.js' %}"></script>-->
+<!--  <script src="{% static 'js/data-table/buttons.print.min.js' %}"></script>-->
+<!--  <script src="{% static 'js/data-table/buttons.colVis.min.js' %}"></script>-->
+<!--  <script src="{% static 'js/data-table/datatables-init.js' %}"></script>-->
+
+
+<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+<script type="text/javascript" src="{% static 'js/ute_ose_report.js' %}"></script>
+{% endblock javascript %}

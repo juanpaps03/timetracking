@@ -124,42 +124,46 @@
             <form method="post" action="{% url 'tracker:api_end_day' request.user.username%}">{% csrf_token %}
               <button type="submit"
                       class="btn btn-lg btn-block btn-success"
-                      {% if workers_missing_logs %} disabled {% endif %}
+                      {% if workers_missing_logs or hay_comentario_ute_ose is False %} disabled {% endif %}
               >
                 {% trans "Confirm and End Day" %}
               </button>
             </form>
-            {%  if workers_missing_logs %}
-              <p class="col-xs-6">
-                {% trans 'Ammend logs to correctly end the day.' %}
-                <a href="#" class="btn btn-sm btn-link" data-toggle="modal" data-target="#comment-modal">{% trans 'End anyway?' %}</a>
-              </p>
-              <div class="modal fade" id="comment-modal" tabindex="-1" role="dialog" aria-labelledby="modal-label" aria-hidden="true">
-                <div class="modal-dialog modal-md" role="document">
-                  <div class="modal-content">
-                    <div class="modal-header">
-                      <h5 class="modal-title" id="modal-label">{% trans 'End Day Without Validation' %}</h5>
-                      <button type="button" class="close" data-dismiss="modal" aria-label="{% trans 'Close' %}">
-                        <span aria-hidden="true">&times;</span>
-                      </button>
-                    </div>
-                    <div class="modal-body">
-                      <p>
-                        {% trans 'To end a day without all workers having their required hours logged, a written comment is mandatory.' %}
-                      </p>
-                      <form method="post" action="{% url 'tracker:api_end_day' request.user.username %}">{% csrf_token %}
-                        <textarea name="comment" required rows="6" placeholder="{% trans 'Comment (required)' %}" class="form-control">{{ comentario }}</textarea>
-                        <br>
-                        <button type="submit" class="btn btn-lg btn-block btn-outline-success">{% trans "Confirm and End Day" %}</button>
-                      </form>
-                    </div>
-                    <div class="modal-footer">
-                      <button type="button" class="btn btn-lg btn-block btn-secondary" data-dismiss="modal">{% trans 'Close' %}</button>
+
+
+              {% if workers_missing_logs or hay_comentario_ute_ose is False %}
+                <p class="col-xs-6">
+                  {% trans 'Ammend logs to correctly end the day.' %} <span>Faltan registrar horas de algún operario o ingresar consumo de UTE y OSE</span>
+                  <a href="#" class="btn btn-sm btn-link" data-toggle="modal" data-target="#comment-modal">{% trans 'End anyway?' %}</a>
+                </p>
+                <div class="modal fade" id="comment-modal" tabindex="-1" role="dialog" aria-labelledby="modal-label" aria-hidden="true">
+                  <div class="modal-dialog modal-md" role="document">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="modal-label">{% trans 'End Day Without Validation' %}</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="{% trans 'Close' %}">
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                      </div>
+                      <div class="modal-body">
+                        <p>
+                          <span>Para finalizar un día sin que todos los trabajadores tengan todos los registros necesarios o sin ingresar consumo de UTE y OSE, se requiere un comentario escrito.</span>
+                        </p>
+                        <form method="post" action="{% url 'tracker:api_end_day' request.user.username %}">{% csrf_token %}
+                          <textarea name="comment" required rows="6" placeholder="{% trans 'Comment (required)' %}" class="form-control">{{ c127omentario }}</textarea>
+                          <br>
+                          <button type="submit" class="btn btn-lg btn-block btn-outline-success">{% trans "Confirm and End Day" %}</button>
+                        </form>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-lg btn-block btn-secondary" data-dismiss="modal">{% trans 'Close' %}</button>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            {% endif %}
+              {% endif %}
+
+
           </div>
         </div>
       </div>

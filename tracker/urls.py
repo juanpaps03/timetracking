@@ -15,6 +15,7 @@ urlpatterns = [
     url(regex=r'^dht_prod_report/$', view=views.DhtProdReport.as_view(), name='dht_prod_report'),
     url(regex=r'^dht_lluvias_report/$', view=views.DhtLluviasReport.as_view(), name='dht_lluvias_report'),
     url(regex=r'^dht_tasks_report_resumen/$', view=views.DhtTasksReportResumen.as_view(), name='dht_tasks_report_resumen'),
+    url(regex=r'^ute_ose_report/$', view=views.ReporteUteOse.as_view(), name='ute_ose_report'),
     url(regex=r'^api/add_hours/(?P<date>\d{4}-\d{2}-\d{2})/$', view=views_api.CreateLogHoursPastDay.as_view(), name='api_add_hours_past_day'),
     url(regex=r'^api/add_hours/$', view=views_api.CreateLogHours.as_view(), name='api_add_hours'),
     url(regex=r'^api/start_day/$', view=views_api.StartDay.as_view(), name='api_start_day'),
@@ -27,6 +28,7 @@ urlpatterns = [
     url(regex=r'^api/dht_prod_report_api/$', view=views_api.DhtProdReportApi.as_view(), name='api_dht_prod_report'),
     url(regex=r'^api/dht_lluvias_report_api/$', view=views_api.DhtLluviasReportApi.as_view(), name='api_dht_lluvias_report'),
     url(regex=r'^api/dht_tasks_report_resumen_api/$', view=views_api.DhtTasksReportResumenApi.as_view(), name='api_dht_tasks_report_resumen'),
-    url(regex=r'^api/exist_workday/$', view=views_api.ExistWorkday.as_view(), name='api_exist_workday')
+    url(regex=r'^api/exist_workday/$', view=views_api.ExistWorkday.as_view(), name='api_exist_workday'),
+    url(regex=r'^api/ute_ose_report_api/$', view=views_api.ReporteUteOseApi.as_view(), name='api_ute_ose_report')
 ]
 

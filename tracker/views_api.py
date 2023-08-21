@@ -89,10 +89,12 @@ class StartDay(APIView):
 
 class EndDay(APIView):
     def post(self, request, username):
+        print("Entra en EndDay views api")
         user = request.user
         building = Building.objects.get_by_overseer(user)
         comment = request.data.get('comment', None)
 
+        print("Entra en EndDay comment: " + comment)
         if comment is not None:
             if comment == '':
                 comment = None
@@ -104,20 +106,45 @@ class EndDay(APIView):
                     if partes[1] == '':
                         comment = None
                     else:
-                        if 'osefin' in partes[1]:
-                            partes2 = partes[1].split("osefin")
+                        if 'osesalfin' in partes[1]:
+                            partes2 = partes[1].split("osesalfin")
                             if partes2[1] == '':
                                 comment = None
                 else:
-                    if 'osefin' in comment:
-                        partes3 = comment.split("osefin")
+                    if 'osesalfin' in comment:
+                        partes3 = comment.split("osesalfin")
                         if partes3[1] == '':
                             comment = None
 
+        print("Entra en EndDay views api 2")
         # comment is empty unless the day end needs to bypass controls.
         try:
             workday = Workday.objects.filter(building=building, finished=False).order_by('-date')[0]
-            if workday.end(comment):
+            print(workday)
+            comentario = workday.comment
+            print("Entra en EndDay views api 3")
+            print(comentario)
+            comentarioUteOse = None
+
+            if comentario is not None:
+                if "osesalfin" in comentario:
+                    partesOse = comentario.split("osesalfin")
+                    comentarioUteOse = partesOse[0]+"osesalfin"
+                    print("Entra en EndDay views api 4")
+                else:
+                    if "utefin" in comentario:
+                        partesUte = comentario.split("utefin")
+                        comentarioUteOse = partesUte[0]+"utefin"
+                        print("Entra en EndDay views api 5")
+                    else:
+                        comentarioUteOse = None
+                        print("Entra en EndDay views api 6")
+            else:
+                print("Comentario actual del workday es vacío")
+
+            print("Entra en EndDay views api 7")
+
+            if workday.end(comment, comentarioUteOse):
                 django_messages.success(request, messages.DAY_ENDED)
                 return redirect('tracker:dashboard', username=username)
             else:
@@ -247,7 +274,10 @@ class DhtReportApi(APIView):
 
         # building = Building.objects.get_by_overseer(user)
 
+        print("antes del if initial day")
+
         if initialDay and ((finishBiweeklyDay and finishDay) or finishBiweeklyDay):
+            print("despues del if initial day")
 
             fechaFinal = ""
             if finishDay:
@@ -257,18 +287,20 @@ class DhtReportApi(APIView):
                 anio2 = partes2[2]
                 fechaFinal = dia2 + "_" + mes2 + "_" + anio2
 
+            print("despues del if initial day")
+
             partes1 = initialDay.split("/")
             dia1 = partes1[0]
             mes1 = partes1[1]
             anio1 = partes1[2]
-
+            print("despues del if initial day")
 
             partes3 = finishBiweeklyDay.split("/")
             dia3 = partes3[0]
             mes3 = partes3[1]
             anio3 = partes3[2]
 
-
+            print("despues del if initial day")
             # start_date = datetime.date(int(anio1), int(mes1), int(dia1))
             # end_date = datetime.date(int(anio2), int(mes2), int(dia2))
 
@@ -288,18 +320,17 @@ class DhtReportApi(APIView):
             else:
                 rango = fechaInicial + "_a_" + fechaFinalQuincena
 
+            print("despues del if initial day - " + rango)
+
             try:
-                # workday = Workday.objects.get(building=building, date=dateInitial)
                 response = HttpResponse(content_type='application/vnd.ms-excel')
+                print("despues del if initial day 2- " + rango)
                 response['Content-Disposition'] = 'attachment; filename=%s_%s_%s.xlsx' % (_('DHT_General'), building, rango)
-
-                #q = Queue(connection=conn)
-                #data = {"fechaInicial": fechaInicial, "fechaFinalQuincena": fechaFinalQuincena, "fechaFinal": fechaFinal}
-                #xlsx_data = q.enqueue(building.get_dht_report_biweekly, data)
-
-
+                print("despues del if initial day 2- " + rango)
                 xlsx_data = building.get_dht_report_biweekly(fechaInicial, fechaFinalQuincena, fechaFinal)
+                print("despues del if initial day 2- " + rango)
                 response.write(xlsx_data)
+                print("despues del if initial day 2- " + rango)
                 return response
             except Workday.DoesNotExist:
                 return JsonResponse({'message': messages.WORKDAY_NOT_FOUND}, status=400)
@@ -729,9 +760,17 @@ class UpdateUteOse(APIView):
         entrada_reactiva = request.data.get('entrada_reactiva', None)
         salida_activa = request.data.get('salida_activa', None)
         salida_reactiva = request.data.get('salida_reactiva', None)
-        ose = request.data.get('ose', None)
+        ose_entrada = request.data.get('ose_entrada', None)
+        ose_salida = request.data.get('ose_salida', None)
 
-        comentarioUteOse = "eact"+entrada_activa+"eactsact"+salida_activa+"sactereact"+entrada_reactiva+"ereactsreact"+salida_reactiva+"sreactutefin"+ose+"osefin"
+        print("entrada_activa: " + entrada_activa)
+        print("entrada_reactiva: " + entrada_reactiva)
+        print("salida_activa: " + salida_activa)
+        print("salida_reactiva: " + salida_reactiva)
+        print("ose_entrada: " + ose_entrada)
+        print("ose_salida: " + ose_salida)
+
+        comentarioUteOse = "eact"+entrada_activa+"eactsact"+salida_activa+"sactereact"+entrada_reactiva+"ereactsreact"+salida_reactiva+"sreactutefin"+ose_entrada+"oseentfin"+ose_salida+"osesalfin"
 
         print("UpdateUteOse - comentarioUteOse: " + comentarioUteOse)
         # comment is empty unless the day end needs to bypass controls.
@@ -744,13 +783,13 @@ class UpdateUteOse(APIView):
                 if "utefin" in texto:
                     partes = texto.split("utefin")
                     if partes[1] != None:
-                        if "osefin" in partes[1]:
-                            partes2 = texto.split("osefin")
+                        if "osesalfin" in partes[1]:
+                            partes2 = texto.split("osesalfin")
                             if partes2[1] != None:
                                 comentarioDelDia = partes2[1]
                 else:
-                    if "osefin" in texto:
-                        partes3 = texto.split("osefin")
+                    if "osesalfin" in texto:
+                        partes3 = texto.split("osesalfin")
                         if partes3[1] != None:
                             comentarioDelDia = partes3[1]
             if workday.updateUteOse(comentarioUteOse, comentarioDelDia):
@@ -762,5 +801,79 @@ class UpdateUteOse(APIView):
                 return redirect('tracker:log_hours', username=username)
         except IndexError:
             return JsonResponse({'message': messages.WORKDAY_NOT_FOUND}, status=400)
+        except Exception:
+            return JsonResponse({'message': messages.GENERIC_ERROR}, status=500)
+
+
+class ReporteUteOseApi(APIView):
+    def post(self, request, username):
+        try:
+            print("entro en ReporteUteOseApi!!!!!!!!")
+            initialDay = request.data.get('initialDay')
+            print(initialDay)
+
+            finishDay = request.data.get('finishDay')
+            print(finishDay)
+
+            user = request.user
+
+            building = None
+            print("antes del if")
+            if user.is_superuser or user.is_staff:
+                print("entra en el if de usuario oficinista")
+                codigo_obra_seleccionada = request.data.get('obra')
+                if codigo_obra_seleccionada:
+                    print("obra: ")
+                    print(codigo_obra_seleccionada)
+                    building = Building.objects.get(code=codigo_obra_seleccionada)
+                else:
+                    return JsonResponse({'message': 'Falta seleccionar obra'}, status=400)
+            else:
+                # building = Building.objects.get_by_overseer(user)
+                print("el usuario no es oficinista ni super user")
+
+            if initialDay:
+                partes1 = initialDay.split("/")
+                dia1 = partes1[0]
+                mes1 = partes1[1]
+                anio1 = partes1[2]
+                fechaInicial = dia1 + "_" + mes1 + "_" + anio1
+                wkday = anio1+"-"+mes1+"-"+dia1
+                date = datetime.datetime.strptime(wkday, "%Y-%m-%d").date()
+
+                if finishDay:
+                    partes2 = finishDay.split("/")
+                    dia2 = partes2[0]
+                    mes2 = partes2[1]
+                    anio2 = partes2[2]
+                    fechaFinal = dia2 + "_" + mes2 + "_" + anio2
+                    wkday2 = anio2 + "-" + mes2 + "-" + dia2
+                    date2 = datetime.datetime.strptime(wkday2, "%Y-%m-%d").date()
+
+                    diferencia_entre_fechas = date2-date
+                    print("diferencia entre fechas:")
+                    print(diferencia_entre_fechas)
+                    cant_dias = diferencia_entre_fechas.days
+                    print("cant_dias:")
+                    print(cant_dias)
+
+                    try:
+                        workdayInicial = Workday.objects.get(building=building, date=date)
+                        workdayFinal = Workday.objects.get(building=building, date=date2)
+                        response = HttpResponse(content_type='application/vnd.ms-excel')
+                        response['Content-Disposition'] = 'attachment; filename=%s_%s_%s.xlsx' % (_('Reporte_Ute_Ose'), building, fechaInicial)
+                        xlsx_data = building.get_reporte_ute_ose(fechaInicial, workdayInicial, fechaFinal, workdayFinal, (cant_dias+1))
+                        response.write(xlsx_data)
+                        return response
+                    except Workday.DoesNotExist:
+                        return JsonResponse({'message': messages.WORKDAY_NOT_FOUND}, status=400)
+                    except Exception:
+                        return JsonResponse({'message': messages.GENERIC_ERROR}, status=500)
+
+                else:
+                    return JsonResponse({'message': 'Falta ingresar fecha de fin'}, status=400)
+
+            else:
+                return JsonResponse({'message': 'Falta ingresar fecha de inicio'}, status=400)
         except Exception:
             return JsonResponse({'message': messages.GENERIC_ERROR}, status=500)

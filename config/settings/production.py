@@ -238,3 +238,8 @@ ADMIN_URL = env('DJANGO_ADMIN_URL')
 
 # Your production stuff: Below this line define 3rd party library settings
 # ------------------------------------------------------------------------------
+
+#CELERY_BROKER_URL = 'redis://:pb4e8b55d7e9fc227c167a390831f72ba156fdb3da4a93f7bf3a214bb648a1a77@ec2-52-70-145-177.compute-1.amazonaws.com:13640'
+#CELERY_ACCEPT_CONTENT = ['json']
+#CELERY_TASK_SERIALIZER = 'json'
+
