@@ -30,7 +30,7 @@ django-picklefield==1.1.0
 django-redis==4.8.0
 djangorestframework==3.7.7
 docutils==0.14
-greenlet==0.4.14
+greenlet==2.0.2
 gunicorn==19.7.1
 idna==2.7
 importlib-metadata==3.7.3
@@ -39,7 +39,7 @@ kombu==5.0.2
 oauthlib==2.1.0
 Pillow==5.2.0
 prompt-toolkit==3.0.17
-psycopg2==2.7.3.2
+psycopg2==2.9.7
 pycparser==2.18
 python-dateutil==2.7.3
 python3-openid==3.1.0
