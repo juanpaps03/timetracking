@@ -1038,20 +1038,30 @@ class Building(models.Model):
 
                     r.write('B%d' % fila, entrada_reactiva, header_center_without_bg)
                     r.write('C%d' % fila, salida_reactiva, header_center_without_bg)
-                    entrada_reactiva_rep = entrada_reactiva.replace(',', '.')
-                    salida_reactiva_rep = salida_reactiva.replace(',', '.')
-                    entrada_reactiva_numero = float(entrada_reactiva_rep)
-                    salida_reactiva_numero = float(salida_reactiva_rep)
-                    dif_ute_reactiva = salida_reactiva_numero - entrada_reactiva_numero
+                    if entrada_reactiva != None and salida_reactiva != None:
+                        if entrada_reactiva == "" or salida_reactiva == "":
+                            dif_ute_reactiva = 0
+                        else:
+                            entrada_reactiva_rep = entrada_reactiva.replace(',', '.')
+                            salida_reactiva_rep = salida_reactiva.replace(',', '.')
+                            entrada_reactiva_numero = float(entrada_reactiva_rep)
+                            salida_reactiva_numero = float(salida_reactiva_rep)
+                            dif_ute_reactiva = salida_reactiva_numero - entrada_reactiva_numero
+                    else:
+                        dif_ute_reactiva = 0
                     r.write('D%d' % fila, dif_ute_reactiva, header_center_without_bg)
 
                     r.write('E%d' % fila, entrada_activa, header_center_without_bg)
                     r.write('F%d' % fila, salida_activa, header_center_without_bg)
-                    entrada_activa_rep = entrada_activa.replace(',', '.')
-                    salida_activa_rep = salida_activa.replace(',', '.')
-                    entrada_activa_numero = float(entrada_activa_rep)
-                    salida_activa_numero = float(salida_activa_rep)
-                    dif_ute_activa = salida_activa_numero - entrada_activa_numero
+                    if entrada_activa != None and salida_activa != None:
+                        if entrada_activa == "" or salida_activa == "":
+                            dif_ute_activa = 0
+                        else:
+                            entrada_activa_rep = entrada_activa.replace(',', '.')
+                            salida_activa_rep = salida_activa.replace(',', '.')
+                            entrada_activa_numero = float(entrada_activa_rep)
+                            salida_activa_numero = float(salida_activa_rep)
+                            dif_ute_activa = salida_activa_numero - entrada_activa_numero
                     r.write('G%d' % fila, dif_ute_activa, header_center_without_bg)
 
                     print("paso ute")
@@ -1059,18 +1069,22 @@ class Building(models.Model):
                     # ose
                     r.write('I%d' % fila, fecha, header_center_without_bg)
                     print("ose_entrada: " + ose_entrada)
-                    ose_entrada_coma = ose_entrada.replace('.', ',')
-                    ose_entrada_rep = ose_entrada.replace(',', '.')
-                    r.write('J%d' % fila, ose_entrada_coma, header_center_without_bg)
-                    ose_entrada_numero = float(ose_entrada_rep)
-
-                    print("ose_salida: " + ose_salida)
-                    ose_salida_coma = ose_salida.replace('.', ',')
-                    ose_salida_rep = ose_salida.replace(',', '.')
-                    r.write('K%d' % fila, ose_salida_coma, header_center_without_bg)
-                    ose_salida_numero = float(ose_salida_rep)
-
-                    dif_ose = ose_salida_numero - ose_entrada_numero
+                    if ose_entrada != None and ose_salida != None:
+                        if ose_entrada == "" or ose_salida == "":
+                            dif_ose = 0
+                        else:
+                            ose_entrada_coma = ose_entrada.replace('.', ',')
+                            ose_entrada_rep = ose_entrada.replace(',', '.')
+                            r.write('J%d' % fila, ose_entrada_coma, header_center_without_bg)
+                            ose_entrada_numero = float(ose_entrada_rep)
+                            print("ose_salida: " + ose_salida)
+                            ose_salida_coma = ose_salida.replace('.', ',')
+                            ose_salida_rep = ose_salida.replace(',', '.')
+                            r.write('K%d' % fila, ose_salida_coma, header_center_without_bg)
+                            ose_salida_numero = float(ose_salida_rep)
+                            dif_ose = ose_salida_numero - ose_entrada_numero
+                    else:
+                        dif_ose = 0
                     r.write('L%d' % fila, dif_ose, header_center_without_bg)
 
                     print("paso ose")
