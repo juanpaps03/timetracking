@@ -79,6 +79,8 @@
             <li><a href="{% url 'tracker:dht_tasks_report' request.user.username %}"><i class="menu-icon fa fa-table"></i>{% trans 'DHT Tareas' %}</a></li>
             <li><a href="{% url 'tracker:dht_tasks_report_resumen' request.user.username %}"><i class="menu-icon fa fa-table"></i>{% trans 'DHT Tareas Resumen' %}</a></li>
             <li><a href="{% url 'tracker:dht_lluvias_report' request.user.username %}"><i class="menu-icon fa fa-table"></i>{% trans 'DHT Lluvias' %}</a></li>
+            <li><a href="{% url 'tracker:dht_balancin_report' request.user.username %}"><i class="menu-icon fa fa-table"></i>{% trans 'DHT Balancin' %}</a></li>
+            <li><a href="{% url 'tracker:dht_plataforma_volada_report' request.user.username %}"><i class="menu-icon fa fa-table"></i>{% trans 'DHT Plataforma volada' %}</a></li>
             <li><a href="{% url 'tracker:ute_ose_report' request.user.username %}"><i class="menu-icon fa fa-table"></i>{% trans 'Reporte UTE - OSE' %}</a></li>
             <li><a href="{% url 'admin:index' %}"><i class="menu-icon fa fa-table"></i>{% trans 'Administración' %}</a></li>
           {% endif %}

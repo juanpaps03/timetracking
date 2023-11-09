@@ -851,6 +851,20 @@ class DhtLluviasReport(View):
         return render(request, 'tracker/dht_lluvias_report.html', context)
 
 
+class DhtBalancinReport(View):
+    def get(self, request, username):
+        buildings = Building.objects.all()
+        context = {'obras': buildings}
+        return render(request, 'tracker/dht_balancin_report.html', context)
+
+
+class DhtPlataformaVoladaReport(View):
+    def get(self, request, username):
+        buildings = Building.objects.all()
+        context = {'obras': buildings}
+        return render(request, 'tracker/dht_plataforma_volada_report.html', context)
+
+
 class ReporteUteOse(View):
     def get(self, request, username):
         print("view - entro en ReporteUteOse")

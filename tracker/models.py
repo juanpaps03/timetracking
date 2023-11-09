@@ -2528,7 +2528,741 @@ class Building(models.Model):
 
 
 
+    def get_dht_balancin_report_biweekly(self, initialDate, finishBiweeklyDate, finishDate):
+        print("Entro al dht de balancin!!!!")
 
+        building = self
+
+        output = io.BytesIO()
+        workbook = xlsxwriter.Workbook(output)
+
+        print("algo 1")
+
+        # Here we will adding the code to add data
+        r = workbook.add_worksheet(__("Reporte"))
+        title = workbook.add_format({'bold': True, 'font_size': 14, 'align': 'left'})
+        header = workbook.add_format({'bg_color': '#F7F7F7', 'color': 'black', 'align': 'left', 'border': 1})
+        header_center = workbook.add_format({'bg_color': '#F7F7F7', 'color': 'black', 'align': 'center', 'border': 1})
+        header_center_without_bg = workbook.add_format({'color': 'black', 'align': 'center', 'border': 1})
+        code_header_center_without_bg = workbook.add_format({'color': 'black', 'align': 'center', 'border': 1})
+        code_header_center_without_bg.set_num_format(1)
+        format_align_left = workbook.add_format({'color': 'black', 'align': 'left', 'border': 1})
+        number_format = workbook.add_format()
+        number_format.set_num_format(2)
+        background_color_number = workbook.add_format({'bg_color': '#F5A9BC', 'color': 'black'})
+        background_color_number.set_num_format(2)
+
+        print("algo 2")
+
+        # title row
+        #r.merge_range('A1:C3', config.COMPANY_NAME, title)
+        r.insert_image('A1', 'sabyltimetracker/static/images/logo_sabyl_rgb_blanco.png', {'x_scale': 0.3, 'y_scale': 0.25})
+        r.merge_range('D1:L1', __('DHT Balancin'), title)
+        building_info = '%s: %s' % (__('Building'), str(building))
+        r.merge_range('D2:L2', building_info, title)
+
+        # general headers row
+        r.merge_range('B4:D4', __('Workers'), header_center)
+        r.merge_range('H4:J4', __('HORAS TRABAJADAS'), header_center)
+        r.merge_range('K4:M4', __('HORAS INCENTIVOS'), header_center)
+        r.merge_range('N4:P4', __('HORAS EXTRAS'), header_center)
+        r.merge_range('Q4:S4', __('1/2 HORA ADICIONAL'), header_center)
+
+        # specific headers row
+        r.write('A5', __('Ordinal'), header_center)
+        # r.write('B5', __('Tarea'), header_center)
+        r.write('B5', __('Code'), header_center)
+        r.write('C5', __('Full Name'), header_center)
+        r.write('D5', __('Cat'), header_center)
+
+        r.write('E5', __('VL1'), header_center)
+        r.write('F5', __('VL2'), header_center)
+        r.write('G5', __('Fer.'), header_center)
+
+        r.write('H5', __('1ªQ'), header_center)
+        r.write('I5', __('2ªQ'), header_center)
+        r.write('J5', __('TOTAL'), header_center)
+
+        r.write('K5', __('1ªQ'), header_center)
+        r.write('L5', __('2ªQ'), header_center)
+        r.write('M5', __('TOTAL'), header_center)
+
+        r.write('N5', __('1ªQ'), header_center)
+        r.write('O5', __('2ªQ'), header_center)
+        r.write('P5', __('TOTAL'), header_center)
+
+        r.write('Q5', __('1ªQ'), header_center)
+        r.write('R5', __('2ªQ'), header_center)
+        r.write('S5', __('TOTAL'), header_center)
+
+        esConsultaDosQuincenas = False
+
+        # Se chequea si se consulta por quincena o por mes
+        # Si es por mes (dos quincenas)
+        if finishBiweeklyDate and finishDate:
+            esConsultaDosQuincenas = True
+            partes1 = initialDate.split("_")
+            dia1 = partes1[0]
+            mes1 = partes1[1]
+            anio1 = partes1[2]
+            partes3 = finishBiweeklyDate.split("_")
+            dia3 = partes3[0]
+            mes3 = partes3[1]
+            anio3 = partes3[2]
+            partes2 = finishDate.split("_")
+            dia2 = partes2[0]
+            mes2 = partes2[1]
+            anio2 = partes2[2]
+
+            iDate = dia1 + "/" + mes1 + "/" + anio1
+            fBwDate = dia3 + "/" + mes3 + "/" + anio3
+            fDate = dia2 + "/" + mes2 + "/" + anio2
+
+            start_date = datetime.date(int(anio1), int(mes1), int(dia1))
+            end_date = datetime.date(int(anio2), int(mes2), int(dia2))
+            end_date_biweekly = datetime.date(int(anio3), int(mes3), int(dia3))
+            start_date_second_biweekly = end_date_biweekly + timedelta(days=1)
+
+            diaStartSecondBiweekly = start_date_second_biweekly.day
+            mesStartSecondBiweekly = start_date_second_biweekly.month
+            anioStartSecondBiweekly = start_date_second_biweekly.year
+            diaStartSecondBiweeklyString = str(diaStartSecondBiweekly)
+            mesStartSecondBiweeklyString = str(mesStartSecondBiweekly)
+            if diaStartSecondBiweeklyString.__len__() == 1:
+                diaStartSecondBiweeklyString = "0" + diaStartSecondBiweeklyString
+            if mesStartSecondBiweeklyString.__len__() == 1:
+                mesStartSecondBiweeklyString = "0" + mesStartSecondBiweeklyString
+
+            fBwStartSecondDate = str(diaStartSecondBiweeklyString) + "/" + str(
+                mesStartSecondBiweeklyString) + "/" + str(anioStartSecondBiweekly)
+
+            range = 'Consulta: ' + iDate + " al " + fBwDate + " y " + fBwStartSecondDate + " al " + fDate
+            r.merge_range('D3:L3', range, title)
+
+
+
+        else:
+            # Sería el caso de finishBiweeklyDate and not finishDate (solo quincena)
+            print("solo quincena")
+            partes1 = initialDate.split("_")
+            dia1 = partes1[0]
+            mes1 = partes1[1]
+            anio1 = partes1[2]
+            partes3 = finishBiweeklyDate.split("_")
+            dia3 = partes3[0]
+            mes3 = partes3[1]
+            anio3 = partes3[2]
+
+            iDate = dia1 + "/" + mes1 + "/" + anio1
+            fBwDate = dia3 + "/" + mes3 + "/" + anio3
+
+            start_date = datetime.date(int(anio1), int(mes1), int(dia1))
+            end_date_biweekly = datetime.date(int(anio3), int(mes3), int(dia3))
+
+            range = 'Consulta: ' + iDate + " al " + fBwDate
+            r.merge_range('D3:L3', range, title)
+
+            end_date = end_date_biweekly
+
+            # Fin de solo quincena
+
+        tasks_de_building = building.tasks.all()
+        tasks_objetos = []
+        for t in tasks_de_building:
+            if t.code.lower() == "ll":
+                tasks_objetos.append(t)
+
+        workers_de_building = building.workers.all()
+        workers_objetos = []
+        for w1 in workers_de_building:
+            workers_objetos.append(w1)
+
+        print('antes del for consulta de logs')
+        day_ini = start_date
+        while day_ini <= end_date:
+            dia = day_ini.day
+            mes = day_ini.month
+            anio = day_ini.year
+            wdd = str(anio) + "-" + str(mes) + "-" + str(dia)
+            print("wdd:")
+            print(wdd)
+
+            datedd = datetime.datetime.strptime(wdd, "%Y-%m-%d").date()
+            # Try catch por si no devuelve nada la consulta
+            try:
+                workday = Workday.objects.get(building=building, date=datedd)
+            except Workday.DoesNotExist:
+                workday = None
+
+            logs = LogHour.objects.filter(workday=workday)
+            for log in logs:
+                if log.worker not in workers_objetos:
+                    workers_objetos.append(log.worker)
+                if log.task not in tasks_objetos:
+                    if log.task.code.lower() == "xbal":
+                        tasks_objetos.append(log.task)
+
+            day_ini = day_ini + timedelta(days=1)
+        print('despues del for consulta de logs')
+
+        # Se cargan los días del rango seleccionado
+        day = start_date
+        col = 20
+        indice = 20
+        sinHoras = ""
+        colFinPrimeraQuincena = 20
+        diccionarioPrimeraQuincena = {}
+        diccionarioSegundaQuincena = {}
+        esPrimeraQuincena = True
+
+        logs_principal = {}
+
+        while day <= end_date:
+            print("***NUEVO DÍA***")
+            # print(day)
+
+            letter = utils.column_letter(col)
+            r.write('%s5' % letter, str(day.day), header_center)
+
+            day_aux = day + timedelta(days=1)
+            if day.month < day_aux.month or day == end_date:
+                print("entro en if de cambio de mes")
+                letterMonthStart = utils.column_letter(indice)
+                letterMonthEnd = utils.column_letter(col)
+                month = utils.traducir_mes(day.month)
+                r.merge_range('%s4:%s4' % (letterMonthStart, letterMonthEnd), month + " - " + str(day.year),
+                              header_center)
+                indice = col + 1
+
+            # print("algo por ahí")
+            dia = day.day
+            mes = day.month
+            anio = day.year
+            wd = str(anio) + "-" + str(mes) + "-" + str(dia)
+            print("wd:")
+            print(wd)
+
+            # print("antes")
+            date = datetime.datetime.strptime(wd, "%Y-%m-%d").date()
+            # Try catch por si no devuelve nada la consulta
+            try:
+                workday = Workday.objects.get(building=building, date=date)
+            except Workday.DoesNotExist:
+                workday = None
+            if workday == None:
+                print("No trajo fecha la consulta")
+
+                # Se cargan logs de los trabajadores
+                row = 6
+                for worker in workers_objetos:
+                    # print("Entro a for de los workers sin workday")
+                    r.write('%s%d' % (letter, row), sinHoras)
+                    row += 1
+            else:
+                print("workday no es vacío")
+
+                for tarea in tasks_objetos:
+                    try:
+                        logs = LogHour.objects.filter(workday=workday, task=tarea)
+                    except LogHour.DoesNotExist:
+                        logs = None
+
+                    # print("despues de ir a buscar los logs")
+
+                    if logs:
+                        arreglo = []
+                        for log in logs:
+                            # print("for de logs")
+                            tupla = (letter, log.worker, log.amount)
+                            arreglo.append(tupla)
+
+                        if tarea.code in logs_principal:
+                            # print("entra al if tarea code")
+                            for tup in arreglo:
+                                arr = logs_principal[tarea.code]
+                                arr.append(tup)
+                                logs_principal[tarea.code] = arr
+                        else:
+                            logs_principal.update({tarea.code: arreglo})
+
+            if day == end_date_biweekly:
+                colFinPrimeraQuincena = col
+                # esPrimeraQuincena = False
+
+            day = day + timedelta(days=1)
+            col += 1
+
+        # Se obtiene letra de columna de fin de primera quincena
+        letterBikeekyEnd = utils.column_letter(colFinPrimeraQuincena)
+        print("letterBikeekyEnd: " + letterBikeekyEnd)
+
+        # Se obtiene letra de columna de comienzo de segunda quincena
+        if esConsultaDosQuincenas:
+            letterSecondBikeekyStart = utils.column_letter(colFinPrimeraQuincena + 1)
+            print("letterSecondBikeekyStart: " + letterSecondBikeekyStart)
+
+        print("LOGS PRINCIPAL******************")
+        print("")
+
+        class ColumnaMonto():
+            def __init__(self, col, monto):
+                self.col = col
+                self.monto = monto
+
+            # def __str__(self):
+            #     return '%s - %s' % (self.code, self.name)
+
+        class WorkerAux():
+            wkr = Worker()
+            lista_columna_monto = []
+
+            def __init__(self, wkr, lista):
+                self.wkr = wkr
+                self.lista_columna_monto = lista
+
+            # def __str__(self):
+            #     return '%s' % self.code
+
+        # Se ordenan alfabéticamente las tareas de logs_principal
+        logs_principal_ord = dict(sorted(logs_principal.items()))
+
+        fila = 6
+        letterEnd = utils.column_letter(col - 1)
+        # tar es el codigo de tarea
+        for tar in logs_principal_ord:
+
+            if tar == 'D11':
+                print("es D11")
+
+            print(tar + ": " + str(logs_principal_ord[tar]))
+
+            arreglo_de_workers = []
+            arreglo_de_tuplas = logs_principal_ord[tar]
+            cant = len(logs_principal_ord[tar])
+
+            lista_workers_final = []
+
+            i = 0
+            while i < cant:
+
+                objeto = ColumnaMonto(arreglo_de_tuplas[i][0], arreglo_de_tuplas[i][2])
+
+                # i = 0, 1, 2 ...cant-1
+                if arreglo_de_tuplas[i][1] not in arreglo_de_workers:
+                    wkr_aux = WorkerAux(arreglo_de_tuplas[i][1], [])
+                    wkr_aux.lista_columna_monto.append(objeto)
+
+                    lista_workers_final.append(wkr_aux)
+
+                    arreglo_de_workers.append(arreglo_de_tuplas[i][1])
+
+                else:
+
+                    for x in lista_workers_final:
+                        if arreglo_de_tuplas[i][1] == x.wkr:
+                            x.lista_columna_monto.append(objeto)
+
+                i += 1
+
+            # print("SE IMPRIME LISTA DE WORKERS FINAL DE UNA TAREA (filas de una tarea a imprimir)")
+            for w in lista_workers_final:
+                # r.write('B%d' % fila, tar, header_center_without_bg)
+                r.write('B%d' % fila, w.wkr.code, code_header_center_without_bg)
+                r.write('C%d' % fila, w.wkr.full_name(), format_align_left)
+                r.write('D%d' % fila, str(w.wkr.category.code), header_center_without_bg)
+                r.write_formula('H%d' % fila, '=sum(T%d:%s%d)' % (fila, letterBikeekyEnd, fila),
+                                number_format)  # total hours first biweekly
+                if esConsultaDosQuincenas:
+                    r.write_formula('I%d' % fila,
+                                    '=sum(%s%d:%s%d)' % (letterSecondBikeekyStart, fila, letterEnd, fila),
+                                    number_format)  # total hours second biweekly
+                r.write_formula('J%d' % fila, '=sum(H%d:I%d)' % (fila, fila), number_format)  # total hours
+
+                for nodo in w.lista_columna_monto:
+                    r.write('%s%d' % (nodo.col, fila), nodo.monto, number_format)
+
+                fila += 1
+                # print(w.wkr.full_name())
+                # for celda in w.lista_columna_monto:
+                #     print("col: " + celda.col + " - " + "monto: " + str(celda.monto))
+
+            print("")
+            print("")
+
+        workbook.close()
+        xlsx_data = output.getvalue()
+
+        print("algo 3")
+        return xlsx_data
+
+
+
+    def get_dht_plataforma_volada_report_biweekly(self, initialDate, finishBiweeklyDate, finishDate):
+        print("Entro al dht de plataforma volada!!!!")
+
+        building = self
+
+        output = io.BytesIO()
+        workbook = xlsxwriter.Workbook(output)
+
+        print("algo 1")
+
+        # Here we will adding the code to add data
+        r = workbook.add_worksheet(__("Reporte"))
+        title = workbook.add_format({'bold': True, 'font_size': 14, 'align': 'left'})
+        header = workbook.add_format({'bg_color': '#F7F7F7', 'color': 'black', 'align': 'left', 'border': 1})
+        header_center = workbook.add_format({'bg_color': '#F7F7F7', 'color': 'black', 'align': 'center', 'border': 1})
+        header_center_without_bg = workbook.add_format({'color': 'black', 'align': 'center', 'border': 1})
+        code_header_center_without_bg = workbook.add_format({'color': 'black', 'align': 'center', 'border': 1})
+        code_header_center_without_bg.set_num_format(1)
+        format_align_left = workbook.add_format({'color': 'black', 'align': 'left', 'border': 1})
+        number_format = workbook.add_format()
+        number_format.set_num_format(2)
+        background_color_number = workbook.add_format({'bg_color': '#F5A9BC', 'color': 'black'})
+        background_color_number.set_num_format(2)
+
+        print("algo 2")
+
+        # title row
+        #r.merge_range('A1:C3', config.COMPANY_NAME, title)
+        r.insert_image('A1', 'sabyltimetracker/static/images/logo_sabyl_rgb_blanco.png', {'x_scale': 0.3, 'y_scale': 0.25})
+        r.merge_range('D1:L1', __('DHT Plataforma volada'), title)
+        building_info = '%s: %s' % (__('Building'), str(building))
+        r.merge_range('D2:L2', building_info, title)
+
+        # general headers row
+        r.merge_range('B4:D4', __('Workers'), header_center)
+        r.merge_range('H4:J4', __('HORAS TRABAJADAS'), header_center)
+        r.merge_range('K4:M4', __('HORAS INCENTIVOS'), header_center)
+        r.merge_range('N4:P4', __('HORAS EXTRAS'), header_center)
+        r.merge_range('Q4:S4', __('1/2 HORA ADICIONAL'), header_center)
+
+        # specific headers row
+        r.write('A5', __('Ordinal'), header_center)
+        # r.write('B5', __('Tarea'), header_center)
+        r.write('B5', __('Code'), header_center)
+        r.write('C5', __('Full Name'), header_center)
+        r.write('D5', __('Cat'), header_center)
+
+        r.write('E5', __('VL1'), header_center)
+        r.write('F5', __('VL2'), header_center)
+        r.write('G5', __('Fer.'), header_center)
+
+        r.write('H5', __('1ªQ'), header_center)
+        r.write('I5', __('2ªQ'), header_center)
+        r.write('J5', __('TOTAL'), header_center)
+
+        r.write('K5', __('1ªQ'), header_center)
+        r.write('L5', __('2ªQ'), header_center)
+        r.write('M5', __('TOTAL'), header_center)
+
+        r.write('N5', __('1ªQ'), header_center)
+        r.write('O5', __('2ªQ'), header_center)
+        r.write('P5', __('TOTAL'), header_center)
+
+        r.write('Q5', __('1ªQ'), header_center)
+        r.write('R5', __('2ªQ'), header_center)
+        r.write('S5', __('TOTAL'), header_center)
+
+        esConsultaDosQuincenas = False
+
+        # Se chequea si se consulta por quincena o por mes
+        # Si es por mes (dos quincenas)
+        if finishBiweeklyDate and finishDate:
+            esConsultaDosQuincenas = True
+            partes1 = initialDate.split("_")
+            dia1 = partes1[0]
+            mes1 = partes1[1]
+            anio1 = partes1[2]
+            partes3 = finishBiweeklyDate.split("_")
+            dia3 = partes3[0]
+            mes3 = partes3[1]
+            anio3 = partes3[2]
+            partes2 = finishDate.split("_")
+            dia2 = partes2[0]
+            mes2 = partes2[1]
+            anio2 = partes2[2]
+
+            iDate = dia1 + "/" + mes1 + "/" + anio1
+            fBwDate = dia3 + "/" + mes3 + "/" + anio3
+            fDate = dia2 + "/" + mes2 + "/" + anio2
+
+            start_date = datetime.date(int(anio1), int(mes1), int(dia1))
+            end_date = datetime.date(int(anio2), int(mes2), int(dia2))
+            end_date_biweekly = datetime.date(int(anio3), int(mes3), int(dia3))
+            start_date_second_biweekly = end_date_biweekly + timedelta(days=1)
+
+            diaStartSecondBiweekly = start_date_second_biweekly.day
+            mesStartSecondBiweekly = start_date_second_biweekly.month
+            anioStartSecondBiweekly = start_date_second_biweekly.year
+            diaStartSecondBiweeklyString = str(diaStartSecondBiweekly)
+            mesStartSecondBiweeklyString = str(mesStartSecondBiweekly)
+            if diaStartSecondBiweeklyString.__len__() == 1:
+                diaStartSecondBiweeklyString = "0" + diaStartSecondBiweeklyString
+            if mesStartSecondBiweeklyString.__len__() == 1:
+                mesStartSecondBiweeklyString = "0" + mesStartSecondBiweeklyString
+
+            fBwStartSecondDate = str(diaStartSecondBiweeklyString) + "/" + str(
+                mesStartSecondBiweeklyString) + "/" + str(anioStartSecondBiweekly)
+
+            range = 'Consulta: ' + iDate + " al " + fBwDate + " y " + fBwStartSecondDate + " al " + fDate
+            r.merge_range('D3:L3', range, title)
+
+
+
+        else:
+            # Sería el caso de finishBiweeklyDate and not finishDate (solo quincena)
+            print("solo quincena")
+            partes1 = initialDate.split("_")
+            dia1 = partes1[0]
+            mes1 = partes1[1]
+            anio1 = partes1[2]
+            partes3 = finishBiweeklyDate.split("_")
+            dia3 = partes3[0]
+            mes3 = partes3[1]
+            anio3 = partes3[2]
+
+            iDate = dia1 + "/" + mes1 + "/" + anio1
+            fBwDate = dia3 + "/" + mes3 + "/" + anio3
+
+            start_date = datetime.date(int(anio1), int(mes1), int(dia1))
+            end_date_biweekly = datetime.date(int(anio3), int(mes3), int(dia3))
+
+            range = 'Consulta: ' + iDate + " al " + fBwDate
+            r.merge_range('D3:L3', range, title)
+
+            end_date = end_date_biweekly
+
+            # Fin de solo quincena
+
+        tasks_de_building = building.tasks.all()
+        tasks_objetos = []
+        for t in tasks_de_building:
+            if t.code.lower() == "ll":
+                tasks_objetos.append(t)
+
+        workers_de_building = building.workers.all()
+        workers_objetos = []
+        for w1 in workers_de_building:
+            workers_objetos.append(w1)
+
+        print('antes del for consulta de logs')
+        day_ini = start_date
+        while day_ini <= end_date:
+            dia = day_ini.day
+            mes = day_ini.month
+            anio = day_ini.year
+            wdd = str(anio) + "-" + str(mes) + "-" + str(dia)
+            print("wdd:")
+            print(wdd)
+
+            datedd = datetime.datetime.strptime(wdd, "%Y-%m-%d").date()
+            # Try catch por si no devuelve nada la consulta
+            try:
+                workday = Workday.objects.get(building=building, date=datedd)
+            except Workday.DoesNotExist:
+                workday = None
+
+            logs = LogHour.objects.filter(workday=workday)
+            for log in logs:
+                if log.worker not in workers_objetos:
+                    workers_objetos.append(log.worker)
+                if log.task not in tasks_objetos:
+                    if log.task.code.lower() == "xppv":
+                        tasks_objetos.append(log.task)
+
+            day_ini = day_ini + timedelta(days=1)
+        print('despues del for consulta de logs')
+
+        # Se cargan los días del rango seleccionado
+        day = start_date
+        col = 20
+        indice = 20
+        sinHoras = ""
+        colFinPrimeraQuincena = 20
+        diccionarioPrimeraQuincena = {}
+        diccionarioSegundaQuincena = {}
+        esPrimeraQuincena = True
+
+        logs_principal = {}
+
+        while day <= end_date:
+            print("***NUEVO DÍA***")
+            # print(day)
+
+            letter = utils.column_letter(col)
+            r.write('%s5' % letter, str(day.day), header_center)
+
+            day_aux = day + timedelta(days=1)
+            if day.month < day_aux.month or day == end_date:
+                print("entro en if de cambio de mes")
+                letterMonthStart = utils.column_letter(indice)
+                letterMonthEnd = utils.column_letter(col)
+                month = utils.traducir_mes(day.month)
+                r.merge_range('%s4:%s4' % (letterMonthStart, letterMonthEnd), month + " - " + str(day.year),
+                              header_center)
+                indice = col + 1
+
+            # print("algo por ahí")
+            dia = day.day
+            mes = day.month
+            anio = day.year
+            wd = str(anio) + "-" + str(mes) + "-" + str(dia)
+            print("wd:")
+            print(wd)
+
+            # print("antes")
+            date = datetime.datetime.strptime(wd, "%Y-%m-%d").date()
+            # Try catch por si no devuelve nada la consulta
+            try:
+                workday = Workday.objects.get(building=building, date=date)
+            except Workday.DoesNotExist:
+                workday = None
+            if workday == None:
+                print("No trajo fecha la consulta")
+
+                # Se cargan logs de los trabajadores
+                row = 6
+                for worker in workers_objetos:
+                    # print("Entro a for de los workers sin workday")
+                    r.write('%s%d' % (letter, row), sinHoras)
+                    row += 1
+            else:
+                print("workday no es vacío")
+
+                for tarea in tasks_objetos:
+                    try:
+                        logs = LogHour.objects.filter(workday=workday, task=tarea)
+                    except LogHour.DoesNotExist:
+                        logs = None
+
+                    # print("despues de ir a buscar los logs")
+
+                    if logs:
+                        arreglo = []
+                        for log in logs:
+                            # print("for de logs")
+                            tupla = (letter, log.worker, log.amount)
+                            arreglo.append(tupla)
+
+                        if tarea.code in logs_principal:
+                            # print("entra al if tarea code")
+                            for tup in arreglo:
+                                arr = logs_principal[tarea.code]
+                                arr.append(tup)
+                                logs_principal[tarea.code] = arr
+                        else:
+                            logs_principal.update({tarea.code: arreglo})
+
+            if day == end_date_biweekly:
+                colFinPrimeraQuincena = col
+                # esPrimeraQuincena = False
+
+            day = day + timedelta(days=1)
+            col += 1
+
+        # Se obtiene letra de columna de fin de primera quincena
+        letterBikeekyEnd = utils.column_letter(colFinPrimeraQuincena)
+        print("letterBikeekyEnd: " + letterBikeekyEnd)
+
+        # Se obtiene letra de columna de comienzo de segunda quincena
+        if esConsultaDosQuincenas:
+            letterSecondBikeekyStart = utils.column_letter(colFinPrimeraQuincena + 1)
+            print("letterSecondBikeekyStart: " + letterSecondBikeekyStart)
+
+        print("LOGS PRINCIPAL******************")
+        print("")
+
+        class ColumnaMonto():
+            def __init__(self, col, monto):
+                self.col = col
+                self.monto = monto
+
+            # def __str__(self):
+            #     return '%s - %s' % (self.code, self.name)
+
+        class WorkerAux():
+            wkr = Worker()
+            lista_columna_monto = []
+
+            def __init__(self, wkr, lista):
+                self.wkr = wkr
+                self.lista_columna_monto = lista
+
+            # def __str__(self):
+            #     return '%s' % self.code
+
+        # Se ordenan alfabéticamente las tareas de logs_principal
+        logs_principal_ord = dict(sorted(logs_principal.items()))
+
+        fila = 6
+        letterEnd = utils.column_letter(col - 1)
+        # tar es el codigo de tarea
+        for tar in logs_principal_ord:
+
+            if tar == 'D11':
+                print("es D11")
+
+            print(tar + ": " + str(logs_principal_ord[tar]))
+
+            arreglo_de_workers = []
+            arreglo_de_tuplas = logs_principal_ord[tar]
+            cant = len(logs_principal_ord[tar])
+
+            lista_workers_final = []
+
+            i = 0
+            while i < cant:
+
+                objeto = ColumnaMonto(arreglo_de_tuplas[i][0], arreglo_de_tuplas[i][2])
+
+                # i = 0, 1, 2 ...cant-1
+                if arreglo_de_tuplas[i][1] not in arreglo_de_workers:
+                    wkr_aux = WorkerAux(arreglo_de_tuplas[i][1], [])
+                    wkr_aux.lista_columna_monto.append(objeto)
+
+                    lista_workers_final.append(wkr_aux)
+
+                    arreglo_de_workers.append(arreglo_de_tuplas[i][1])
+
+                else:
+
+                    for x in lista_workers_final:
+                        if arreglo_de_tuplas[i][1] == x.wkr:
+                            x.lista_columna_monto.append(objeto)
+
+                i += 1
+
+            # print("SE IMPRIME LISTA DE WORKERS FINAL DE UNA TAREA (filas de una tarea a imprimir)")
+            for w in lista_workers_final:
+                # r.write('B%d' % fila, tar, header_center_without_bg)
+                r.write('B%d' % fila, w.wkr.code, code_header_center_without_bg)
+                r.write('C%d' % fila, w.wkr.full_name(), format_align_left)
+                r.write('D%d' % fila, str(w.wkr.category.code), header_center_without_bg)
+                r.write_formula('H%d' % fila, '=sum(T%d:%s%d)' % (fila, letterBikeekyEnd, fila),
+                                number_format)  # total hours first biweekly
+                if esConsultaDosQuincenas:
+                    r.write_formula('I%d' % fila,
+                                    '=sum(%s%d:%s%d)' % (letterSecondBikeekyStart, fila, letterEnd, fila),
+                                    number_format)  # total hours second biweekly
+                r.write_formula('J%d' % fila, '=sum(H%d:I%d)' % (fila, fila), number_format)  # total hours
+
+                for nodo in w.lista_columna_monto:
+                    r.write('%s%d' % (nodo.col, fila), nodo.monto, number_format)
+
+                fila += 1
+                # print(w.wkr.full_name())
+                # for celda in w.lista_columna_monto:
+                #     print("col: " + celda.col + " - " + "monto: " + str(celda.monto))
+
+            print("")
+            print("")
+
+        workbook.close()
+        xlsx_data = output.getvalue()
+
+        print("algo 3")
+        return xlsx_data
 
 
     def __str__(self):

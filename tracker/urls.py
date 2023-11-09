@@ -14,6 +14,8 @@ urlpatterns = [
     url(regex=r'^dht_tasks_report/$', view=views.DhtTasksReport.as_view(), name='dht_tasks_report'),
     url(regex=r'^dht_prod_report/$', view=views.DhtProdReport.as_view(), name='dht_prod_report'),
     url(regex=r'^dht_lluvias_report/$', view=views.DhtLluviasReport.as_view(), name='dht_lluvias_report'),
+    url(regex=r'^dht_balancin_report/$', view=views.DhtBalancinReport.as_view(), name='dht_balancin_report'),
+    url(regex=r'^dht_plataforma_volada_report/$', view=views.DhtPlataformaVoladaReport.as_view(), name='dht_plataforma_volada_report'),
     url(regex=r'^dht_tasks_report_resumen/$', view=views.DhtTasksReportResumen.as_view(), name='dht_tasks_report_resumen'),
     url(regex=r'^ute_ose_report/$', view=views.ReporteUteOse.as_view(), name='ute_ose_report'),
     url(regex=r'^api/add_hours/(?P<date>\d{4}-\d{2}-\d{2})/$', view=views_api.CreateLogHoursPastDay.as_view(), name='api_add_hours_past_day'),
@@ -27,6 +29,8 @@ urlpatterns = [
     url(regex=r'^api/dht_tasks_report_api/$', view=views_api.DhtTasksReportApi.as_view(), name='api_dht_tasks_report'),
     url(regex=r'^api/dht_prod_report_api/$', view=views_api.DhtProdReportApi.as_view(), name='api_dht_prod_report'),
     url(regex=r'^api/dht_lluvias_report_api/$', view=views_api.DhtLluviasReportApi.as_view(), name='api_dht_lluvias_report'),
+    url(regex=r'^api/dht_balancin_report_api/$', view=views_api.DhtBalancinReportApi.as_view(), name='api_dht_balancin_report'),
+    url(regex=r'^api/dht_plataforma_volada_report_api/$', view=views_api.DhtPlataformaVoladaReportApi.as_view(), name='api_dht_plataforma_volada_report'),
     url(regex=r'^api/dht_tasks_report_resumen_api/$', view=views_api.DhtTasksReportResumenApi.as_view(), name='api_dht_tasks_report_resumen'),
     url(regex=r'^api/exist_workday/$', view=views_api.ExistWorkday.as_view(), name='api_exist_workday'),
     url(regex=r'^api/ute_ose_report_api/$', view=views_api.ReporteUteOseApi.as_view(), name='api_ute_ose_report')
