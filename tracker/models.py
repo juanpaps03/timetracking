@@ -2557,7 +2557,7 @@ class Building(models.Model):
         # title row
         #r.merge_range('A1:C3', config.COMPANY_NAME, title)
         r.insert_image('A1', 'sabyltimetracker/static/images/logo_sabyl_rgb_blanco.png', {'x_scale': 0.3, 'y_scale': 0.25})
-        r.merge_range('D1:L1', __('DHT Balancin'), title)
+        r.merge_range('D1:L1', __('DHT Balancín'), title)
         building_info = '%s: %s' % (__('Building'), str(building))
         r.merge_range('D2:L2', building_info, title)
 
