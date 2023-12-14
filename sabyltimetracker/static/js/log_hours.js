@@ -484,18 +484,58 @@ $(document).ready(function() {
         let wda_ose_entrada = $('#wda-ose-entrada').val();
         let wda_ose_salida = $('#wda-ose-salida').val();
 
-        wda_entrada_activa_numero = parseFloat(wda_entrada_activa)
-        wda_salida_activa_numero = parseFloat(wda_salida_activa)
+        let wda_entrada_activa_numero = 0;
+        let wda_salida_activa_numero = 0;
+        let entrada_activa_numero = 0;
+        let salida_activa_numero = 0;
+
+        let wda_entrada_reactiva_numero = 0;
+        let wda_salida_reactiva_numero = 0;
+        let entrada_reactiva_numero = 0;
+        let salida_reactiva_numero = 0;
+
+        let wda_ose_entrada_numero = 0;
+        let wda_ose_salida_numero = 0;
+        let ose_entrada_numero = 0;
+        let ose_salida_numero = 0;
+
+
+        if (wda_entrada_activa!=''){
+            wda_entrada_activa_numero = parseFloat(wda_entrada_activa)
+        }
+        let controlar_wda_salida_activa = false;
+        if (wda_salida_activa!=''){
+            controlar_wda_salida_activa = true;
+            wda_salida_activa_numero = parseFloat(wda_salida_activa)
+        }
+
         entrada_activa_numero = parseFloat(entrada_activa)
         salida_activa_numero = parseFloat(salida_activa)
 
-        wda_entrada_reactiva_numero = parseFloat(wda_entrada_reactiva)
-        wda_salida_reactiva_numero = parseFloat(wda_salida_reactiva)
+        if (wda_entrada_reactiva!=''){
+            wda_entrada_reactiva_numero = parseFloat(wda_entrada_reactiva)
+        }
+        let controlar_wda_salida_reactiva = false;
+        if (wda_salida_reactiva!=''){
+            controlar_wda_salida_reactiva = true;
+            wda_salida_reactiva_numero = parseFloat(wda_salida_reactiva)
+        }
+
+
         entrada_reactiva_numero = parseFloat(entrada_reactiva)
         salida_reactiva_numero = parseFloat(salida_reactiva)
 
-        wda_ose_entrada_numero = parseFloat(wda_ose_entrada)
-        wda_ose_salida_numero = parseFloat(wda_ose_salida)
+        if (wda_ose_entrada!=''){
+            wda_ose_entrada_numero = parseFloat(wda_ose_entrada)
+        }
+        let controlar_wda_ose_salida = false;
+        if (wda_ose_salida!=''){
+            controlar_wda_ose_salida = true;
+            wda_ose_salida_numero = parseFloat(wda_ose_salida)
+        }
+
+
+
         ose_entrada_numero = parseFloat(ose_entrada)
         ose_salida_numero = parseFloat(ose_salida)
 
@@ -504,7 +544,7 @@ $(document).ready(function() {
         let hay_error_energia_reactiva = false;
         let hay_error_ose = false;
 
-        if (entrada_activa_numero<wda_salida_activa_numero){
+        if (controlar_wda_salida_activa && entrada_activa_numero<wda_salida_activa_numero){
             console.log('entrada activa: ' + entrada_activa_numero + ' - wda salida activa: ' + wda_salida_activa_numero)
             $('#div-mensaje-error-entrada-activa-menor').show();
             hay_error_energia_activa = true;
@@ -523,7 +563,7 @@ $(document).ready(function() {
 
 
 
-        if (entrada_reactiva_numero<wda_salida_reactiva_numero){
+        if (controlar_wda_salida_reactiva && entrada_reactiva_numero<wda_salida_reactiva_numero){
             console.log('entrada reactiva: ' + entrada_reactiva_numero + ' - wda salida reactiva: ' + wda_salida_reactiva_numero)
             $('#div-mensaje-error-entrada-reactiva-menor').show();
             hay_error_energia_reactiva = true;
@@ -541,7 +581,7 @@ $(document).ready(function() {
         }
 
 
-        if (ose_entrada_numero<wda_ose_salida_numero){
+        if (controlar_wda_ose_salida && ose_entrada_numero<wda_ose_salida_numero){
             console.log('ose entrada: ' + ose_entrada_numero + ' - wda ose salida: ' + wda_ose_salida_numero)
             $('#div-mensaje-error-ose-menor').show();
             hay_error_ose = true;
