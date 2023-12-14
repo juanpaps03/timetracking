@@ -93,61 +93,67 @@ class LogHours(View):
                 workers_objetos.append(w1)
 
             date = timezone.localdate(timezone.now())
+
+            wda_entrada_activa = ""
+            wda_entrada_reactiva = ""
+            wda_salida_activa = ""
+            wda_salida_reactiva = ""
+            wda_ose_entrada = ""
+            wda_ose_salida = ""
             try:
-                workdayAnterior = Workday.objects.filter(building=building, finished=True).order_by('-date')[0]
+                try:
+                    workdayAnterior = Workday.objects.filter(building=building, finished=True).order_by('-date')[0]
 
-                print('**wd anterior**')
-                print(workdayAnterior)
-                print('**fin wd anterior**')
-                wda_entrada_activa = ""
-                wda_entrada_reactiva = ""
-                wda_salida_activa = ""
-                wda_salida_reactiva = ""
-                wda_ose_entrada = ""
-                wda_ose_salida = ""
-                wda_texto = workdayAnterior.comment
-                if wda_texto != None:
-                    if "utefin" in wda_texto:
-                        partes = wda_texto.split("utefin")
-                        texto_ute = partes[0]
+                    print('**wd anterior**')
+                    print(workdayAnterior)
+                    print('**fin wd anterior**')
 
-                        if "eact" in texto_ute:
-                            partes_eact = texto_ute.split("eact")
-                            wda_entrada_activa = partes_eact[1]
+                    wda_texto = workdayAnterior.comment
+                    if wda_texto != None:
+                        if "utefin" in wda_texto:
+                            partes = wda_texto.split("utefin")
+                            texto_ute = partes[0]
 
-                        if "sact" in texto_ute:
-                            partes_sact = texto_ute.split("sact")
-                            wda_salida_activa = partes_sact[1]
+                            if "eact" in texto_ute:
+                                partes_eact = texto_ute.split("eact")
+                                wda_entrada_activa = partes_eact[1]
 
-                        if "ereact" in texto_ute:
-                            partes_ereact = texto_ute.split("ereact")
-                            wda_entrada_reactiva = partes_ereact[1]
+                            if "sact" in texto_ute:
+                                partes_sact = texto_ute.split("sact")
+                                wda_salida_activa = partes_sact[1]
 
-                        if "sreact" in texto_ute:
-                            partes_sreact = texto_ute.split("sreact")
-                            wda_salida_reactiva = partes_sreact[1]
+                            if "ereact" in texto_ute:
+                                partes_ereact = texto_ute.split("ereact")
+                                wda_entrada_reactiva = partes_ereact[1]
 
-                        texto_restante = partes[1]
-                        if "osesalfin" in texto_restante:
-                            partes_ose = texto_restante.split("osesalfin")
-                            texto_ose = partes_ose[0]
-                            if "oseentfin" in texto_ose:
-                                partes_oseent = texto_ose.split("oseentfin")
-                                wda_ose_entrada = partes_oseent[0]
-                                wda_ose_salida = partes_oseent[1]
+                            if "sreact" in texto_ute:
+                                partes_sreact = texto_ute.split("sreact")
+                                wda_salida_reactiva = partes_sreact[1]
 
+                            texto_restante = partes[1]
+                            if "osesalfin" in texto_restante:
+                                partes_ose = texto_restante.split("osesalfin")
+                                texto_ose = partes_ose[0]
+                                if "oseentfin" in texto_ose:
+                                    partes_oseent = texto_ose.split("oseentfin")
+                                    wda_ose_entrada = partes_oseent[0]
+                                    wda_ose_salida = partes_oseent[1]
 
+                        else:
+                            if "osesalfin" in wda_texto:
+                                partes_ose = wda_texto.split("osesalfin")
+                                texto_ose = partes_ose[0]
+                                if "oseentfin" in texto_ose:
+                                    partes_oseent = texto_ose.split("oseentfin")
+                                    wda_ose_entrada = partes_oseent[0]
+                                    wda_ose_salida = partes_oseent[1]
 
-                    else:
-                        if "osesalfin" in wda_texto:
-                            partes_ose = wda_texto.split("osesalfin")
-                            texto_ose = partes_ose[0]
-                            if "oseentfin" in texto_ose:
-                                partes_oseent = texto_ose.split("oseentfin")
-                                wda_ose_entrada = partes_oseent[0]
-                                wda_ose_salida = partes_oseent[1]
+                except IndexError:
+                    print('LogHours() - No se encuentra workday anterior - Puede deberse a que la obra es nueva y aun no tiene ningun workday ingresado.')
+            except IndexError:
+                return JsonResponse({'message': messages.GENERIC_ERROR}, status=500)
 
-
+            try:
                 workday = Workday.objects.filter(building=building, finished=False).order_by('-date')[0]
                 if workday.date != date:
                     django_messages.warning(request, messages.OLD_UNFINISHED_WORKDAY)
@@ -757,6 +763,7 @@ class PastDaysEdit(View):
                 print('Error al obtener el workday')
                 mensaje_error = messages.WORKDAY_NOT_FOUND
                 hayError = True
+
                 context = {'error': mensaje_error, 'hayError': hayError}
                 return render(request, 'tracker/past_days_edit.html', context)
 
