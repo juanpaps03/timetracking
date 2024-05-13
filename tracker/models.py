@@ -2669,7 +2669,7 @@ class Building(models.Model):
         tasks_de_building = building.tasks.all()
         tasks_objetos = []
         for t in tasks_de_building:
-            if t.code.lower() == "ll":
+            if t.code.lower() == "xbal":
                 tasks_objetos.append(t)
 
         workers_de_building = building.workers.all()
@@ -3038,7 +3038,7 @@ class Building(models.Model):
         tasks_de_building = building.tasks.all()
         tasks_objetos = []
         for t in tasks_de_building:
-            if t.code.lower() == "ll":
+            if t.code.lower() == "xppv":
                 tasks_objetos.append(t)
 
         workers_de_building = building.workers.all()
