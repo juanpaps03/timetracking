@@ -94,8 +94,8 @@ class EndDay(APIView):
         building = Building.objects.get_by_overseer(user)
         comment = request.data.get('comment', None)
 
-        print("Entra en EndDay comment: " + comment)
         if comment is not None:
+            print("Entra en EndDay comment: " + comment)
             if comment == '':
                 comment = None
             else:
@@ -144,6 +144,9 @@ class EndDay(APIView):
 
             print("Entra en EndDay views api 7")
 
+
+            if comment is None:
+                comment = "";
             if workday.end(comment, comentarioUteOse):
                 django_messages.success(request, messages.DAY_ENDED)
                 return redirect('tracker:dashboard', username=username)

@@ -545,6 +545,7 @@ class DayReview(View):
                         partes = texto.split("utefin")
                         texto_restante = partes[1]
                         if "osesalfin" in texto_restante:
+                            hay_comentario_ose = True
                             texto_ose = texto_restante.split("osesalfin")
                             comentario = texto_ose[1]
 
@@ -558,6 +559,9 @@ class DayReview(View):
 
                 if hay_comentario_ute and hay_comentario_ose:
                     hay_comentario_ute_ose = True;
+                    print('hay comentario de ute y ose')
+                else:
+                    print('no hay comentario de ute y ose')
 
                 if workday.date != date:
                     django_messages.warning(request, messages.OLD_UNFINISHED_WORKDAY)
