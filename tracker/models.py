@@ -3380,13 +3380,33 @@ class Workday(models.Model):
         print("entra en end models 1")
 
         # print("end - comentarioUteOse: " + comentarioUteOse)
-        if comentarioUteOse is not None:
-            comentario = comentarioUteOse+comment
+
+        comentarioDelDia = ""
+        texto = comment
+        if texto != None:
+            if "utefin" in texto:
+                partes = texto.split("utefin")
+                if partes[1] != None:
+                    if "osesalfin" in partes[1]:
+                        partes2 = texto.split("osesalfin")
+                        if partes2[1] != None:
+                            comentarioDelDia = partes2[1]
+            else:
+                if "osesalfin" in texto:
+                    partes3 = texto.split("osesalfin")
+                    if partes3[1] != None:
+                        comentarioDelDia = partes3[1]
+
+        print("end() - comentarioDelDia: " + comentarioDelDia)
+        if comentarioDelDia is None:
+            print("end() - comentarioDelDia es None")
+            self.force_finished = False
         else:
-            comentario = comment
-        self.comment = comentario
-        print("comentario que se va a guardar: " + self.comment)
-        self.force_finished = comment is not None
+            if comentarioDelDia == "":
+                print("end() - comentarioDelDia es string vacio")
+                self.force_finished = False
+            else:
+                self.force_finished = True
         self.save()
         return True
 
@@ -3601,6 +3621,22 @@ class Workday(models.Model):
 
         r.merge_range('A%d:%s%d' % (row, max_column, row), __('Extra Information'), title)
         row += 1
+
+        comentarioDelDia = ""
+        texto = self.comment
+        if texto != None:
+            if "utefin" in texto:
+                partes = texto.split("utefin")
+                if partes[1] != None:
+                    if "osesalfin" in partes[1]:
+                        partes2 = texto.split("osesalfin")
+                        if partes2[1] != None:
+                            comentarioDelDia = partes2[1]
+            else:
+                if "osesalfin" in texto:
+                    partes3 = texto.split("osesalfin")
+                    if partes3[1] != None:
+                        comentarioDelDia = partes3[1]
         if self.force_finished:
             r.merge_range('A%d:%s%d' % (row, max_column, row), __('Day force-finished without controls.'))
             row += 1
