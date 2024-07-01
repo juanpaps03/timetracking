@@ -3377,7 +3377,7 @@ class Workday(models.Model):
                     return False
         self.finished = True
 
-        print("entra en end models 1")
+        print("end() - entra en end models 1")
 
         # print("end - comentarioUteOse: " + comentarioUteOse)
 
